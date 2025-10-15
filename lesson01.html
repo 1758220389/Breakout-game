@@ -7,20 +7,20 @@
 </head>
 <body>
 
-<canvas id="myCanvas" width="480" height="320"></canvas>
+<canvas id="myCanvas" width="480" height="320"></canvas> <!--创建一个画布，指定宽高-->
 
-<script>
+<script> //以下为JavaScript代码
     var canvas = document.getElementById("myCanvas");
     var ctx = canvas.getContext("2d");
 
     ctx.beginPath();
-    ctx.rect(20, 40, 50, 50);
-    ctx.fillStyle = "#FF0000";
+    ctx.rect(20, 40, 50, 50);//20 40 是起点坐标，50 50 是宽高
+    ctx.fillStyle = "#FF0000"; //填充颜色
     ctx.fill();
-    ctx.closePath();
+    ctx.closePath();//beginpath~closepath创建图形
 
     ctx.beginPath();
-    ctx.arc(240, 160, 20, 0, Math.PI*2, false);
+    ctx.arc(240, 160, 20, 0, Math.PI*2, false);//圆心坐标 240 160，半径20，起始弧度0，终止弧度2π, 顺时针
     ctx.fillStyle = "green";
     ctx.fill();
     ctx.closePath();
