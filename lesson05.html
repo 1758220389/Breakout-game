@@ -66,16 +66,19 @@
         if(x + dx > canvas.width-ballRadius || x + dx < ballRadius) {
             dx = -dx;
         }
-        if(y + dy < ballRadius) {
+        if(y + dy < ballRadius) //碰到顶部反弹
+        {
             dy = -dy;
         }
-        else if(y + dy > canvas.height-ballRadius) {
-            if(x > paddleX && x < paddleX + paddleWidth) {
+        else if(y + dy > canvas.height-ballRadius) //碰到底部
+        {
+            if(x > paddleX && x < paddleX + paddleWidth) //挡板接球
+            {
                 dy = -dy;
             }
             else {
-                clearInterval(game);
-                alert("GAME OVER");
+                clearInterval(game); //使用clearInterval清除定时器Interval
+                alert("GAME OVER"); //游戏结束
                 document.location.reload();
             }
         }
