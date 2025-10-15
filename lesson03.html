@@ -30,10 +30,12 @@
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         drawBall();
 
-        if(x + dx > canvas.width-ballRadius || x + dx < ballRadius) {
+        if(x + dx > canvas.width-ballRadius || x + dx < ballRadius) //左上为0坐标，条件一为碰到右边界，条件二为碰到左边界
+        {
             dx = -dx;
         }
-        if(y + dy > canvas.height-ballRadius || y + dy < ballRadius) {
+        if(y + dy > canvas.height-ballRadius || y + dy < ballRadius) //条件一为碰到底部，条件二为碰到顶部
+        {
             dy = -dy;
         }//碰到边界时反向
 
