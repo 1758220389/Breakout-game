@@ -22,11 +22,12 @@
     var paddleX = (canvas.width-paddleWidth)/2;
     var rightPressed = false;
     var leftPressed = false;
+    //定义砖块参数
     var brickRowCount = 5;
     var brickColumnCount = 3;
     var brickWidth = 75;
     var brickHeight = 20;
-    var brickPadding = 10;
+    var brickPadding = 10;//两砖之间间隔
     var brickOffsetTop = 30;
     var brickOffsetLeft = 30;
 
@@ -75,9 +76,9 @@
     function drawBricks() {
         for(var c=0; c<brickColumnCount; c++) {
             for(var r=0; r<brickRowCount; r++) {
-                var brickX = (r*(brickWidth+brickPadding))+brickOffsetLeft;
+                var brickX = (r*(brickWidth+brickPadding))+brickOffsetLeft;//砖块坐标
                 var brickY = (c*(brickHeight+brickPadding))+brickOffsetTop;
-                bricks[c][r].x = brickX;
+                bricks[c][r].x = brickX;//砖块位置存入数组
                 bricks[c][r].y = brickY;
                 ctx.beginPath();
                 ctx.rect(brickX, brickY, brickWidth, brickHeight);
