@@ -18,27 +18,33 @@
     var dx = 2;
     var dy = -2;
     var paddleHeight = 10;
-    var paddleWidth = 75;
-    var paddleX = (canvas.width-paddleWidth)/2;
+    var paddleWidth = 75;//挡板宽高
+    var paddleX = (canvas.width-paddleWidth)/2;//挡板初始位置
     var rightPressed = false;
     var leftPressed = false;
 
-    document.addEventListener("keydown", keyDownHandler, false);
-    document.addEventListener("keyup", keyUpHandler, false);
+    document.addEventListener("keydown", keyDownHandler, false);//监听键盘按下事件
+    document.addEventListener("keyup", keyUpHandler, false);//监听键盘松开事件
 
-    function keyDownHandler(e) {
-        if(e.code  == "ArrowRight") {
-            rightPressed = true;
+    function keyDownHandler(e) //e由addeventlistener传入，包含按键信息
+    {
+        if(e.code  == "ArrowRight") //e.code查询keycode得到
+        {
+            rightPressed = true;//传递移动信息
         }
-        else if(e.code == 'ArrowLeft') {
+        else if(e.code == 'ArrowLeft') 
+        {
             leftPressed = true;
         }
     }
-    function keyUpHandler(e) {
-        if(e.code  == "ArrowRight") {
+    function keyUpHandler(e) 
+    {
+        if(e.code  == "ArrowRight") 
+        {
             rightPressed = false;
         }
-        else if(e.code == 'ArrowLeft') {
+        else if(e.code == 'ArrowLeft') 
+        {
             leftPressed = false;
         }
     }
@@ -70,10 +76,12 @@
             dy = -dy;
         }
 
-        if(rightPressed && paddleX < canvas.width-paddleWidth) {
+        if(rightPressed && paddleX < canvas.width-paddleWidth) //当且仅当按下右键且挡板未到达右边界
+        {
             paddleX += 7;
         }
-        else if(leftPressed && paddleX > 0) {
+        else if(leftPressed && paddleX > 0) 
+        {
             paddleX -= 7;
         }
 
