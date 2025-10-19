@@ -57,12 +57,15 @@
             leftPressed = false;
         }
     }
-    function collisionDetection() {
+    function collisionDetection() //检测所有砖块和球的碰撞
+    {
         for(var c=0; c<brickColumnCount; c++) {
             for(var r=0; r<brickRowCount; r++) {
                 var b = bricks[c][r];
-                if(b.status == 1) {
-                    if(x > b.x && x < b.x+brickWidth && y > b.y && y < b.y+brickHeight) {
+                if(b.status == 1) //只检测未被击中的砖块
+                {
+                    if(x > b.x && x < b.x+brickWidth && y > b.y && y < b.y+brickHeight) //比较位置
+                    {
                         dy = -dy;
                         b.status = 0;
                     }
@@ -88,7 +91,8 @@
     function drawBricks() {
         for(var c=0; c<brickColumnCount; c++) {
             for(var r=0; r<brickRowCount; r++) {
-                if(bricks[c][r].status == 1) {
+                if(bricks[c][r].status == 1) //只绘制未被击中的砖块
+                {
                     var brickX = (r*(brickWidth+brickPadding))+brickOffsetLeft;
                     var brickY = (c*(brickHeight+brickPadding))+brickOffsetTop;
                     bricks[c][r].x = brickX;
