@@ -7,7 +7,7 @@
 </head>
 <body>
 
-<canvas id="myCanvas" width="480" height="320"></canvas><!--定义画布-->
+<canvas id="myCanvas" width="1080" height="600"></canvas><!--定义画布-->
 <script src="draw.js"></script>
 
 <script>//以下为JS代码
@@ -21,21 +21,36 @@
     var dy = -2;
 
     var paddleHeight = 10;//挡板尺寸
-    var paddleWidth = 75;
+    var paddleWidth = 120;
     var paddleX = (canvas.width-paddleWidth)/2;//挡板的初始位置
     var paddleY = canvas.height - paddleHeight;
 
     var rightPressed = false;//按键状态
     var leftPressed = false;
 
-    var brickRowCount = 5;//砖块摆放
-    var brickColumnCount = 3;
-    var brickWidth = 75;//砖块尺寸
-    var brickHeight = 20;
-    var brickPadding = 10;//砖块间距
+    var brickRowCount = 34;//砖块摆放
+    var brickColumnCount = 10;
+    var brickWidth = 25;//砖块尺寸
+    var brickHeight = 25;
+    var brickPadding = 5;//砖块间距
     var brickOffsetTop = 30;//砖块起始位置
     var brickOffsetLeft = 30;
+
+    var normalbrick = 0;//砖块类型，0普通砖块
+    var hardbrick = 1;
+    var vectorbrick = 2;//矢量砖块
+    var boombrick = 3;
+    var chainbrick = 4;//连锁砖块
+    var motherbrick = 5;//子母砖块
     
+    var noeffect = 0;//争议因子，0无效果
+    var longpaddle = 1;
+    var lifeup = 2;
+    var extraball = 3;
+    var speeddown = 4;//减速
+    var tankball = 5;//穿透因子
+    var routate = 6;//旋转因子
+
     var score = 0;
     var lives = 3;
 
@@ -45,7 +60,7 @@
         bricks[c] = [];
         for(var r=0; r<brickRowCount; r++) 
         {
-            bricks[c][r] = { x: 0, y: 0, status: 1 };
+            bricks[c][r] = { x: 0, y: 0, specialbrick: normalbrick, brickeffect: noeffect, status: 1 };
         }
     }
 

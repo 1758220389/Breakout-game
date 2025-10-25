@@ -1,3 +1,11 @@
+/* 
+const images =  //预加载图片资源
+{
+    brick: new Image(),
+};
+images.brick.src = 'images/brick.png'; //砖块图片
+*/
+
 function drawBall(ctx,x,y,ballRadius) //绘制球
     {
         ctx.beginPath();//beginPath~closePath绘制
@@ -28,6 +36,9 @@ function drawBricks(ctx, bricks, brickColumnCount, brickRowCount, brickWidth, br
                     var brickY = (c*(brickHeight+brickPadding))+brickOffsetTop;
                     bricks[c][r].x = brickX;
                     bricks[c][r].y = brickY;
+                    /*
+                    ctx.drawImage(images.brick, brickX, brickY, brickWidth, brickHeight); //使用图片绘制砖块
+                    */
                     ctx.beginPath();
                     ctx.rect(brickX, brickY, brickWidth, brickHeight);
                     ctx.fillStyle = "#0095DD";
