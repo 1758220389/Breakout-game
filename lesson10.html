@@ -22,6 +22,7 @@
     var paddleHeight = 10;//挡板尺寸
     var paddleWidth = 75;
     var paddleX = (canvas.width-paddleWidth)/2;//挡板的初始位置
+    var paddleY = canvas.height - paddleHeight;
 
     var rightPressed = false;//按键状态
     var leftPressed = false;
@@ -107,7 +108,7 @@
         }
     }
 
-    function drawBall() //绘制球
+    function drawBall(ctx,x,y,ballRadius) //绘制球
     {
         ctx.beginPath();//beginPath~closePath绘制
         ctx.arc(x, y, ballRadius, 0, Math.PI*2);//(x，y，半径，起始角度，结束角度，顺时针方向)
@@ -115,15 +116,15 @@
         ctx.fill();
         ctx.closePath();
     }
-    function drawPaddle() //绘制挡板
+    function drawPaddle(ctx,paddleX,paddleY,paddleWidth,paddleHeight) //绘制挡板
     {
         ctx.beginPath();
-        ctx.rect(paddleX, canvas.height-paddleHeight, paddleWidth, paddleHeight);//(x，y，宽，高)
+        ctx.rect(paddleX, paddleY, paddleWidth, paddleHeight);//(x，y，宽，高)
         ctx.fillStyle = "#0095DD";
         ctx.fill();
         ctx.closePath();
     }
-    function drawBricks() //绘制砖块
+    function drawBricks(ctx, bricks, brickColumnCount, brickRowCount, brickWidth, brickHeight, brickPadding, brickOffsetTop, brickOffsetLeft) //绘制砖块
     {
         for(var c=0; c<brickColumnCount; c++) 
         {
@@ -144,13 +145,13 @@
             }
         }
     }
-    function drawScore() //绘制分数
+    function drawScore(ctx, score) //绘制分数
     {
         ctx.font = "16px Arial";
         ctx.fillStyle = "#0095DD";
         ctx.fillText("Score: "+score, 8, 20);
     }
-    function drawLives() //绘制生命值
+    function drawLives(ctx, lives) //绘制生命值
     {
         ctx.font = "16px Arial";
         ctx.fillStyle = "#0095DD";
@@ -160,11 +161,11 @@
     function draw() 
     {
         ctx.clearRect(0, 0, canvas.width, canvas.height);//清除画布
-        drawBricks();
-        drawBall();
-        drawPaddle();
-        drawScore();
-        drawLives();
+        drawBricks(ctx, bricks, brickColumnCount, brickRowCount, brickWidth, brickHeight, brickPadding, brickOffsetTop, brickOffsetLeft);
+        drawBall(ctx, x, y, ballRadius);
+        drawPaddle(ctx, paddleX, paddleY, paddleWidth, paddleHeight);
+        drawScore(ctx, score);
+        drawLives(ctx, lives);
         collisionDetection();
 
         if(x + dx > canvas.width-ballRadius || x + dx < ballRadius) //碰到左右边反弹
