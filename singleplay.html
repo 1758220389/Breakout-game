@@ -28,7 +28,7 @@
 </head>
 <body>
 
-<!-- 【修改开始】 添加难度选择界面 -->
+<!-- 难度选择界面 -->
 <div id="difficultyContainer">
     <h2>请选择游戏难度</h2>
     <button id="easyBtn">简单</button>
@@ -91,37 +91,28 @@
     var bricks = [];
 
     function initBricks() //砖块数组初始化
-    {
+{
     bricks = [];
     for(var c=0; c<brickColumnCount; c++) {
         bricks[c] = [];
         for(var r=0; r<brickRowCount; r++) 
         {
-            bricks[c][r] = { x: 0, y: 0, specialbrick: boombrick, status: 1 };
+            bricks[c][r] = { x: 0, y: 0, specialbrick: normalbrick, status: 1 };
         }
     }
 }
 
     //难度选择按钮事件监听
-    document.getElementById("easyBtn").addEventListener("click", function() {
-        startGame("easy");
-    });
-    document.getElementById("mediumBtn").addEventListener("click", function() {
-        startGame("medium");
-    });
-    document.getElementById("hardBtn").addEventListener("click", function() {
-        startGame("hard");
-    });
+    document.getElementById("easyBtn").addEventListener("click", function() {startGame("easy");});
+    document.getElementById("mediumBtn").addEventListener("click", function() {startGame("medium");});
+    document.getElementById("hardBtn").addEventListener("click", function() {startGame("hard");});
 
-    function startGame(level) {
+    function startGame(level) 
+    {
         difficulty = level;
-        if (level === "easy") {
-            dx = 2; dy = -2;
-        } else if (level === "hard") {
-            dx = 5; dy = -5;
-        } else {
-            dx = 3; dy = -3;
-        }
+        if (level === "easy") {dx = 2; dy = -2;} 
+        else if (level === "hard") {dx = 5; dy = -5;} 
+        else {dx = 3; dy = -3;}
 
         // 隐藏难度选择界面，显示游戏画布
         document.getElementById("difficultyContainer").style.display = "none";
@@ -135,48 +126,9 @@
         draw();
     }
 
-
-// 难度选择按钮事件监听
-document.getElementById("easyBtn").addEventListener("click", function() {
-    startGame("easy");
-});
-document.getElementById("mediumBtn").addEventListener("click", function() {
-    startGame("medium");
-});
-document.getElementById("hardBtn").addEventListener("click", function() {
-    startGame("hard");
-});
-
-function startGame(level) {
-    difficulty = level;
-    // 根据难度设置球速
-    if (level === "easy") {
-        dx = 2; dy = -2;
-    } else if (level === "hard") {
-        dx = 5; dy = -5;
-    } else {
-        dx = 3; dy = -3;
-    }
-
-    // 隐藏难度选择界面，显示画布
-    document.getElementById("difficultyContainer").style.display = "none";
-    canvas.style.display = "block";
-
-    // 初始化游戏状态
-    score = 0;
-    lives = 3;
-    initBricks();
-
-    // 启动游戏绘制
-    gameStarted = true;
-    draw();
-}
-
     document.addEventListener("keydown", keyDownHandler, false);//监听按键 按下
     document.addEventListener("keyup", keyUpHandler, false);//监听按键 松开
     //document.addEventListener("mousemove", mouseMoveHandler, false); //监听鼠标移动
-
-
 
     function keyDownHandler(e) //addEventListener监听到按键时返回e
     {
