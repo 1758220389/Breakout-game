@@ -9,6 +9,7 @@
 
 <canvas id="myCanvas" width="1080" height="600"></canvas><!--定义画布-->
 <script src="draw.js"></script>
+<script src="specialbrick.js"></script>
 
 <script>//以下为JS代码
     var canvas = document.getElementById("myCanvas");
@@ -38,18 +39,20 @@
 
     var normalbrick = 0;//砖块类型，0普通砖块
     var hardbrick = 1;
-    var vectorbrick = 2;//矢量砖块
-    var boombrick = 3;
-    var chainbrick = 4;//连锁砖块
-    var motherbrick = 5;//子母砖块
-    
-    var noeffect = 0;//争议因子，0无效果
-    var longpaddle = 1;
-    var lifeup = 2;
-    var extraball = 3;
-    var speeddown = 4;//减速
-    var tankball = 5;//穿透因子
-    var routate = 6;//旋转因子
+    var vectorbrickup = 2;//矢量砖块
+    var vectorbrickdown = 3;
+    var vectorbrickleft = 4;
+    var vectorbrickright = 5;
+    var boombrick = 6;
+    var chainbrick = 7;//连锁砖块
+    var motherbrick = 8;//子母砖块
+
+    var longpaddle = 9;
+    var lifeup = 10;
+    var extraball = 11;
+    var speeddown = 12;//减速
+    var tankball = 13;//穿透因子
+    var routate = 14;//旋转因子
 
     var score = 0;
     var lives = 3;
@@ -60,7 +63,7 @@
         bricks[c] = [];
         for(var r=0; r<brickRowCount; r++) 
         {
-            bricks[c][r] = { x: 0, y: 0, specialbrick: normalbrick, brickeffect: noeffect, status: 1 };
+            bricks[c][r] = { x: 0, y: 0, specialbrick: boombrick, status: 1 };
         }
     }
 
@@ -91,7 +94,7 @@
         }
     }
 /*     
-    function mouseMoveHandler(e) 
+    function mouseMoveHandler(e) //鼠标控制
     {
         var relativeX = e.clientX - canvas.offsetLeft;
         if(relativeX > 0 && relativeX < canvas.width) {
@@ -111,7 +114,8 @@
                     if(x > b.x && x < b.x+brickWidth && y > b.y && y < b.y+brickHeight) //检测球是否碰撞砖块
                     {
                         dy = -dy;//球反向
-                        b.status = 0;//砖块状态置0
+                        //brickeffect(b);//调用砖块效果函数
+                        b.status = 0;//砖块消失
                         score++;
                         if(score == brickRowCount*brickColumnCount) //检测胜利
                         {
