@@ -28,21 +28,18 @@
 </head>
 <body>
 
-<<<<<<< HEAD:lesson10.html
-    <!-- 画布 -->
-    <canvas id="myCanvas" width="480" height="320" style="display:none;"></canvas> <!-- 【修改】初始隐藏 -->
+<!-- 【修改开始】 添加难度选择界面 -->
+<div id="difficultyContainer">
+    <h2>请选择游戏难度</h2>
+    <button id="easyBtn">简单</button>
+    <button id="mediumBtn">中等</button>
+    <button id="hardBtn">困难</button>
+</div>
 
-    <!-- 难度选择界面 -->
-    <div id="difficultyContainer">
-        <h2>请选择游戏难度</h2>
-        <button id="easyBtn">简单</button>
-        <button id="mediumBtn">中等</button>
-        <button id="hardBtn">困难</button>
-    </div>
-=======
-<canvas id="myCanvas" width="1080" height="600"></canvas><!--定义画布-->
+<!-- 初始隐藏画布，等选完难度后再显示 -->
+<canvas id="myCanvas" width="1080" height="600" style="display:none;"></canvas>
+
 <script src="draw.js"></script>
->>>>>>> 11dd65db539d60b19562fe6b555d958ad154adb0:singleplay.html
 
 <script>//以下为JS代码
     var canvas = document.getElementById("myCanvas");
@@ -77,12 +74,6 @@
     var chainbrick = 4;//连锁砖块
     var motherbrick = 5;//子母砖块
     
-<<<<<<< HEAD:lesson10.html
-    var score = 0;//分数
-    var lives = 3;//生命值
-    var difficulty = null;//记录选择的难度
-    var gameStarted = false;//标记游戏是否已经开始
-=======
     var noeffect = 0;//争议因子，0无效果
     var longpaddle = 1;
     var lifeup = 2;
@@ -93,7 +84,6 @@
 
     var score = 0;
     var lives = 3;
->>>>>>> 11dd65db539d60b19562fe6b555d958ad154adb0:singleplay.html
 
     var bricks = [];
 
@@ -102,17 +92,46 @@
     bricks = [];
     for(var c=0; c<brickColumnCount; c++) {
         bricks[c] = [];
-<<<<<<< HEAD:lesson10.html
-        for(var r=0; r<brickRowCount; r++) {
-            bricks[c][r] = { x: 0, y: 0, status: 1 };
-=======
         for(var r=0; r<brickRowCount; r++) 
         {
             bricks[c][r] = { x: 0, y: 0, specialbrick: normalbrick, brickeffect: noeffect, status: 1 };
->>>>>>> 11dd65db539d60b19562fe6b555d958ad154adb0:singleplay.html
         }
     }
 }
+
+    //难度选择按钮事件监听
+    document.getElementById("easyBtn").addEventListener("click", function() {
+        startGame("easy");
+    });
+    document.getElementById("mediumBtn").addEventListener("click", function() {
+        startGame("medium");
+    });
+    document.getElementById("hardBtn").addEventListener("click", function() {
+        startGame("hard");
+    });
+
+    function startGame(level) {
+        difficulty = level;
+        if (level === "easy") {
+            dx = 2; dy = -2;
+        } else if (level === "hard") {
+            dx = 5; dy = -5;
+        } else {
+            dx = 3; dy = -3;
+        }
+
+        // 隐藏难度选择界面，显示游戏画布
+        document.getElementById("difficultyContainer").style.display = "none";
+        canvas.style.display = "block";
+
+        // 初始化游戏状态
+        score = 0;
+        lives = 3;
+        initBricks();
+        gameStarted = true;
+        draw();
+    }
+
 
 // 难度选择按钮事件监听
 document.getElementById("easyBtn").addEventListener("click", function() {
@@ -212,60 +231,6 @@ function startGame(level) {
         }
     }
 
-<<<<<<< HEAD:lesson10.html
-    function drawBall() //绘制球
-    {
-        ctx.beginPath();//beginPath~closePath绘制
-        ctx.arc(x, y, ballRadius, 0, Math.PI*2);//(x，y，半径，起始角度，结束角度，顺时针方向)
-        ctx.fillStyle = "#0095DD";
-        ctx.fill();
-        ctx.closePath();
-    }
-    function drawPaddle() //绘制挡板
-    {
-        ctx.beginPath();
-        ctx.rect(paddleX, canvas.height-paddleHeight, paddleWidth, paddleHeight);//(x，y，宽，高)
-        ctx.fillStyle = "#0095DD";
-        ctx.fill();
-        ctx.closePath();
-    }
-    function drawBricks() //绘制砖块
-    {
-        for(var c=0; c<brickColumnCount; c++) 
-        {
-            for(var r=0; r<brickRowCount; r++) 
-            {
-                if(bricks[c][r].status == 1) //未被击中的砖块才绘制
-                {
-                    var brickX = (r*(brickWidth+brickPadding))+brickOffsetLeft;
-                    var brickY = (c*(brickHeight+brickPadding))+brickOffsetTop;
-                    bricks[c][r].x = brickX;
-                    bricks[c][r].y = brickY;
-                    ctx.beginPath();
-                    ctx.rect(brickX, brickY, brickWidth, brickHeight);
-                    ctx.fillStyle = "#0095DD";
-                    ctx.fill();
-                    ctx.closePath();
-                }
-            }
-        }
-    }
-    function drawScore() //绘制分数
-    {
-        ctx.font = "16px Arial";
-        ctx.fillStyle = "#0095DD";
-        ctx.fillText("Score: "+score, 8, 20);
-    }
-    function drawLives() //绘制生命值
-    {
-        if (!gameStarted) return; // 防止未选择难度时启动绘制
-        ctx.font = "16px Arial";
-        ctx.fillStyle = "#0095DD";
-        ctx.fillText("Lives: "+lives, canvas.width-65, 20);
-    }
-
-=======
->>>>>>> 11dd65db539d60b19562fe6b555d958ad154adb0:singleplay.html
     function draw() 
     {
         ctx.clearRect(0, 0, canvas.width, canvas.height);//清除画布
