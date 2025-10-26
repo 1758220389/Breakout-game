@@ -3,11 +3,42 @@
 <head>
     <meta charset="utf-8" />
     <title>Gamedev Canvas Workshop - lesson 10: finishing up</title>
-    <style>* { padding: 0; margin: 0; } canvas { background: #eee; display: block; margin: 0 auto; }</style>
+    <style>
+    * { padding: 0; margin: 0; } 
+    canvas { background: #eee; display: block; margin: 0 auto; }
+            /* 难度选择界面的样式 */
+        #difficultyContainer { 
+            text-align: center; 
+            margin-top: 150px; 
+        }
+        #difficultyContainer button {
+            padding: 10px 20px;
+            margin: 10px;
+            font-size: 16px;            
+            cursor: pointer;
+            background-color: #0095DD;
+            color: white;
+            border: none;
+            border-radius: 5px;
+        }
+        #difficultyContainer button:hover {
+            background-color: #0077BB;
+        }
+    </style>
 </head>
 <body>
 
-<canvas id="myCanvas" width="1080" height="600"></canvas><!--定义画布-->
+<!-- 【修改开始】 添加难度选择界面 -->
+<div id="difficultyContainer">
+    <h2>请选择游戏难度</h2>
+    <button id="easyBtn">简单</button>
+    <button id="mediumBtn">中等</button>
+    <button id="hardBtn">困难</button>
+</div>
+
+<!-- 初始隐藏画布，等选完难度后再显示 -->
+<canvas id="myCanvas" width="1080" height="600" style="display:none;"></canvas>
+
 <script src="draw.js"></script>
 <script src="specialbrick.js"></script>
 
@@ -18,8 +49,8 @@
     var ballRadius = 10;//球的半径
     var x = canvas.width/2;//球的初始位置
     var y = canvas.height-30;
-    var dx = 2;//球的速度
-    var dy = -2;
+    var dx ;//球的速度
+    var dy ;
 
     var paddleHeight = 10;//挡板尺寸
     var paddleWidth = 120;
@@ -57,19 +88,95 @@
     var score = 0;
     var lives = 3;
 
-    var bricks = [];//使用数组定义砖块，统计砖块位置与状态
-    for(var c=0; c<brickColumnCount; c++) 
+    var bricks = [];
+
+    function initBricks() //砖块数组初始化
     {
+    bricks = [];
+    for(var c=0; c<brickColumnCount; c++) {
         bricks[c] = [];
         for(var r=0; r<brickRowCount; r++) 
         {
             bricks[c][r] = { x: 0, y: 0, specialbrick: boombrick, status: 1 };
         }
     }
+}
+
+    //难度选择按钮事件监听
+    document.getElementById("easyBtn").addEventListener("click", function() {
+        startGame("easy");
+    });
+    document.getElementById("mediumBtn").addEventListener("click", function() {
+        startGame("medium");
+    });
+    document.getElementById("hardBtn").addEventListener("click", function() {
+        startGame("hard");
+    });
+
+    function startGame(level) {
+        difficulty = level;
+        if (level === "easy") {
+            dx = 2; dy = -2;
+        } else if (level === "hard") {
+            dx = 5; dy = -5;
+        } else {
+            dx = 3; dy = -3;
+        }
+
+        // 隐藏难度选择界面，显示游戏画布
+        document.getElementById("difficultyContainer").style.display = "none";
+        canvas.style.display = "block";
+
+        // 初始化游戏状态
+        score = 0;
+        lives = 3;
+        initBricks();
+        gameStarted = true;
+        draw();
+    }
+
+
+// 难度选择按钮事件监听
+document.getElementById("easyBtn").addEventListener("click", function() {
+    startGame("easy");
+});
+document.getElementById("mediumBtn").addEventListener("click", function() {
+    startGame("medium");
+});
+document.getElementById("hardBtn").addEventListener("click", function() {
+    startGame("hard");
+});
+
+function startGame(level) {
+    difficulty = level;
+    // 根据难度设置球速
+    if (level === "easy") {
+        dx = 2; dy = -2;
+    } else if (level === "hard") {
+        dx = 5; dy = -5;
+    } else {
+        dx = 3; dy = -3;
+    }
+
+    // 隐藏难度选择界面，显示画布
+    document.getElementById("difficultyContainer").style.display = "none";
+    canvas.style.display = "block";
+
+    // 初始化游戏状态
+    score = 0;
+    lives = 3;
+    initBricks();
+
+    // 启动游戏绘制
+    gameStarted = true;
+    draw();
+}
 
     document.addEventListener("keydown", keyDownHandler, false);//监听按键 按下
     document.addEventListener("keyup", keyUpHandler, false);//监听按键 松开
     //document.addEventListener("mousemove", mouseMoveHandler, false); //监听鼠标移动
+
+
 
     function keyDownHandler(e) //addEventListener监听到按键时返回e
     {
@@ -164,8 +271,14 @@
                 {
                     x = canvas.width/2;
                     y = canvas.height-30;
-                    dx = 2;
-                    dy = -2;
+                    //根据难度重置球速
+                    if (difficulty === "easy") {
+                        dx = 2; dy = -2;
+                    } else if (difficulty === "hard") {
+                        dx = 5; dy = -5;
+                    } else {
+                        dx = 3; dy = -3;
+                    }
                     paddleX = (canvas.width-paddleWidth)/2;
                 }
             }
