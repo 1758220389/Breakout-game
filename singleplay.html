@@ -3,11 +3,44 @@
 <head>
     <meta charset="utf-8" />
     <title>Gamedev Canvas Workshop - lesson 10: finishing up</title>
-    <style>* { padding: 0; margin: 0; } canvas { background: #eee; display: block; margin: 0 auto; }</style>
+    <style>
+    * { padding: 0; margin: 0; } 
+    canvas { background: #eee; display: block; margin: 0 auto; }
+            /* 难度选择界面的样式 */
+        #difficultyContainer { 
+            text-align: center; 
+            margin-top: 150px; 
+        }
+        #difficultyContainer button {
+            padding: 10px 20px;
+            margin: 10px;
+            font-size: 16px;            
+            cursor: pointer;
+            background-color: #0095DD;
+            color: white;
+            border: none;
+            border-radius: 5px;
+        }
+        #difficultyContainer button:hover {
+            background-color: #0077BB;
+        }
+    </style>
 </head>
 <body>
 
-<canvas id="myCanvas" width="480" height="320"></canvas><!--定义画布-->
+<!-- 难度选择界面 -->
+<div id="difficultyContainer">
+    <h2>请选择游戏难度</h2>
+    <button id="easyBtn">简单</button>
+    <button id="mediumBtn">中等</button>
+    <button id="hardBtn">困难</button>
+</div>
+
+<!-- 初始隐藏画布，等选完难度后再显示 -->
+<canvas id="myCanvas" width="1080" height="600" style="display:none;"></canvas>
+
+<script src="draw.js"></script>
+<script src="specialbrick.js"></script>
 
 <script>//以下为JS代码
     var canvas = document.getElementById("myCanvas");
@@ -16,35 +49,81 @@
     var ballRadius = 10;//球的半径
     var x = canvas.width/2;//球的初始位置
     var y = canvas.height-30;
-    var dx = 2;//球的速度
-    var dy = -2;
+    var dx ;//球的速度
+    var dy ;
 
     var paddleHeight = 10;//挡板尺寸
-    var paddleWidth = 75;
+    var paddleWidth = 120;
     var paddleX = (canvas.width-paddleWidth)/2;//挡板的初始位置
+    var paddleY = canvas.height - paddleHeight;
 
     var rightPressed = false;//按键状态
     var leftPressed = false;
 
-    var brickRowCount = 5;//砖块摆放
-    var brickColumnCount = 3;
-    var brickWidth = 75;//砖块尺寸
-    var brickHeight = 20;
-    var brickPadding = 10;//砖块间距
+    var brickRowCount = 34;//砖块摆放
+    var brickColumnCount = 10;
+    var brickWidth = 25;//砖块尺寸
+    var brickHeight = 25;
+    var brickPadding = 5;//砖块间距
     var brickOffsetTop = 30;//砖块起始位置
     var brickOffsetLeft = 30;
-    
-    var score = 0;//分数
+
+    var normalbrick = 0;//砖块类型，0普通砖块
+    var hardbrick = 1;
+    var vectorbrickup = 2;//矢量砖块
+    var vectorbrickdown = 3;
+    var vectorbrickleft = 4;
+    var vectorbrickright = 5;
+    var boombrick = 6;
+    var chainbrick = 7;//连锁砖块
+    var motherbrick = 8;//子母砖块
+
+    var longpaddle = 9;
+    var lifeup = 10;
+    var extraball = 11;
+    var speeddown = 12;//减速
+    var tankball = 13;//穿透因子
+    var routate = 14;//旋转因子
+
+    var score = 0;
     var lives = 3;
 
-    var bricks = [];//使用数组定义砖块，统计砖块位置与状态
-    for(var c=0; c<brickColumnCount; c++) 
-    {
+    var bricks = [];
+
+    function initBricks() //砖块数组初始化
+{
+    bricks = [];
+    for(var c=0; c<brickColumnCount; c++) {
         bricks[c] = [];
         for(var r=0; r<brickRowCount; r++) 
         {
-            bricks[c][r] = { x: 0, y: 0, status: 1 };
+            bricks[c][r] = { x: 0, y: 0, specialbrick: normalbrick, status: 1 };
         }
+    }
+}
+
+    //难度选择按钮事件监听
+    document.getElementById("easyBtn").addEventListener("click", function() {startGame("easy");});
+    document.getElementById("mediumBtn").addEventListener("click", function() {startGame("medium");});
+    document.getElementById("hardBtn").addEventListener("click", function() {startGame("hard");});
+
+    function startGame(level) 
+    {
+        difficulty = level;
+        if (level === "easy") {dx = 2; dy = -2;} 
+        else if (level === "hard") {dx = 5; dy = -5;} 
+        else {dx = 3; dy = -3;}
+
+        // 隐藏难度选择界面，显示游戏画布
+        document.getElementById("difficultyContainer").style.display = "none";
+        canvas.style.display = "block";
+
+        // 初始化游戏状态
+        score = 0;
+        lives = 3;
+        initBricks();
+        gameStarted = true;
+        draw();
     }
 
     document.addEventListener("keydown", keyDownHandler, false);//监听按键 按下
@@ -74,7 +153,7 @@
         }
     }
 /*     
-    function mouseMoveHandler(e) 
+    function mouseMoveHandler(e) //鼠标控制
     {
         var relativeX = e.clientX - canvas.offsetLeft;
         if(relativeX > 0 && relativeX < canvas.width) {
@@ -94,7 +173,8 @@
                     if(x > b.x && x < b.x+brickWidth && y > b.y && y < b.y+brickHeight) //检测球是否碰撞砖块
                     {
                         dy = -dy;//球反向
-                        b.status = 0;//砖块状态置0
+                        //brickeffect(b);//调用砖块效果函数
+                        b.status = 0;//砖块消失
                         score++;
                         if(score == brickRowCount*brickColumnCount) //检测胜利
                         {
@@ -107,64 +187,14 @@
         }
     }
 
-    function drawBall() //绘制球
-    {
-        ctx.beginPath();//beginPath~closePath绘制
-        ctx.arc(x, y, ballRadius, 0, Math.PI*2);//(x，y，半径，起始角度，结束角度，顺时针方向)
-        ctx.fillStyle = "#0095DD";
-        ctx.fill();
-        ctx.closePath();
-    }
-    function drawPaddle() //绘制挡板
-    {
-        ctx.beginPath();
-        ctx.rect(paddleX, canvas.height-paddleHeight, paddleWidth, paddleHeight);//(x，y，宽，高)
-        ctx.fillStyle = "#0095DD";
-        ctx.fill();
-        ctx.closePath();
-    }
-    function drawBricks() //绘制砖块
-    {
-        for(var c=0; c<brickColumnCount; c++) 
-        {
-            for(var r=0; r<brickRowCount; r++) 
-            {
-                if(bricks[c][r].status == 1) //未被击中的砖块才绘制
-                {
-                    var brickX = (r*(brickWidth+brickPadding))+brickOffsetLeft;
-                    var brickY = (c*(brickHeight+brickPadding))+brickOffsetTop;
-                    bricks[c][r].x = brickX;
-                    bricks[c][r].y = brickY;
-                    ctx.beginPath();
-                    ctx.rect(brickX, brickY, brickWidth, brickHeight);
-                    ctx.fillStyle = "#0095DD";
-                    ctx.fill();
-                    ctx.closePath();
-                }
-            }
-        }
-    }
-    function drawScore() //绘制分数
-    {
-        ctx.font = "16px Arial";
-        ctx.fillStyle = "#0095DD";
-        ctx.fillText("Score: "+score, 8, 20);
-    }
-    function drawLives() //绘制生命值
-    {
-        ctx.font = "16px Arial";
-        ctx.fillStyle = "#0095DD";
-        ctx.fillText("Lives: "+lives, canvas.width-65, 20);
-    }
-
     function draw() 
     {
         ctx.clearRect(0, 0, canvas.width, canvas.height);//清除画布
-        drawBricks();
-        drawBall();
-        drawPaddle();
-        drawScore();
-        drawLives();
+        drawBricks(ctx, bricks, brickColumnCount, brickRowCount, brickWidth, brickHeight, brickPadding, brickOffsetTop, brickOffsetLeft);
+        drawBall(ctx, x, y, ballRadius);
+        drawPaddle(ctx, paddleX, paddleY, paddleWidth, paddleHeight);
+        drawScore(ctx, score);
+        drawLives(ctx, lives);
         collisionDetection();
 
         if(x + dx > canvas.width-ballRadius || x + dx < ballRadius) //碰到左右边反弹
@@ -193,8 +223,14 @@
                 {
                     x = canvas.width/2;
                     y = canvas.height-30;
-                    dx = 2;
-                    dy = -2;
+                    //根据难度重置球速
+                    if (difficulty === "easy") {
+                        dx = 2; dy = -2;
+                    } else if (difficulty === "hard") {
+                        dx = 5; dy = -5;
+                    } else {
+                        dx = 3; dy = -3;
+                    }
                     paddleX = (canvas.width-paddleWidth)/2;
                 }
             }
