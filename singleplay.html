@@ -24,16 +24,29 @@
         #difficultyContainer button:hover {
             background-color: #0077BB;
         }
+        #instructions {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 14px;
+        }
     </style>
 </head>
 <body>
 
 <!-- 难度选择界面 -->
 <div id="difficultyContainer">
+    <h1>欢迎来到打砖块游戏！</h2>
     <h2>请选择游戏难度</h2>
     <button id="easyBtn">简单</button>
     <button id="mediumBtn">中等</button>
     <button id="hardBtn">困难</button>
+</div>
+
+<div id="instructions">
+        <h3>游戏说明</h3>
+        <p>使用 <strong>左右方向键</strong> 控制挡板移动</p>
+        <p><strong>鼠标点击</strong> 确定球发射方向（鼠标位置决定方向）</p>
+        <p>打破所有砖块即可获胜！</p>
 </div>
 
 <!-- 初始隐藏画布，等选完难度后再显示 -->
@@ -75,8 +88,8 @@
     var ballRadius = 10;//球的半径
     var x = canvas.width/2;//球的初始位置
     var y = canvas.height-30;
-    var dx ;//球的速度
-    var dy ;
+    var dx ;//球的水平速度
+    var dy ;//球的竖直速度
 
     var paddleHeight = 10;//挡板尺寸
     var paddleWidth = 120;
@@ -90,7 +103,7 @@
     var brickColumnCount = 10;
     var brickWidth = 25;//砖块尺寸
     var brickHeight = 25;
-    var brickPadding = 5;//砖块间距
+    var brickPadding = 3;//砖块间距
     var brickOffsetTop = 30;//砖块起始位置
     var brickOffsetLeft = 30;
 
@@ -168,32 +181,52 @@
         }
     } 
 */
-    function collisionDetection() //检测球与砖块碰撞
-    {
-        for(var c=0; c<brickColumnCount; c++) 
-        {
-            for(var r=0; r<brickRowCount; r++) 
-            {
-                var b = bricks[c][r];
-                if(b.status == 1) 
-                {
-                    if(x > b.x && x < b.x+brickWidth && y > b.y && y < b.y+brickHeight) //检测球是否碰撞砖块
-                    {
-                        dy = -dy;//球反向
-                        //brickeffect(b);//调用砖块效果函数
-                        b.status = 0;//砖块消失
-                        score++;
-                        if(score == brickRowCount*brickColumnCount) //检测胜利
-                        {
+  function collisionDetection() {
+    for(var c = 0; c < brickColumnCount; c++) {
+        for(var r = 0; r < brickRowCount; r++) {
+            var b = bricks[c][r];
+            // 只检测状态为1的砖块（存在的砖块）
+            if(b.status == 1) {
+                // 更准确的碰撞检测：考虑球的半径
+                if(x + ballRadius > b.x && 
+                   x - ballRadius < b.x + brickWidth && 
+                   y + ballRadius > b.y && 
+                   y - ballRadius < b.y + brickHeight) {
+                    
+                    // 确定碰撞方向，更真实的反弹效果
+                    var collisionX = (x + ballRadius) - (b.x + brickWidth / 2);
+                    var collisionY = (y + ballRadius) - (b.y + brickHeight / 2);
+                    
+                    // 根据碰撞方向决定反弹
+                    if(Math.abs(collisionX) > Math.abs(collisionY)) {
+                        // 水平方向碰撞 - 反转水平速度
+                        dx = -dx;
+                    } else {
+                        // 垂直方向碰撞 - 反转垂直速度
+                        dy = -dy;
+                    }
+                    
+                    // 调用砖块效果函数（如果你有的话）
+                    // brickeffect(b);
+                    
+                    // 砖块消失
+                    b.status = 0;
+                    score++;
+                    
+                    // 检测胜利条件
+                    if(score == brickRowCount * brickColumnCount) {
+                        setTimeout(function() {
                             alert("YOU WIN, CONGRATS!");
                             document.location.reload();
-                        }
+                        }, 100); // 稍微延迟，让玩家看到最后一块砖消失
                     }
+                    
+                    return; // 一次只处理一个碰撞，避免多个砖块同时被击中的问题
                 }
             }
         }
     }
-
+}
     function draw() 
     {
         ctx.clearRect(0, 0, canvas.width, canvas.height);//清除画布
