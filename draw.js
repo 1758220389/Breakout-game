@@ -30,7 +30,7 @@ function drawBricks(ctx, bricks, brickColumnCount, brickRowCount, brickWidth, br
         {
             for(var r=0; r<brickRowCount; r++) 
             {
-                if(bricks[c][r].status == 1) //未被击中的砖块才绘制
+                if(bricks[c][r].status >= 1) //未被击中的砖块才绘制，使硬砖块也能绘制
                 {
                     var brickX = (r*(brickWidth+brickPadding))+brickOffsetLeft;
                     var brickY = (c*(brickHeight+brickPadding))+brickOffsetTop;
@@ -41,9 +41,90 @@ function drawBricks(ctx, bricks, brickColumnCount, brickRowCount, brickWidth, br
                     */
                     ctx.beginPath();
                     ctx.rect(brickX, brickY, brickWidth, brickHeight);
-                    ctx.fillStyle = "#0095DD";
+
+                    var brick = bricks[c][r];
+                    switch(brick.specialbrick) {
+                        case 0: // normalbrick
+                            ctx.fillStyle = "#0095DD";
+                            break;
+                        case 1: // hardbrick
+                            // 硬砖块根据状态显示不同颜色
+                            ctx.fillStyle = brick.status === 2 ? "#8B4513" : "#A0522D";
+                            break;
+                        case 2: // vectorbrickup
+                            ctx.fillStyle = "#FF0000"; // 红色
+                            break;
+                        case 3: // vectorbrickdown
+                            ctx.fillStyle = "#00FF00"; // 绿色
+                            break;
+                        case 4: // vectorbrickleft
+                            ctx.fillStyle = "#0000FF"; // 蓝色
+                            break;
+                        case 5: // vectorbrickright
+                            ctx.fillStyle = "#FFFF00"; // 黄色
+                            break;
+                        case 6: // boombrick
+                            ctx.fillStyle = "#FF4500"; // 橙红色
+                            break;
+                        case 7: // chainbrick
+                            ctx.fillStyle = "#8A2BE2"; // 紫色
+                            break;
+                        case 8: // motherbrick
+                            ctx.fillStyle = "#FF69B4"; // 粉色
+                            break;
+                        case 9: // longpaddle
+                            ctx.fillStyle = "#00FFFF"; // 青色
+                            break;
+                        case 10: // lifeup
+                            ctx.fillStyle = "#32CD32"; // 酸橙绿
+                            break;
+                        case 11: // extraball
+                            ctx.fillStyle = "#FFD700"; // 金色
+                            break;
+                        case 12: // speeddown
+                            ctx.fillStyle = "#1E90FF"; // 道奇蓝
+                            break;
+                        case 13: // tankball
+                            ctx.fillStyle = "#696969"; // 暗灰色
+                            break;
+                        case 14: // routate
+                            ctx.fillStyle = "#DA70D6"; // 兰花紫
+                            break;
+                        default:
+                            ctx.fillStyle = "#0095DD";
+                    }
+
                     ctx.fill();
                     ctx.closePath();
+
+                    // 为特殊砖块添加文字标识
+                    if(brick.specialbrick !== 0) { // 不是普通砖块
+                        ctx.fillStyle = "#FFFFFF";
+                        ctx.font = "10px Arial";
+                        ctx.textAlign = "center";
+                        ctx.textBaseline = "middle";
+                        
+                        var text = "";
+                        switch(brick.specialbrick) {
+                            case 1: text = "硬"; break;
+                            case 2: text = "↑"; break;
+                            case 3: text = "↓"; break;
+                            case 4: text = "←"; break;
+                            case 5: text = "→"; break;
+                            case 6: text = "爆"; break;
+                            case 7: text = "链"; break;
+                            case 8: text = "母"; break;
+                            case 9: text = "长"; break;
+                            case 10: text = "命"; break;
+                            case 11: text = "球"; break;
+                            case 12: text = "慢"; break;
+                            case 13: text = "穿"; break;
+                            case 14: text = "旋"; break;
+                        }
+                        
+                        ctx.fillText(text, brickX + brickWidth/2, brickY + brickHeight/2);
+                    }
+
                 }
             }
         }

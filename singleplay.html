@@ -85,6 +85,13 @@
     var tankball = 13;//穿透因子
     var routate = 14;//旋转因子
 
+    var gameState = {
+    ballLastDX: 0,
+    ballLastDY: 0,
+    paddleWidth: 120,
+    tankBall: false
+    };
+
     var score = 0;
     var lives = 3;
 
@@ -93,14 +100,86 @@
     function initBricks() //砖块数组初始化
 {
     bricks = [];
-    for(var c=0; c<brickColumnCount; c++) {
+    var specialBricks = [
+        hardbrick, vectorbrickup, vectorbrickdown, vectorbrickleft, 
+        vectorbrickright, boombrick, chainbrick, motherbrick];
+
+    for(var c=0; c<brickColumnCount; c++) 
+    {
         bricks[c] = [];
         for(var r=0; r<brickRowCount; r++) 
         {
-            bricks[c][r] = { x: 0, y: 0, specialbrick: normalbrick, status: 1 };
+             // 随机分配特殊砖块（约20%的几率）
+            var isSpecial = Math.random() < 0.2;
+            var specialType = isSpecial ? specialBricks[Math.floor(Math.random() * specialBricks.length)] : normalbrick;
+            
+            // 硬砖块需要多次撞击
+            var status = (specialType === hardbrick) ? 2 : 1;
+            
+            bricks[c][r] = { x: 0, y: 0, specialbrick: specialType, status: status };
         }
     }
 }
+
+    // === 修改部分：更新 collisionDetection 函数 ===
+    function collisionDetection() {
+        // 记录球的运动方向
+        gameState.ballLastDX = dx;
+        gameState.ballLastDY = dy;
+        
+        var brickDestroyed = false;
+        
+        for(var c=0; c<brickColumnCount; c++) {
+            for(var r=0; r<brickRowCount; r++) {
+                var b = bricks[c][r];
+                if(b.status >= 1) {
+                    if(x > b.x && x < b.x+brickWidth && y > b.y && y < b.y+brickHeight) {
+                        // 调用特殊砖块效果
+                        var oldStatus = b.status;
+                        brickeffect(b, c, r, bricks, brickColumnCount, brickRowCount, gameState);
+                        
+                        // 只有砖块被摧毁时才反弹（除非是穿透球）
+                        if(!gameState.tankBall) {
+                            dy = -dy;
+                        }
+                        
+                        // 如果砖块状态改变且被摧毁，增加分数
+                        if(oldStatus > 0 && b.status === 0) {
+                            score++;
+                            brickDestroyed = true;
+                        }
+                        
+                        // 检查胜利条件
+                        if(score >= countActiveBricks()) {
+                            alert("YOU WIN, CONGRATS!");
+                            document.location.reload();
+                        }
+                        
+                        // 一次只处理一个碰撞
+                        return;
+                    }
+                }
+            }
+        }
+    }
+
+    // === 修改部分：添加辅助函数 ===
+    function countActiveBricks() 
+    {
+        var count = 0;
+        for(var c=0; c<brickColumnCount; c++) 
+        {
+            for(var r=0; r<brickRowCount; r++) 
+            {
+                if(bricks[c][r].status > 0) 
+                {
+                    count++;
+                }
+            }
+        }
+        return count;
+    }
+
 
     //难度选择按钮事件监听
     document.getElementById("easyBtn").addEventListener("click", function() {startGame("easy");});
@@ -192,7 +271,7 @@
         ctx.clearRect(0, 0, canvas.width, canvas.height);//清除画布
         drawBricks(ctx, bricks, brickColumnCount, brickRowCount, brickWidth, brickHeight, brickPadding, brickOffsetTop, brickOffsetLeft);
         drawBall(ctx, x, y, ballRadius);
-        drawPaddle(ctx, paddleX, paddleY, paddleWidth, paddleHeight);
+        drawPaddle(ctx, paddleX, paddleY,gameState.paddleWidth, paddleHeight);
         drawScore(ctx, score);
         drawLives(ctx, lives);
         collisionDetection();
