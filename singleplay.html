@@ -52,12 +52,38 @@
 <!-- 初始隐藏画布，等选完难度后再显示 -->
 <canvas id="myCanvas" width="1080" height="600" style="display:none;"></canvas>
 
+<!-- 引入外部JS文件 -->
 <script src="draw.js"></script>
 <script src="specialbrick.js"></script>
 
 <script>//以下为JS代码
     var canvas = document.getElementById("myCanvas");
     var ctx = canvas.getContext("2d");
+
+    //难度选择按钮事件监听
+    document.getElementById("easyBtn").addEventListener("click", function() {startGame("easy");});
+    document.getElementById("mediumBtn").addEventListener("click", function() {startGame("medium");});
+    document.getElementById("hardBtn").addEventListener("click", function() {startGame("hard");});
+
+    function startGame(level) 
+    {
+        difficulty = level;
+        if (level === "easy") {dx = 2; dy = -2;} 
+        else if (level === "hard") {dx = 5; dy = -5;} 
+        else {dx = 3; dy = -3;}
+
+        // 隐藏难度选择界面，显示游戏画布
+        document.getElementById("difficultyContainer").style.display = "none";
+        canvas.style.display = "block";
+
+        // 初始化游戏状态
+        score = 0;
+        lives = 3;
+        balllunched = false;
+        initBricks();
+        gameStarted = true;
+        draw();
+    }
 
     var ballRadius = 10;//球的半径
     var x = canvas.width/2;//球的初始位置
@@ -100,9 +126,9 @@
 
     var score = 0;
     var lives = 3;
+    var balllunched = false;
 
     var bricks = [];
-
     function initBricks() //砖块数组初始化
 {
     bricks = [];
@@ -114,30 +140,6 @@
         }
     }
 }
-
-    //难度选择按钮事件监听
-    document.getElementById("easyBtn").addEventListener("click", function() {startGame("easy");});
-    document.getElementById("mediumBtn").addEventListener("click", function() {startGame("medium");});
-    document.getElementById("hardBtn").addEventListener("click", function() {startGame("hard");});
-
-    function startGame(level) 
-    {
-        difficulty = level;
-        if (level === "easy") {dx = 2; dy = -2;} 
-        else if (level === "hard") {dx = 5; dy = -5;} 
-        else {dx = 3; dy = -3;}
-
-        // 隐藏难度选择界面，显示游戏画布
-        document.getElementById("difficultyContainer").style.display = "none";
-        canvas.style.display = "block";
-
-        // 初始化游戏状态
-        score = 0;
-        lives = 999;
-        initBricks();
-        gameStarted = true;
-        draw();
-    }
 
     document.addEventListener("keydown", keyDownHandler, false);//监听按键 按下
     document.addEventListener("keyup", keyUpHandler, false);//监听按键 松开
@@ -153,6 +155,10 @@
         {
             leftPressed = true;
         }
+        else if(e.code == 'ArrowUp' && gameStarted && !balllunched) //发射球
+        {
+             balllunched = true;
+        }
     }
     function keyUpHandler(e) 
     {
@@ -164,6 +170,7 @@
         {
             leftPressed = false;
         }
+        
     }
 /*     
     function mouseMoveHandler(e) //鼠标控制
@@ -223,6 +230,11 @@
     function draw() 
     {
         ctx.clearRect(0, 0, canvas.width, canvas.height);//清除画布
+        if(!balllunched) //球未发射时，球跟随挡板
+        {
+            x = paddleX + paddleWidth/2;
+            y = paddleY - ballRadius;
+        }
         drawBricks(ctx, bricks, brickColumnCount, brickRowCount, brickWidth, brickHeight, brickPadding, brickOffsetTop, brickOffsetLeft);
         drawBall(ctx, x, y, ballRadius);
         drawPaddle(ctx, paddleX, paddleY, paddleWidth, paddleHeight);
@@ -246,6 +258,7 @@
             }
             else 
             {
+                balllunched = false;//重置球发射状态
                 lives--;
                 if(!lives) 
                 {
