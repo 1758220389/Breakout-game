@@ -56,8 +56,8 @@
     {
         difficulty = level;
         if (level === "easy") {dx = 2; dy = -2;} 
-        else if (level === "hard") {dx = 5; dy = -5;} 
-        else {dx = 3; dy = -3;}
+        else if (level === "hard") {dx = 5; dy = -5; paddleWidth = 80;} 
+        else {dx = 3; dy = -3; paddleWidth = 100;} //中等难度
 
         // 隐藏难度选择界面，显示游戏画布
         document.getElementById("difficultyContainer").style.display = "none";
@@ -86,11 +86,11 @@
     var rightPressed = false;//按键状态
     var leftPressed = false;
 
-    var brickRowCount = 34;//砖块摆放
-    var brickColumnCount = 10;
+    var brickRowCount = 36;//砖块摆放
+    var brickColumnCount = 13;
     var brickWidth = 25;//砖块尺寸
     var brickHeight = 25;
-    var brickPadding = 5;//砖块间距
+    var brickPadding = 3;//砖块间距
     var brickOffsetTop = 30;//砖块起始位置
     var brickOffsetLeft = 30;
 
@@ -264,6 +264,5 @@
     }
     draw();
 </script>
-
 </body>
 </html>
