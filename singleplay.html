@@ -7,11 +7,13 @@
     * { padding: 0; margin: 0; } 
     canvas { background: #eee; display: block; margin: 0 auto; }
             /* 难度选择界面的样式 */
-        #difficultyContainer { 
+        #difficultyContainer 
+        { 
             text-align: center; 
             margin-top: 150px; 
         }
-        #difficultyContainer button {
+        #difficultyContainer button 
+        {
             padding: 10px 20px;
             margin: 10px;
             font-size: 16px;            
@@ -21,10 +23,12 @@
             border: none;
             border-radius: 5px;
         }
-        #difficultyContainer button:hover {
+        #difficultyContainer button:hover 
+        {
             background-color: #0077BB;
         }
-        #instructions {
+        #instructions 
+        {
             text-align: center;
             margin-top: 20px;
             font-size: 14px;
@@ -330,7 +334,47 @@
         }
     } 
 */
-  
+    function collisionDetection() 
+    {
+    for(var c = 0; c < brickColumnCount; c++) 
+    {
+        for(var r = 0; r < brickRowCount; r++) 
+        {
+            var b = bricks[c][r];
+            if(b.status == 1) //只检测状态为1的砖块
+            {
+                // 更准确的碰撞检测：考虑球的半径
+                if(x + ballRadius > b.x && x - ballRadius < b.x + brickWidth && 
+                   y + ballRadius > b.y && y - ballRadius < b.y + brickHeight) 
+                {
+                    var collisionX = (x + ballRadius) - (b.x + brickWidth / 2);
+                    var collisionY = (y + ballRadius) - (b.y + brickHeight / 2);
+                    // 根据碰撞方向决定反弹
+                    if(Math.abs(collisionX) > Math.abs(collisionY)) 
+                    {
+                        dx = -dx;
+                    } 
+                    else 
+                    {
+                        dy = -dy;
+                    }
+                    // brickeffect(b); // 调用砖块效果函数
+                    b.status = 0;
+                    score++;
+                    // 检测胜利条件
+                    if(score == brickRowCount * brickColumnCount) 
+                    {
+                        setTimeout(function()
+                        {
+                            alert("YOU WIN, CONGRATS!");document.location.reload();
+                        }, 100); // 稍微延迟，让玩家看到最后一块砖消失
+                    }
+                    return; // 一次只处理一个碰撞，避免多个砖块同时被击中的问题
+                }
+            }
+        }
+    }
+}
 
     function draw() 
     {
