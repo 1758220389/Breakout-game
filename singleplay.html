@@ -137,7 +137,6 @@
     };
 
     var score = 0;
-    var lives = 3;
     var balllunched = false;
 
     var bricks = [];
@@ -185,7 +184,6 @@
                         
                         // 更新游戏状态
                         score = gameState.score;
-                        lives = gameState.lives;
                         paddleWidth = gameState.paddleWidth;
                         
                         // 应用速度变化
@@ -222,7 +220,7 @@
                             brickDestroyed = true;
                         }
                      */   
-                    
+
                         // 检查胜利条件
                         if(score >= countActiveBricks()) {
                             alert("YOU WIN, CONGRATS!");
@@ -280,7 +278,6 @@
         dx = gameState.dx;
         dy = gameState.dy;
         score = gameState.score;
-        lives = gameState.lives;
 
         // 隐藏难度选择界面，显示游戏画布
         document.getElementById("difficultyContainer").style.display = "none";
@@ -347,7 +344,7 @@
         drawBall(ctx, x, y, ballRadius);
         drawPaddle(ctx, paddleX, paddleY,gameState.paddleWidth, paddleHeight);
         drawScore(ctx, score);
-        drawLives(ctx, lives);
+        drawLives(ctx, gameState.lives);
         collisionDetection();
 
         if(x + dx > canvas.width-ballRadius || x + dx < ballRadius) //碰到左右边反弹
@@ -367,8 +364,8 @@
             else 
             {
                 balllunched = false;//重置球发射状态
-                lives--;
-                if(!lives) 
+                 gameState.lives--;
+                if(!gameState.lives) 
                 {
                     alert("GAME OVER");
                     document.location.reload();
