@@ -124,11 +124,16 @@
     var tankball = 13;//穿透因子
     var routate = 14;//旋转因子
 
-    var gameState = {
+    var gameState = 
+    {
     ballLastDX: 0,
     ballLastDY: 0,
     paddleWidth: 120,
-    tankBall: false
+    tankBall: false,
+    dx: 0,
+    dy: 0,
+    score: 0,
+    lives: 3
     };
 
     var score = 0;
@@ -160,7 +165,7 @@
     }
 }
 
-    // === 修改部分：更新 collisionDetection 函数 ===
+    //collisionDetection 函数
     function collisionDetection() {
         // 记录球的运动方向
         gameState.ballLastDX = dx;
@@ -172,22 +177,52 @@
             for(var r=0; r<brickRowCount; r++) {
                 var b = bricks[c][r];
                 if(b.status >= 1) {
-                    if(x > b.x && x < b.x+brickWidth && y > b.y && y < b.y+brickHeight) {
+                    if(x + ballRadius > b.x && x - ballRadius < b.x + brickWidth && y + ballRadius > b.y && y - ballRadius < b.y + brickHeight)
+                     {
                         // 调用特殊砖块效果
                         var oldStatus = b.status;
                         brickeffect(b, c, r, bricks, brickColumnCount, brickRowCount, gameState);
                         
-                        // 只有砖块被摧毁时才反弹（除非是穿透球）
-                        if(!gameState.tankBall) {
-                            dy = -dy;
-                        }
+                        // 更新游戏状态
+                        score = gameState.score;
+                        lives = gameState.lives;
+                        paddleWidth = gameState.paddleWidth;
                         
+                        // 应用速度变化
+                        dx = gameState.dx;
+                        dy = gameState.dy;
+
+                        // 只有砖块被摧毁时才反弹（除非是穿透球）
+                    if(!gameState.tankBall) {
+                        // 计算碰撞方向
+                        var ballCenterX = x;
+                        var ballCenterY = y;
+                        var brickCenterX = b.x + brickWidth/2;
+                        var brickCenterY = b.y + brickHeight/2;
+                        
+                        var dxCenter = ballCenterX - brickCenterX;
+                        var dyCenter = ballCenterY - brickCenterY;
+                        
+                        // 根据碰撞方向反弹
+                        if(Math.abs(dxCenter) > Math.abs(dyCenter)) {
+                            // 水平碰撞
+                            dx = -dx;
+                            gameState.dx = dx;
+                        } else {
+                            // 垂直碰撞
+                            dy = -dy;
+                            gameState.dy = dy;
+                        }
+                    }
+
+                    /*
                         // 如果砖块状态改变且被摧毁，增加分数
                         if(oldStatus > 0 && b.status === 0) {
                             score++;
                             brickDestroyed = true;
                         }
-                        
+                     */   
+                    
                         // 检查胜利条件
                         if(score >= countActiveBricks()) {
                             alert("YOU WIN, CONGRATS!");
@@ -202,7 +237,7 @@
         }
     }
 
-    // === 修改部分：添加辅助函数 ===
+    //添加辅助函数
     function countActiveBricks() 
     {
         var count = 0;
@@ -228,17 +263,31 @@
     function startGame(level) 
     {
         difficulty = level;
-        if (level === "easy") {dx = 2; dy = -2;} 
-        else if (level === "hard") {dx = 5; dy = -5;} 
-        else {dx = 3; dy = -3;}
+        var baseSpeed;
+        if (level === "easy") {baseSpeed = 2; paddleWidth = 120;} 
+        else if (level === "hard") {baseSpeed = 5; paddleWidth = 80;} 
+        else {baseSpeed = 3; paddleWidth = 100;} 
+
+        //初始化游戏状态
+        gameState.dx = baseSpeed;
+        gameState.dy = -baseSpeed;
+        gameState.paddleWidth = paddleWidth;
+        gameState.tankBall = false;
+        gameState.score = 0;
+        gameState.lives = 3;
+
+        // 更新全局变量
+        dx = gameState.dx;
+        dy = gameState.dy;
+        score = gameState.score;
+        lives = gameState.lives;
 
         // 隐藏难度选择界面，显示游戏画布
         document.getElementById("difficultyContainer").style.display = "none";
         canvas.style.display = "block";
 
         // 初始化游戏状态
-        score = 0;
-        lives = 3;
+        balllunched = false;
         initBricks();
         gameStarted = true;
         draw();
@@ -284,52 +333,8 @@
         }
     } 
 */
-  function collisionDetection() {
-    for(var c = 0; c < brickColumnCount; c++) {
-        for(var r = 0; r < brickRowCount; r++) {
-            var b = bricks[c][r];
-            // 只检测状态为1的砖块（存在的砖块）
-            if(b.status == 1) {
-                // 更准确的碰撞检测：考虑球的半径
-                if(x + ballRadius > b.x && 
-                   x - ballRadius < b.x + brickWidth && 
-                   y + ballRadius > b.y && 
-                   y - ballRadius < b.y + brickHeight) {
-                    
-                    // 确定碰撞方向，更真实的反弹效果
-                    var collisionX = (x + ballRadius) - (b.x + brickWidth / 2);
-                    var collisionY = (y + ballRadius) - (b.y + brickHeight / 2);
-                    
-                    // 根据碰撞方向决定反弹
-                    if(Math.abs(collisionX) > Math.abs(collisionY)) {
-                        // 水平方向碰撞 - 反转水平速度
-                        dx = -dx;
-                    } else {
-                        // 垂直方向碰撞 - 反转垂直速度
-                        dy = -dy;
-                    }
-                    
-                    // 调用砖块效果函数（如果你有的话）
-                    // brickeffect(b);
-                    
-                    // 砖块消失
-                    b.status = 0;
-                    score++;
-                    
-                    // 检测胜利条件
-                    if(score == brickRowCount * brickColumnCount) {
-                        setTimeout(function() {
-                            alert("YOU WIN, CONGRATS!");
-                            document.location.reload();
-                        }, 100); // 稍微延迟，让玩家看到最后一块砖消失
-                    }
-                    
-                    return; // 一次只处理一个碰撞，避免多个砖块同时被击中的问题
-                }
-            }
-        }
-    }
-}
+  
+
     function draw() 
     {
         ctx.clearRect(0, 0, canvas.width, canvas.height);//清除画布
