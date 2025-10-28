@@ -61,7 +61,7 @@ function drawBricks(ctx, bricks, brickColumnCount, brickRowCount, brickWidth, br
                             ctx.fillStyle = "#0000FF"; // 蓝色
                             break;
                         case 5: // vectorbrickright
-                            ctx.fillStyle = "#FFFF00"; // 黄色
+                            ctx.fillStyle = "#363611ff"; // 黄色
                             break;
                         case 6: // boombrick
                             ctx.fillStyle = "#FF4500"; // 橙红色
@@ -79,7 +79,7 @@ function drawBricks(ctx, bricks, brickColumnCount, brickRowCount, brickWidth, br
                             ctx.fillStyle = "#32CD32"; // 酸橙绿
                             break;
                         case 11: // extraball
-                            ctx.fillStyle = "#FFD700"; // 金色
+                            ctx.fillStyle = "#aa9d54ff"; // 金色
                             break;
                         case 12: // speeddown
                             ctx.fillStyle = "#1E90FF"; // 道奇蓝
