@@ -63,8 +63,8 @@
 <script>//以下为JS代码
     var canvas = document.getElementById("myCanvas");
     var ctx = canvas.getContext("2d");
-
-    //难度选择按钮事件监听
+/*
+     //难度选择按钮事件监听
     document.getElementById("easyBtn").addEventListener("click", function() {startGame("easy");});
     document.getElementById("mediumBtn").addEventListener("click", function() {startGame("medium");});
     document.getElementById("hardBtn").addEventListener("click", function() {startGame("hard");});
@@ -87,8 +87,8 @@
         initBricks();
         gameStarted = true;
         draw();
-    }
-
+    } 
+*/
     var ballRadius = 10;//球的半径
     var x = canvas.width/2;//球的初始位置
     var y = canvas.height-30;
@@ -128,7 +128,7 @@
     var tankball = 13;//穿透因子
     var routate = 14;//旋转因子
 
-    var gameState = 
+    var gameState = //这啥 传参的？
     {
     ballLastDX: 0,
     ballLastDY: 0,
@@ -144,26 +144,33 @@
     var balllunched = false;
 
     var bricks = [];
+
+
     function initBricks() //砖块数组初始化
 {
     bricks = [];
-    var specialBricks = [
-        hardbrick, vectorbrickup, vectorbrickdown, vectorbrickleft, 
-        vectorbrickright, boombrick, chainbrick, motherbrick];
-
     for(var c=0; c<brickColumnCount; c++) 
     {
         bricks[c] = [];
         for(var r=0; r<brickRowCount; r++) 
         {
-             // 随机分配特殊砖块（约20%的几率）
-            var isSpecial = Math.random() < 0.2;
-            var specialType = isSpecial ? specialBricks[Math.floor(Math.random() * specialBricks.length)] : normalbrick;
+            var isSpecial = Math.random() < 0.2;//20%概率生成特殊砖块
+            if (isSpecial) 
+            {
+                //随机数生成特殊砖块类型
+                var specialType = Math.floor(Math.random() * 8) + 1; // 1-8的随机数对应不同的特殊砖块
+            } 
+            else 
+            {
+                specialType = normalbrick;
+            }
             
-            // 硬砖块需要多次撞击
-            var status = (specialType === hardbrick) ? 2 : 1;
+            bricks[c][r] = { x: 0, y: 0, specialbrick: specialType, status: 1 };
             
-            bricks[c][r] = { x: 0, y: 0, specialbrick: specialType, status: status };
+            if (specialType === hardbrick)
+            {
+                bricks[c][r].status = 2; // 硬砖需要两次击打
+            }
         }
     }
 }
