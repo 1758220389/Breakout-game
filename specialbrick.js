@@ -21,40 +21,46 @@ function brickeffect(brick, c, r, brickarray, brickColumnCount, brickRowCount, g
     {
         case normalbrick:
             brick.status = 0;
+            gameState.score++;
             break;
         case hardbrick:
             if(brick.status > 1)
             {
                 brick.status -= 1;
+                gameState.score++;
             }
             else
             {
                 brick.status = 0;
+                gameState.score++;
             }
             break;
         case vectorbrickup:
-            if(gameState.ballLastDY > 0)//球向下运动表示球从下方击中
+            if(gameState.hitSide === "bottom")//球向下运动表示球从下方击中
             {
-
                 brick.status = 0;
+                gameState.score++;
             }
             break;
         case vectorbrickdown:
-            if(gameState.ballLastDY < 0)//球向上运动表示球从上方击中
+            if(gameState.hitSide === "top")//球向上运动表示球从上方击中
             {
                 brick.status = 0;
+                gameState.score++;
             }
             break;
         case vectorbrickleft:
-            if(gameState.ballLastDX < 0)//球向左运动表示球从右方击中
+            if(gameState.hitSide === "right")//球向左运动表示球从右方击中
             {
                 brick.status = 0;
+                gameState.score++;
             }
             break;
         case vectorbrickright:
-            if(gameState.ballLastDX > 0)//球向右运动表示球从左方击中
+            if(gameState.hitSide === "left")//球向右运动表示球从左方击中
             {
                 brick.status = 0;
+                gameState.score++;
             }
             break;
         case boombrick:
