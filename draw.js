@@ -43,51 +43,53 @@ function drawBricks(ctx, bricks, brickColumnCount, brickRowCount, brickWidth, br
                     ctx.rect(brickX, brickY, brickWidth, brickHeight);
 
                     var brick = bricks[c][r];
-                    switch(brick.specialbrick) {
-                        case 0: // normalbrick
+                    switch(brick.specialBrick) {
+                        case 0: // normalBrick
                             ctx.fillStyle = "#0095DD";
                             break;
-                        case 1: // hardbrick
+                        case 1: // hardBrick
                             // 硬砖块根据状态显示不同颜色
-                            ctx.fillStyle = brick.status === 2 ? "#8B4513" : "#A0522D";
+                            if(brick.status === 2){ctx.fillStyle = "#8B4513";}
+                            else ctx.fillStyle = "#0095DD";
+                            //ctx.fillStyle = brick.status === 2 ? "#8B4513" : "#A0522D";
                             break;
-                        case 2: // vectorbrickup
+                        case 2: // vectorBrickUp
                             ctx.fillStyle = "#FF0000"; // 红色
                             break;
-                        case 3: // vectorbrickdown
+                        case 3: // vectorBrickDown
                             ctx.fillStyle = "#00FF00"; // 绿色
                             break;
-                        case 4: // vectorbrickleft
+                        case 4: // vectorBrickLeft
                             ctx.fillStyle = "#0000FF"; // 蓝色
                             break;
-                        case 5: // vectorbrickright
+                        case 5: // vectorBrickRight
                             ctx.fillStyle = "#363611ff"; // 黄色
                             break;
-                        case 6: // boombrick
+                        case 6: // boomBrick
                             ctx.fillStyle = "#FF4500"; // 橙红色
                             break;
-                        case 7: // chainbrick
+                        case 7: // chainBrick
                             ctx.fillStyle = "#8A2BE2"; // 紫色
                             break;
-                        case 8: // motherbrick
+                        case 8: // motherBrick
                             ctx.fillStyle = "#FF69B4"; // 粉色
                             break;
-                        case 9: // longpaddle
+                        case 9: // longPaddle
                             ctx.fillStyle = "#00FFFF"; // 青色
                             break;
-                        case 10: // lifeup
+                        case 10: // lifeUp
                             ctx.fillStyle = "#32CD32"; // 酸橙绿
                             break;
-                        case 11: // extraball
+                        case 11: // extraBall
                             ctx.fillStyle = "#aa9d54ff"; // 金色
                             break;
-                        case 12: // speeddown
+                        case 12: // speedDown
                             ctx.fillStyle = "#1E90FF"; // 道奇蓝
                             break;
-                        case 13: // tankball
+                        case 13: // tankBall
                             ctx.fillStyle = "#696969"; // 暗灰色
                             break;
-                        case 14: // routate
+                        case 14: // rotate
                             ctx.fillStyle = "#DA70D6"; // 兰花紫
                             break;
                         default:
@@ -98,14 +100,14 @@ function drawBricks(ctx, bricks, brickColumnCount, brickRowCount, brickWidth, br
                     ctx.closePath();
 
                     // 为特殊砖块添加文字标识
-                    if(brick.specialbrick !== 0) { // 不是普通砖块
+                    if(brick.specialBrick !== 0) { // 不是普通砖块
                         ctx.fillStyle = "#FFFFFF";
                         ctx.font = "10px Arial";
                         ctx.textAlign = "center";
                         ctx.textBaseline = "middle";
                         
                         var text = "";
-                        switch(brick.specialbrick) {
+                        switch(brick.specialBrick) {
                             case 1: text = "硬"; break;
                             case 2: text = "↑"; break;
                             case 3: text = "↓"; break;

@@ -83,7 +83,7 @@
         // 初始化游戏状态
         score = 0;
         lives = 3;
-        balllunched = false;
+        ballLunched = false;
         initBricks();
         gameStarted = true;
         draw();
@@ -111,22 +111,22 @@
     var brickOffsetTop = 30;//砖块起始位置
     var brickOffsetLeft = 30;
 
-    var normalbrick = 0;//砖块类型，0普通砖块
-    var hardbrick = 1;
-    var vectorbrickup = 2;//矢量砖块
-    var vectorbrickdown = 3;
-    var vectorbrickleft = 4;
-    var vectorbrickright = 5;
-    var boombrick = 6;
-    var chainbrick = 7;//连锁砖块
-    var motherbrick = 8;//子母砖块
+    var normalBrick = 0;//砖块类型，0普通砖块
+    var hardBrick = 1;
+    var vectorBrickUp = 2;//矢量砖块
+    var vectorBrickDown = 3;
+    var vectorBrickLeft = 4;
+    var vectorBrickRight = 5;
+    var boomBrick = 6;
+    var chainBrick = 7;//连锁砖块
+    var motherBrick = 8;//子母砖块
 
-    var longpaddle = 9;
-    var lifeup = 10;
-    var extraball = 11;
-    var speeddown = 12;//减速
-    var tankball = 13;//穿透因子
-    var routate = 14;//旋转因子
+    var longPaddle = 9;
+    var lifeUp = 10;
+    var extraBall = 11;
+    var speedDown = 12;//减速
+    var tankBall = 13;//穿透因子
+    var rotate = 14;//旋转因子
 
     var gameState = //这啥 传参的？
     {
@@ -140,7 +140,7 @@
     };
 
     var score = 0;
-    var balllunched = false;
+    var ballLunched = false;
 
     var bricks = [];
 
@@ -161,12 +161,12 @@
                 } 
                 else 
                 {
-                    specialType = normalbrick;
+                    specialType = normalBrick;
                 }
-            
-                bricks[c][r] = { x: 0, y: 0, specialbrick: vectorbrickup, status: 1 };
-            
-                if (specialType === hardbrick)
+
+                bricks[c][r] = { x: 0, y: 0, specialBrick: specialType, status: 1 };
+
+                if (bricks[c][r].specialBrick === hardBrick)
                 {
                     bricks[c][r].status = 2; // 硬砖需要两次击打
                 }
@@ -196,7 +196,7 @@
                         else if (minDist === distToTop) {gameState.hitSide = "top";} 
                         else {gameState.hitSide = "bottom";}
 
-                        brickeffect(b, c, r, bricks, brickColumnCount, brickRowCount, gameState);
+                        brickEffect(b, c, r, bricks, brickColumnCount, brickRowCount, gameState);
                         
                         // 更新游戏状态
                         score = gameState.score;
@@ -232,7 +232,7 @@
                     }
 
                         // 检查胜利条件
-                        if(score >= countActiveBricks()) {
+                        if(countActiveBricks() === 0) {
                             alert("YOU WIN, CONGRATS!");
                             document.location.reload();
                         }
@@ -293,7 +293,7 @@
         canvas.style.display = "block";
 
         // 初始化游戏状态
-        balllunched = false;
+        ballLunched = false;
         initBricks();
         gameStarted = true;
         draw();
@@ -313,9 +313,9 @@
         {
             leftPressed = true;
         }
-        else if(e.code == 'ArrowUp' && gameStarted && !balllunched) //发射球
+        else if(e.code == 'ArrowUp' && gameStarted && !ballLunched) //发射球
         {
-             balllunched = true;
+             ballLunched = true;
         }
     }
     function keyUpHandler(e) 
@@ -343,7 +343,7 @@
     function draw() 
     {
         ctx.clearRect(0, 0, canvas.width, canvas.height);//清除画布
-        if(!balllunched) //球未发射时，球跟随挡板
+        if(!ballLunched) //球未发射时，球跟随挡板
         {
             x = paddleX + paddleWidth/2;
             y = paddleY - ballRadius;
@@ -371,7 +371,7 @@
             }
             else 
             {
-                balllunched = false;//重置球发射状态
+                ballLunched = false;//重置球发射状态
                  gameState.lives--;
                 if(!gameState.lives) 
                 {

@@ -1,99 +1,95 @@
-var normalbrick = 0;//砖块类型，0普通砖块
-var hardbrick = 1;
-var vectorbrickup = 2;//矢量砖块
-var vectorbrickdown = 3;
-var vectorbrickleft = 4;
-var vectorbrickright = 5;
-var boombrick = 6;
-var chainbrick = 7;//连锁砖块
-var motherbrick = 8;//子母砖块
+var normalBrick = 0;//砖块类型，0普通砖块
+var hardBrick = 1;
+var vectorBrickUp = 2;//矢量砖块
+var vectorBrickDown = 3;
+var vectorBrickLeft = 4;
+var vectorBrickRight = 5;
+var boomBrick = 6;
+var chainBrick = 7;//连锁砖块
+var motherBrick = 8;//子母砖块
 
-var longpaddle = 9;
-var lifeup = 10;
-var extraball = 11;
-var speeddown = 12;//减速
-var tankball = 13;//穿透因子
-var routate = 14;//旋转因子
+var longPaddle = 9;
+var lifeUp = 10;
+var extraBall = 11;
+var speedDown = 12;//减速
+var tankBall = 13;//穿透因子
+var rotate = 14;//旋转因子
 
-function brickeffect(brick, c, r, brickarray, brickColumnCount, brickRowCount, gameState)
+function brickEffect(brick, c, r, brickArray, brickColumnCount, brickRowCount, gameState)
 {
-    switch(brick.specialbrick)
+    switch(brick.specialBrick)
     {
-        case normalbrick:
+        case normalBrick:
             brick.status = 0;
             gameState.score++;
             break;
-        case hardbrick:
-            if(brick.status > 1)
+        case hardBrick:
+            if(brick.status === 2)
             {
-                brick.status -= 1;
-                gameState.score++;
+                brick.status = 1;
+                //gameState.score++;
             }
-            else
+            else if(brick.status === 1)
             {
                 brick.status = 0;
                 gameState.score++;
             }
             break;
-        case vectorbrickup:
+        case vectorBrickUp:
             if(gameState.hitSide === "bottom")//球向下运动表示球从下方击中
             {
                 brick.status = 0;
                 gameState.score++;
             }
             break;
-        case vectorbrickdown:
+        case vectorBrickDown:
             if(gameState.hitSide === "top")//球向上运动表示球从上方击中
             {
                 brick.status = 0;
                 gameState.score++;
             }
             break;
-        case vectorbrickleft:
+        case vectorBrickLeft:
             if(gameState.hitSide === "right")//球向左运动表示球从右方击中
             {
                 brick.status = 0;
                 gameState.score++;
             }
             break;
-        case vectorbrickright:
+        case vectorBrickRight:
             if(gameState.hitSide === "left")//球向右运动表示球从左方击中
             {
                 brick.status = 0;
                 gameState.score++;
             }
             break;
-        case boombrick:
-            brick.status = 0;
-            // 摧毁周围砖块
-             for(var i = Math.max(0, c-1); i <= Math.min(brickColumnCount-1, c+1); i++) 
+        case boomBrick:
+            for(var i = Math.max(0, c-1); i <= Math.min(brickColumnCount-1, c+1); i++) 
             {
                 for(var j = Math.max(0, r-1); j <= Math.min(brickRowCount-1, r+1); j++) 
                 {
-                    // 跳过自身
-                    if(i === c && j === r) continue;
-                    
                     // 确保砖块存在且状态>=1
-                    if(brickarray[i] && brickarray[i][j] && brickarray[i][j].status >= 1) 
+                    if(brickArray[i] && brickArray[i][j] && brickArray[i][j].status >= 1) 
                     {
-                        brickarray[i][j].status = 0;
+                        brickArray[i][j].status = 0;
                         gameState.score++; // 为每个被摧毁的砖块加分
                     }
                 }
             }
             break;
-        case chainbrick:
+        case chainBrick:
             brick.status = 0;
             // 摧毁整行砖块
             for(var i = 0; i < brickColumnCount; i++) 
             {
-                if(brickarray[i] && brickarray[i][r] && brickarray[i][r].status >= 1) {
-                    brickarray[i][r].status = 0;
-                    if(i !== c) gameState.score++; // 避免重复计分
+                if(brickArray[i] && brickArray[i][r] && brickArray[i][r].status >= 1) 
+                {
+                    brickArray[i][r].status = 0;
+                    gameState.score++; // 避免重复计分
                 }
             }
             break;
-        case motherbrick:
+        case motherBrick:
             brick.status = 0;
             // 在周围生成新砖块
              var directions = [[0,1], [1,0], [0,-1], [-1,0]]; // 上下左右
@@ -109,31 +105,31 @@ function brickeffect(brick, c, r, brickarray, brickColumnCount, brickRowCount, g
                 }
             }
             break;
-        case longpaddle:
+        case longPaddle:
             brick.status = 0;
             gameState.paddleWidth = Math.min(gameState.paddleWidth + 20, 200); // 增加挡板长度
             break;
-        case lifeup:
+        case lifeUp:
             brick.status = 0;
              gameState.lives++;
             break;
-        case extraball:
+        case extraBall:
             brick.status = 0;
             //此处添加球逻辑
             break;
-        case speeddown:
+        case speedDown:
             brick.status = 0;
              // 减速效果
             gameState.dx *= 0.7;
             gameState.dy *= 0.7;
             break;
-        case tankball:
+        case tankBall:
             brick.status = 0;
              // 穿透效果 - 设置标记
             gameState.tankBall = true;
             setTimeout(() => { gameState.tankBall = false; }, 3000); // 3秒后失效
             break;
-        case routate:
+        case rotate:
             brick.status = 0;
             // 旋转效果 - 反转运动方向
             gameState.dx = -gameState.dx;
