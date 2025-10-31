@@ -27,7 +27,7 @@ function brickEffect(brick, c, r, brickArray, brickColumnCount, brickRowCount, g
             if(brick.status === 2)
             {
                 brick.status = 1;
-                //gameState.score++;
+                gameState.score++;
             }
             else if(brick.status === 1)
             {
@@ -39,28 +39,28 @@ function brickEffect(brick, c, r, brickArray, brickColumnCount, brickRowCount, g
             if(gameState.hitSide === "bottom")//球向下运动表示球从下方击中
             {
                 brick.status = 0;
-                gameState.score++;
+                gameState.score = gameState.score + 2;
             }
             break;
         case vectorBrickDown:
             if(gameState.hitSide === "top")//球向上运动表示球从上方击中
             {
                 brick.status = 0;
-                gameState.score++;
+                gameState.score = gameState.score + 2;
             }
             break;
         case vectorBrickLeft:
             if(gameState.hitSide === "right")//球向左运动表示球从右方击中
             {
                 brick.status = 0;
-                gameState.score++;
+                gameState.score = gameState.score + 2;
             }
             break;
         case vectorBrickRight:
             if(gameState.hitSide === "left")//球向右运动表示球从左方击中
             {
                 brick.status = 0;
-                gameState.score++;
+                gameState.score = gameState.score + 2;
             }
             break;
         case boomBrick:
@@ -92,18 +92,20 @@ function brickEffect(brick, c, r, brickArray, brickColumnCount, brickRowCount, g
         case motherBrick:
             brick.status = 0;
             // 在周围生成新砖块
-             var directions = [[0,1], [1,0], [0,-1], [-1,0]]; // 上下左右
+            var directions = [[0,1], [1,0], [0,-1], [-1,0]]; // 上下左右
             for(var d = 0; d < directions.length; d++) 
             {
                 var newC = c + directions[d][0];
                 var newR = r + directions[d][1];
                 if(newC >= 0 && newC < brickColumnCount && newR >= 0 && newR < brickRowCount) {
-                    if(brickArray[newC] && brickArray[newC][newR] && brickArray[newC][newR].status === 0) {
+                    if(brickArray[newC] && brickArray[newC][newR] && brickArray[newC][newR].status === 0) 
+                    {
                         brickArray[newC][newR].status = 1;
                         brickArray[newC][newR].specialBrick = normalBrick; // 新生成的为普通砖块
                     }
                 }
             }
+            gameState.score++;
             break;
         case longPaddle:
             brick.status = 0;

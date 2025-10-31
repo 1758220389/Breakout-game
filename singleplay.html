@@ -63,32 +63,37 @@
 <script>//以下为JS代码
     var canvas = document.getElementById("myCanvas");
     var ctx = canvas.getContext("2d");
-/*
-     //难度选择按钮事件监听
+
+    //难度选择按钮事件监听
     document.getElementById("easyBtn").addEventListener("click", function() {startGame("easy");});
     document.getElementById("mediumBtn").addEventListener("click", function() {startGame("medium");});
     document.getElementById("hardBtn").addEventListener("click", function() {startGame("hard");});
-
     function startGame(level) 
     {
         difficulty = level;
-        if (level === "easy") {dx = 2; dy = -2;} 
+        if (level === "easy") {dx = 2; dy = -2; paddleWidth = 120;} 
         else if (level === "hard") {dx = 5; dy = -5; paddleWidth = 80;} 
-        else {dx = 3; dy = -3; paddleWidth = 100;} //中等难度
+        else {dx = 3; dy = -3; paddleWidth = 100;} 
+
+        //初始化游戏状态
+        gameState.dx = dx;
+        gameState.dy = dy;
+        gameState.paddleWidth = paddleWidth;
+        gameState.tankBall = false;
+        gameState.score = score;
+        gameState.lives = 39999;
 
         // 隐藏难度选择界面，显示游戏画布
         document.getElementById("difficultyContainer").style.display = "none";
         canvas.style.display = "block";
 
         // 初始化游戏状态
-        score = 0;
-        lives = 3;
         ballLunched = false;
         initBricks();
         gameStarted = true;
         draw();
-    } 
-*/
+    }
+
     var ballRadius = 10;//球的半径
     var x = canvas.width/2;//球的初始位置
     var y = canvas.height-30;
@@ -164,7 +169,7 @@
                     specialType = normalBrick;
                 }
 
-                bricks[c][r] = { x: 0, y: 0, specialBrick: vectorBrickLeft, status: 1 };
+                bricks[c][r] = { x: 0, y: 0, specialBrick: specialType, status: 1 };
 
                 if (bricks[c][r].specialBrick === hardBrick)
                 {
@@ -196,7 +201,7 @@
                         else if (minDist === distToRight) {gameState.hitSide = "right";} 
                         else if (minDist === distToTop) {gameState.hitSide = "top";} 
                         else {gameState.hitSide = "bottom";}             
-
+                        // 先处理反弹再处理方块特效
                         // 只有砖块被摧毁时才反弹（除非是穿透球）
                     if(!gameState.tankBall) 
                     {
@@ -223,7 +228,7 @@
                             gameState.dy = dy;
                         }
                     }
-
+                        
                         brickEffect(b, c, r, bricks, brickColumnCount, brickRowCount, gameState);
                         // 更新游戏状态
                         score = gameState.score;
@@ -232,11 +237,11 @@
                         dy = gameState.dy;
 
                         // 检查胜利条件
-                        if(countActiveBricks() === 0) {
+                        if(countActiveBricks() === 0) 
+                        {
                             alert("YOU WIN, CONGRATS!");
                             document.location.reload();
                         }
-                        
                         return;// 一次只处理一个碰撞
                     }
                 }
@@ -244,7 +249,6 @@
         }
     }
 
-    //添加辅助函数
     function countActiveBricks() 
     {
         var count = 0;
@@ -262,42 +266,6 @@
     }
 
 
-    //难度选择按钮事件监听
-    document.getElementById("easyBtn").addEventListener("click", function() {startGame("easy");});
-    document.getElementById("mediumBtn").addEventListener("click", function() {startGame("medium");});
-    document.getElementById("hardBtn").addEventListener("click", function() {startGame("hard");});
-
-    function startGame(level) 
-    {
-        difficulty = level;
-        var baseSpeed;
-        if (level === "easy") {baseSpeed = 2; paddleWidth = 120;} 
-        else if (level === "hard") {baseSpeed = 5; paddleWidth = 80;} 
-        else {baseSpeed = 3; paddleWidth = 100;} 
-
-        //初始化游戏状态
-        gameState.dx = baseSpeed;
-        gameState.dy = -baseSpeed;
-        gameState.paddleWidth = paddleWidth;
-        gameState.tankBall = false;
-        gameState.score = 0;
-        gameState.lives = 39999;
-
-        // 更新全局变量
-        dx = gameState.dx;
-        dy = gameState.dy;
-        score = gameState.score;
-
-        // 隐藏难度选择界面，显示游戏画布
-        document.getElementById("difficultyContainer").style.display = "none";
-        canvas.style.display = "block";
-
-        // 初始化游戏状态
-        ballLunched = false;
-        initBricks();
-        gameStarted = true;
-        draw();
-    }
 
     document.addEventListener("keydown", keyDownHandler, false);//监听按键 按下
     document.addEventListener("keyup", keyUpHandler, false);//监听按键 松开
