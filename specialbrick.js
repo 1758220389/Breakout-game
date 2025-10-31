@@ -98,9 +98,9 @@ function brickEffect(brick, c, r, brickArray, brickColumnCount, brickRowCount, g
                 var newC = c + directions[d][0];
                 var newR = r + directions[d][1];
                 if(newC >= 0 && newC < brickColumnCount && newR >= 0 && newR < brickRowCount) {
-                    if(brickarray[newC] && brickarray[newC][newR] && brickarray[newC][newR].status === 0) {
-                        brickarray[newC][newR].status = 1;
-                        brickarray[newC][newR].specialbrick = normalbrick; // 新生成的为普通砖块
+                    if(brickArray[newC] && brickArray[newC][newR] && brickArray[newC][newR].status === 0) {
+                        brickArray[newC][newR].status = 1;
+                        brickArray[newC][newR].specialBrick = normalBrick; // 新生成的为普通砖块
                     }
                 }
             }

@@ -164,7 +164,7 @@
                     specialType = normalBrick;
                 }
 
-                bricks[c][r] = { x: 0, y: 0, specialBrick: specialType, status: 1 };
+                bricks[c][r] = { x: 0, y: 0, specialBrick: vectorBrickLeft, status: 1 };
 
                 if (bricks[c][r].specialBrick === hardBrick)
                 {
@@ -186,23 +186,16 @@
                     if(x + ballRadius > b.x && x - ballRadius < b.x + brickWidth && y + ballRadius > b.y && y - ballRadius < b.y + brickHeight)
                     {
                         // 确定球和砖块碰撞的边
-                        var distToLeft = Math.abs(x - b.x);
-                        var distToRight = Math.abs(x - (b.x + brickWidth));
-                        var distToTop = Math.abs(y - b.y);
-                        var distToBottom = Math.abs(y - (b.y + brickHeight));
+                        var distToLeft = Math.abs((x + ballRadius) - b.x);
+                        var distToRight = Math.abs((x - ballRadius) - (b.x + brickWidth));
+                        var distToTop = Math.abs((y + ballRadius) - b.y);
+                        var distToBottom = Math.abs((y - ballRadius) - (b.y + brickHeight));
+                        
                         var minDist = Math.min(distToLeft, distToRight, distToTop, distToBottom);
                         if (minDist === distToLeft) {gameState.hitSide = "left";} 
                         else if (minDist === distToRight) {gameState.hitSide = "right";} 
                         else if (minDist === distToTop) {gameState.hitSide = "top";} 
-                        else {gameState.hitSide = "bottom";}
-
-                        brickEffect(b, c, r, bricks, brickColumnCount, brickRowCount, gameState);
-                        
-                        // 更新游戏状态
-                        score = gameState.score;
-                        paddleWidth = gameState.paddleWidth;
-                        dx = gameState.dx;
-                        dy = gameState.dy;
+                        else {gameState.hitSide = "bottom";}             
 
                         // 只有砖块被摧毁时才反弹（除非是穿透球）
                     if(!gameState.tankBall) 
@@ -230,6 +223,13 @@
                             gameState.dy = dy;
                         }
                     }
+
+                        brickEffect(b, c, r, bricks, brickColumnCount, brickRowCount, gameState);
+                        // 更新游戏状态
+                        score = gameState.score;
+                        paddleWidth = gameState.paddleWidth;
+                        dx = gameState.dx;
+                        dy = gameState.dy;
 
                         // 检查胜利条件
                         if(countActiveBricks() === 0) {
