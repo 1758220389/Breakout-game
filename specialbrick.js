@@ -109,32 +109,98 @@ function brickEffect(brick, c, r, brickArray, brickColumnCount, brickRowCount, g
             break;
         case longPaddle:
             brick.status = 0;
-            gameState.paddleWidth = Math.min(gameState.paddleWidth + 20, 200); // 增加挡板长度
+            gameState.score++;
+            createEffectFactor(brick.x, brick.y, longPaddle, gameState);
+            //gameState.effectFactor = 9;
+            //gameState.paddleWidth = Math.min(gameState.paddleWidth + 20, 200); // 增加挡板长度
             break;
         case lifeUp:
             brick.status = 0;
-             gameState.lives++;
+            gameState.score++;
+            createEffectFactor(brick.x, brick.y, lifeUp, gameState);
+            //gameState.lives++;
             break;
         case extraBall:
             brick.status = 0;
-            //此处添加球逻辑
+            gameState.score++;
+            createEffectFactor(brick.x, brick.y, extraBall, gameState);
             break;
         case speedDown:
             brick.status = 0;
-             // 减速效果
-            gameState.dx *= 0.7;
-            gameState.dy *= 0.7;
+            gameState.score++;
+            createEffectFactor(brick.x, brick.y, speedDown, gameState);
             break;
         case tankBall:
             brick.status = 0;
-             // 穿透效果 - 设置标记
-            gameState.tankBall = true;
-            setTimeout(() => { gameState.tankBall = false; }, 3000); // 3秒后失效
+            gameState.score++;
+            createEffectFactor(brick.x, brick.y, tankBall, gameState);
             break;
         case rotate:
             brick.status = 0;
+            gameState.score++;
+            createEffectFactor(brick.x, brick.y, rotate, gameState);
+            break;
             // 旋转效果 - 反转运动方向
-            gameState.dx = -gameState.dx;
+            //gameState.dx = -gameState.dx;
+            //break;
+    }
+}
+
+function createEffectFactor(x, y, effectType, gameState)
+{
+    if(!gameState.effectFactor){gameState.effectFactor = [];}
+    gameState.effectFactor.push
+    ({x: x+12.5, y: y, effectType: effectType, speed: 2, width: 20, height: 20});
+}
+
+function applyEffectFactor(effectType, gameState)
+{
+    switch(effectType)
+    {
+        case longPaddle:
+            if(!gameState.originalPaddleWidth) {gameState.originalPaddleWidth = gameState.paddleWidth;}
+            if(gameState.longPaddleTimer) 
+                {
+                    clearTimeout(gameState.longPaddleTimer);
+                    gameState.paddleWidth = gameState.originalPaddleWidth;
+                }
+            gameState.paddleWidth = 3*gameState.originalPaddleWidth;
+            //Math.min(gameState.paddleWidth + 20, 200);
+            gameState.longPaddleTimer = setTimeout(() => {
+                gameState.paddleWidth = gameState.originalPaddleWidth;
+                gameState.longPaddleTimer = null;
+                gameState.originalPaddleWidth = null;
+            }, 10000); // 10秒后恢复原始长度
+            break;
+        case lifeUp:
+            gameState.lives++;
+            break;
+        case extraBall:
+            // 生成额外的球
+            break;
+        case speedDown:
+            if(!gameState.originalSpeed) {gameState.originalSpeed = {dx: gameState.dx, dy: gameState.dy};}//保存原始速度
+            if(gameState.speedDownTimer) //如果已经有减速效果重置计时器
+                {
+                    clearTimeout(gameState.speedDownTimer);
+                    gameState.dx = gameState.originalSpeed.dx;
+                    gameState.dy = gameState.originalSpeed.dy;
+                }
+            gameState.dx = gameState.originalSpeed.dx * 0.5;
+            gameState.dy = gameState.originalSpeed.dy * 0.5;
+            gameState.speedDownTimer = setTimeout(() => { 
+                gameState.dx = gameState.originalSpeed.dx; 
+                gameState.dy = gameState.originalSpeed.dy;
+                gameState.originalSpeed = null;
+                gameState.speedDownTimer = null;
+            }, 5000); // 5秒后恢复速度
+            break;
+        case tankBall:
+            gameState.isTankBall = true;
+            setTimeout(() => { gameState.isTankBall = false; }, 3000);
+            break;
+        case rotate:
+            //gameState.dx = -gameState.dx;
             break;
     }
 }

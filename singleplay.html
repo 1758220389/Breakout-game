@@ -79,7 +79,7 @@
         gameState.dx = dx;
         gameState.dy = dy;
         gameState.paddleWidth = paddleWidth;
-        gameState.tankBall = false;
+        gameState.isTankBall = false;
         gameState.score = score;
         gameState.lives = 39999;
 
@@ -134,16 +134,9 @@
     var rotate = 14;//旋转因子
 
     var gameState = //这啥 传参的？
-    {
-    hitSide: "0",
-    paddleWidth: 120,
-    tankBall: false,
-    dx: 0,
-    dy: 0,
-    score: 0,
-    lives: 3
-    };
-
+    {score: 0, lives: 1000, hitSide: "0", paddleWidth: 120, isTankBall: false, dx: 0, dy: 0, effectFactor: []};
+    
+    
     var score = 0;
     var ballLunched = false;
 
@@ -162,7 +155,7 @@
                 if (isSpecial) 
                 {
                     //随机数生成特殊砖块类型
-                    var specialType = Math.floor(Math.random() * 8) + 1; // 1-8的随机数对应不同的特殊砖块
+                    var specialType = Math.floor(Math.random() * 14) + 1; // 1-8的随机数对应不同的特殊砖块
                 } 
                 else 
                 {
@@ -203,7 +196,7 @@
                         else {gameState.hitSide = "bottom";}             
                         // 先处理反弹再处理方块特效
                         // 只有砖块被摧毁时才反弹（除非是穿透球）
-                    if(!gameState.tankBall) 
+                    if(!gameState.isTankBall) 
                     {
                         // 计算碰撞方向
                         var ballCenterX = x;
@@ -227,22 +220,29 @@
                             dy = -dy;
                             gameState.dy = dy;
                         }
-                    }
-                        
+                    
                         brickEffect(b, c, r, bricks, brickColumnCount, brickRowCount, gameState);
                         // 更新游戏状态
                         score = gameState.score;
                         paddleWidth = gameState.paddleWidth;
                         dx = gameState.dx;
                         dy = gameState.dy;
-
-                        // 检查胜利条件
-                        if(countActiveBricks() === 0) 
-                        {
-                            alert("YOU WIN, CONGRATS!");
-                            document.location.reload();
-                        }
-                        return;// 一次只处理一个碰撞
+                        return;
+                    }
+                    else//穿透球模式
+                    {
+                        brickEffect(b, c, r, bricks, brickColumnCount, brickRowCount, gameState);
+                        score = gameState.score;
+                        paddleWidth = gameState.paddleWidth;
+                        //dx = gameState.dx;
+                        //dy = gameState.dy;
+                    }
+                    if(countActiveBricks() === 0) // 检查胜利条件
+                    {
+                        alert("YOU WIN, CONGRATS!");
+                        document.location.reload();
+                    }
+                    return;// 一次只处理一个碰撞
                     }
                 }
             }
@@ -265,6 +265,36 @@
         return count;
     }
 
+
+    function updateEffectFactor()
+    {
+        if(!gameState.effectFactor) return;
+
+        for(var i = gameState.effectFactor.length - 1; i >= 0; i--) 
+        {
+            var factor = gameState.effectFactor[i];
+            factor.y += factor.speed;
+
+            // 检测是否被挡板接住
+            if(factor.y + factor.height >= paddleY && factor.y <= paddleY + paddleHeight &&
+               factor.x + factor.width >= paddleX && factor.x <= paddleX + paddleWidth) 
+            {
+                // 应用效果
+                applyEffectFactor(factor.effectType, gameState);
+                paddleWidth = gameState.paddleWidth;
+                dx = gameState.dx;
+                dy = gameState.dy;
+                lives = gameState.lives;
+                // 从数组中移除该效果因子
+                gameState.effectFactor.splice(i, 1);
+            }
+            // 如果掉落到画布底部，移除该效果因子
+            else if(factor.y > canvas.height) 
+            {
+                gameState.effectFactor.splice(i, 1);
+            }
+        }
+    }
 
 
     document.addEventListener("keydown", keyDownHandler, false);//监听按键 按下
@@ -322,6 +352,8 @@
         drawScore(ctx, score);
         drawLives(ctx, gameState.lives);
         collisionDetection();
+        updateEffectFactor();
+        drawEffectFactor(ctx, gameState.effectFactor);
 
         if(x + dx > canvas.width-ballRadius || x + dx < ballRadius) //碰到左右边反弹
         {
@@ -340,7 +372,7 @@
             else 
             {
                 ballLunched = false;//重置球发射状态
-                 gameState.lives--;
+                gameState.lives--;
                 if(!gameState.lives) 
                 {
                     alert("GAME OVER");

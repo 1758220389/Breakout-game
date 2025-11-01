@@ -132,11 +132,53 @@ function drawBricks(ctx, bricks, brickColumnCount, brickRowCount, brickWidth, br
         }
     }
 
+function drawEffectFactor(ctx, effectFactor) //绘制效果因子提示
+    {
+        if(!effectFactor) return;
+
+        for(var i=0; i<effectFactor.length; i++)//遍历所有存在的效果因子
+        {
+            var factor = effectFactor[i];
+
+            ctx.beginPath();
+            ctx.arc(factor.x, factor.y, factor.width/2, 0, Math.PI*2);
+
+            switch(factor.effectType)
+            {
+                case 9: ctx.fillStyle = "#00FFFF"; break; // longPaddle
+                case 10: ctx.fillStyle = "#32CD32"; break; // lifeUp
+                case 11: ctx.fillStyle = "#aa9d54ff"; break; // extraBall
+                case 12: ctx.fillStyle = "#1E90FF"; break; // speedDown
+                case 13: ctx.fillStyle = "#696969"; break; // tankBall
+                case 14: ctx.fillStyle = "#DA70D6"; break; // rotate
+                default: ctx.fillStyle = "#FFFFFF";
+            }
+            ctx.fill();
+            ctx.closePath();
+            
+            ctx.fillStyle = "#FFFFFF";//添加文字标识
+            ctx.font = "12px Arial";
+            ctx.textAlign = "center";
+            ctx.textBaseline = "middle";
+            var text = "";
+            switch(factor.effectType) 
+            {
+                case 9: text = "长"; break;
+                case 10: text = "命"; break;
+                case 11: text = "球"; break;
+                case 12: text = "慢"; break;
+                case 13: text = "穿"; break;
+                case 14: text = "旋"; break;
+            }
+            ctx.fillText(text, factor.x, factor.y);
+        }
+    }
+
 function drawScore(ctx, score) //绘制分数
     {
         ctx.font = "16px Arial";
         ctx.fillStyle = "#0095DD";
-        ctx.fillText("Score: "+score, 8, 20);
+        ctx.fillText("Score: "+score, 80, 20);
     }
 
 function drawLives(ctx, lives) //绘制生命值
