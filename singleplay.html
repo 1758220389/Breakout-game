@@ -92,7 +92,6 @@
 <div id="instructions">
         <h3>游戏说明</h3>
         <p>使用 <strong>左右方向键</strong> 控制挡板移动</p>
-        <p><strong>鼠标点击</strong> 确定球发射方向（鼠标位置决定方向）</p>
         <p>打破所有砖块即可获胜！</p>
 </div>
 
@@ -116,7 +115,7 @@
             <h3 id="rechargeTitle">充值档位</h3>
             <button class="rechargeLevel" data-value="5">小充一笔 (生命值: 5 / 挡板长度: 140)</button>
             <button class="rechargeLevel" data-value="10">充一笔 (生命值: 10 / 挡板长度: 180)</button>
-            <button class="rechargeLevel" data-value="20">充 (生命值: 20 / 挡板长度: 240)</button>
+            <button class="rechargeLevel" data-value="20">猛充 (生命值: 20 / 挡板长度: 240)</button>
             <button id="backBtn">返回</button>
         </div>
     </div>
@@ -171,9 +170,9 @@
     function startGame(level) 
     {
         difficulty = level;
-        if (level === "easy") {dx = 2; dy = -2; paddleWidth = 120;} 
-        else if (level === "hard") {dx = 5; dy = -5; paddleWidth = 80;} 
-        else {dx = 3; dy = -3; paddleWidth = 100;} 
+        if (level === "easy") {dx = 2; dy = -2; paddleWidth = 200;} 
+        else if (level === "hard") {dx = 4; dy = -4; paddleWidth = 150;} 
+        else {dx = 3; dy = -3; paddleWidth = 180;} 
 
         //初始化游戏状态
         gameState.dx = dx;
@@ -181,7 +180,7 @@
         gameState.paddleWidth = paddleWidth;
         gameState.isTankBall = false;
         gameState.score = score;
-        gameState.lives = 39999;
+        gameState.lives = 10000;
 
         // 隐藏难度选择界面，显示游戏画布
         document.getElementById("difficultyContainer").style.display = "none";
@@ -266,7 +265,7 @@
                     specialType = normalBrick;
                 }
 
-                bricks[c][r] = { x: 0, y: 0, specialBrick: specialType, status: 1 };
+                bricks[c][r] = { x: 0, y: 0, specialBrick: normalBrick, status: 1 };
 
                 if (bricks[c][r].specialBrick === hardBrick)
                 {
@@ -341,11 +340,7 @@
                         //dx = gameState.dx;
                         //dy = gameState.dy;
                     }
-                    if(countActiveBricks() === 0) // 检查胜利条件
-                    {
-                        alert("YOU WIN, CONGRATS!");
-                        document.location.reload();
-                    }
+
                     return;// 一次只处理一个碰撞
                     }
                 }
@@ -408,13 +403,6 @@
                         brickEffect(b, c, r, bricks, brickColumnCount, brickRowCount, gameState);
                         score = gameState.score;
                         paddleWidth = gameState.paddleWidth;
-
-                        if(countActiveBricks() === 0) 
-                        {
-                            alert("YOU WIN, CONGRATS!");
-                            document.location.reload();
-                        }
-                        return;
                     }
                 }
             }
@@ -454,7 +442,7 @@
 
     document.addEventListener("keydown", keyDownHandler, false);//监听按键 按下
     document.addEventListener("keyup", keyUpHandler, false);//监听按键 松开
-    //document.addEventListener("mousemove", mouseMoveHandler, false); //监听鼠标移动
+    document.addEventListener("mousemove", mouseMoveHandler, false); //监听鼠标移动
 
     function keyDownHandler(e) //addEventListener监听到按键时返回e
     {
@@ -518,15 +506,13 @@
         gameState.x = x;
         gameState.y = y;
 
-        if(gameState.extraBalls && gameState.extraBalls.length > 0)
+        if(gameState.extraBalls && gameState.extraBalls.length > 0)//处理额外小球
         {
             for(var i = gameState.extraBalls.length - 1; i >= 0; i--)
             {
                 var ball = gameState.extraBalls[i];
                 drawBall(ctx, ball.x, ball.y, ball.radius, "#ff0000ff");
                 checkEffectFactorCollision(ball);
-                //ball.x += ball.dx;
-                //ball.y += ball.dy;
 
                 if(ball.x + ball.dx > canvas.width - ball.radius || ball.x + ball.dx < ball.radius) 
                 {
@@ -577,6 +563,7 @@
                 {
                     alert("GAME OVER");
                     document.location.reload();
+                    return;
                 }
                 else //重置球和挡板位置
                 {
@@ -586,17 +573,17 @@
                     if (difficulty === "easy") 
                     {
                         dx = 2; dy = -2;
-                        paddleWidth = 120;
+                        paddleWidth = 200;
                     } 
                     else if (difficulty === "hard") 
                     {
-                        dx = 5; dy = -5;
-                        paddleWidth = 80;
+                        dx = 4; dy = -4;
+                        paddleWidth = 180;
                     } 
                     else 
                     {
                         dx = 3; dy = -3;
-                        paddleWidth = 100;
+                        paddleWidth = 150;
                     }
                     paddleX = (canvas.width-paddleWidth)/2;
                 }
@@ -610,6 +597,13 @@
         else if(leftPressed && paddleX > 0) 
         {
             paddleX -= 7;
+        }
+                    
+        if(countActiveBricks() === 0) // 检查胜利条件
+        {
+        alert("YOU WIN, CONGRATS!");
+        document.location.reload();
+        return;
         }
 
         x += dx;

@@ -63,28 +63,35 @@ function brickEffect(brick, c, r, brickArray, brickColumnCount, brickRowCount, g
             }
             break;
         case boomBrick:
+            brick.status = 0;
+            gameState.score++;
             for(var i = Math.max(0, c-1); i <= Math.min(brickColumnCount-1, c+1); i++) 
             {
                 for(var j = Math.max(0, r-1); j <= Math.min(brickRowCount-1, r+1); j++) 
                 {
+                    if(i === c && j === r) continue;
                     // 确保砖块存在且状态>=1
                     if(brickArray[i] && brickArray[i][j] && brickArray[i][j].status >= 1) 
                     {
-                        brickArray[i][j].status = 0;
-                        gameState.score++; // 为每个被摧毁的砖块加分
+                        brickEffect(brickArray[i][j], i, j, brickArray, brickColumnCount, brickRowCount, gameState);
+                        //brickArray[i][j].status = 0;
+                        //gameState.score++; // 为每个被摧毁的砖块加分
                     }
                 }
             }
             break;
         case chainBrick:
             brick.status = 0;
+            gameState.score++;
             // 摧毁整行砖块
-            for(var i = 0; i < brickColumnCount; i++) 
+            for(var k = 0; k < brickColumnCount; k++) 
             {
-                if(brickArray[i] && brickArray[i][r] && brickArray[i][r].status >= 1) 
+                if(k === c) continue; //跳过当前砖块所在列
+                if(brickArray[k] && brickArray[k][r] && brickArray[k][r].status >= 1) 
                 {
-                    brickArray[i][r].status = 0;
-                    gameState.score++; // 避免重复计分
+                    brickEffect(brickArray[k][r], k, r, brickArray, brickColumnCount, brickRowCount, gameState);
+                    //brickArray[k][r].status = 0;
+                    //gameState.score++; // 避免重复计分
                 }
             }
             break;
