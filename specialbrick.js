@@ -13,7 +13,6 @@ var lifeUp = 10;
 var extraBall = 11;
 var speedDown = 12;//减速
 var tankBall = 13;//穿透因子
-var rotate = 14;//旋转因子
 
 function brickEffect(brick, c, r, brickArray, brickColumnCount, brickRowCount, gameState)
 {
@@ -111,19 +110,26 @@ function brickEffect(brick, c, r, brickArray, brickColumnCount, brickRowCount, g
             brick.status = 0;
             gameState.score++;
             createEffectFactor(brick.x, brick.y, longPaddle, gameState);
-            //gameState.effectFactor = 9;
-            //gameState.paddleWidth = Math.min(gameState.paddleWidth + 20, 200); // 增加挡板长度
             break;
         case lifeUp:
             brick.status = 0;
             gameState.score++;
             createEffectFactor(brick.x, brick.y, lifeUp, gameState);
-            //gameState.lives++;
             break;
         case extraBall:
             brick.status = 0;
             gameState.score++;
-            createEffectFactor(brick.x, brick.y, extraBall, gameState);
+            if(!gameState.extraBalls) {gameState.extraBalls = [];}
+            var angle = (Math.random() * 120 - 60) * Math.PI / 180; // 随机角度在-60到60度之间
+            var speed = Math.sqrt(gameState.dx * gameState.dx + gameState.dy * gameState.dy);
+            gameState.extraBalls.push({
+                x: gameState.x,
+                y: gameState.y,
+                dx: speed * Math.sin(angle),
+                dy: - speed * Math.abs(Math.cos(angle)),
+                radius: 10,
+                active: true
+            });
             break;
         case speedDown:
             brick.status = 0;
@@ -135,14 +141,6 @@ function brickEffect(brick, c, r, brickArray, brickColumnCount, brickRowCount, g
             gameState.score++;
             createEffectFactor(brick.x, brick.y, tankBall, gameState);
             break;
-        case rotate:
-            brick.status = 0;
-            gameState.score++;
-            createEffectFactor(brick.x, brick.y, rotate, gameState);
-            break;
-            // 旋转效果 - 反转运动方向
-            //gameState.dx = -gameState.dx;
-            //break;
     }
 }
 
@@ -175,9 +173,6 @@ function applyEffectFactor(effectType, gameState)
         case lifeUp:
             gameState.lives++;
             break;
-        case extraBall:
-            // 生成额外的球
-            break;
         case speedDown:
             if(!gameState.originalSpeed) {gameState.originalSpeed = {dx: gameState.dx, dy: gameState.dy};}//保存原始速度
             if(gameState.speedDownTimer) //如果已经有减速效果重置计时器
@@ -198,9 +193,6 @@ function applyEffectFactor(effectType, gameState)
         case tankBall:
             gameState.isTankBall = true;
             setTimeout(() => { gameState.isTankBall = false; }, 3000);
-            break;
-        case rotate:
-            //gameState.dx = -gameState.dx;
             break;
     }
 }

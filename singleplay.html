@@ -131,10 +131,11 @@
     var extraBall = 11;
     var speedDown = 12;//减速
     var tankBall = 13;//穿透因子
-    var rotate = 14;//旋转因子
 
     var gameState = //这啥 传参的？
-    {score: 0, lives: 1000, hitSide: "0", paddleWidth: 120, isTankBall: false, dx: 0, dy: 0, effectFactor: []};
+    {score: 0, lives: 1000, hitSide: "0", paddleWidth: 120, isTankBall: false, dx: 0, dy: 0, effectFactor: [],
+        extraBalls: [], x: 0, y: 0
+    };
     
     
     var score = 0;
@@ -155,7 +156,7 @@
                 if (isSpecial) 
                 {
                     //随机数生成特殊砖块类型
-                    var specialType = Math.floor(Math.random() * 14) + 1; // 1-8的随机数对应不同的特殊砖块
+                    var specialType = Math.floor(Math.random() * 13) + 1; // 1-8的随机数对应不同的特殊砖块
                 } 
                 else 
                 {
@@ -265,6 +266,57 @@
         return count;
     }
 
+    function checkEffectFactorCollision(ball)
+    {
+        for(var c=0;c<brickColumnCount;c++)
+        {
+            for(var r=0;r<brickRowCount;r++)
+            {
+                var b = bricks[c][r];
+                if(b.status >= 1)
+                {
+                    if(ball.x + ballRadius > b.x && ball.x - ballRadius < b.x + brickWidth && ball.y + ballRadius > b.y && ball.y - ballRadius < b.y + brickHeight)
+                    {
+                        var distToLeft = Math.abs((ball.x + ballRadius) - b.x);
+                        var distToRight = Math.abs((ball.x - ballRadius) - (b.x + brickWidth));
+                        var distToTop = Math.abs((ball.y + ballRadius) - b.y);
+                        var distToBottom = Math.abs((ball.y - ballRadius) - (b.y + brickHeight));
+                        var minDist = Math.min(distToLeft, distToRight, distToTop, distToBottom);
+                        if (minDist === distToLeft) {gameState.hitSide = "left";} 
+                        else if (minDist === distToRight) {gameState.hitSide = "right";} 
+                        else if (minDist === distToTop) {gameState.hitSide = "top";} 
+                        else {gameState.hitSide = "bottom";}
+
+                        var ballCenterX = ball.x;
+                        var ballCenterY = ball.y;
+                        var brickCenterX = b.x + brickWidth/2;
+                        var brickCenterY = b.y + brickHeight/2;
+                        var dxCenter = ballCenterX - brickCenterX;
+                        var dyCenter = ballCenterY - brickCenterY;
+
+                        if(Math.abs(dxCenter) > Math.abs(dyCenter)) 
+                        {
+                            ball.dx = -ball.dx;
+                        } 
+                        else 
+                        {
+                            ball.dy = -ball.dy;
+                        }
+                        brickEffect(b, c, r, bricks, brickColumnCount, brickRowCount, gameState);
+                        score = gameState.score;
+                        paddleWidth = gameState.paddleWidth;
+
+                        if(countActiveBricks() === 0) 
+                        {
+                            alert("YOU WIN, CONGRATS!");
+                            document.location.reload();
+                        }
+                        return;
+                    }
+                }
+            }
+        }
+    }
 
     function updateEffectFactor()
     {
@@ -349,15 +401,56 @@
             gameState.isTankBall = false;
             gameState.dx = dx;
             gameState.dy = dy;
+            gameState.extraBalls = [];
         }
         drawBricks(ctx, bricks, brickColumnCount, brickRowCount, brickWidth, brickHeight, brickPadding, brickOffsetTop, brickOffsetLeft);
-        drawBall(ctx, x, y, ballRadius);
+        drawBall(ctx, x, y, ballRadius, "#0095DD");
         drawPaddle(ctx, paddleX, paddleY,gameState.paddleWidth, paddleHeight);
         drawScore(ctx, score);
         drawLives(ctx, gameState.lives);
         collisionDetection();
         updateEffectFactor();
         drawEffectFactor(ctx, gameState.effectFactor);
+
+        gameState.x = x;
+        gameState.y = y;
+
+        if(gameState.extraBalls && gameState.extraBalls.length > 0)
+        {
+            for(var i = gameState.extraBalls.length - 1; i >= 0; i--)
+            {
+                var ball = gameState.extraBalls[i];
+                drawBall(ctx, ball.x, ball.y, ball.radius, "#ff0000ff");
+                checkEffectFactorCollision(ball);
+                //ball.x += ball.dx;
+                //ball.y += ball.dy;
+
+                if(ball.x + ball.dx > canvas.width - ball.radius || ball.x + ball.dx < ball.radius) 
+                {
+                    ball.dx = -ball.dx;
+                }
+                if(ball.y + ball.dy < ball.radius) 
+                {
+                    ball.dy = -ball.dy;
+                }
+                else if(ball.y + ball.dy > canvas.height - ball.radius) 
+                {
+                    if( ball.x > paddleX && ball.x < paddleX + gameState.paddleWidth && 
+                    ball.y + ball.radius >= paddleY && ball.dy > 0) 
+                    {
+                        ball.dy = -ball.dy;
+                    }
+                    else 
+                    {
+                        gameState.extraBalls.splice(i, 1);
+                        continue;
+                    }
+                }
+                checkEffectFactorCollision(ball);
+                ball.x += ball.dx;
+                ball.y += ball.dy;
+            }
+        }
 
         if(x + dx > canvas.width-ballRadius || x + dx < ballRadius) //碰到左右边反弹
         {
