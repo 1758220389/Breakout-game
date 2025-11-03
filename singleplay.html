@@ -61,6 +61,21 @@
             align-items: center;
             z-index: 100;
         }
+
+            /* 充值成功提示样式 */
+        #rechargeSuccess {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0,0,0,0.8);
+            color: #fff;
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-size: 18px;
+            display: none;
+            z-index: 200;
+        }
     </style>
 </head>
 <body>
@@ -107,6 +122,8 @@
     </div>
 </div>
 
+    <!-- 充值成功提示 -->
+    <div id="rechargeSuccess">充值成功</div>
 
 <!-- 引入外部JS文件 -->
 <script src="draw.js"></script>
@@ -553,6 +570,13 @@
         // 隐藏充值界面
         hideRechargeMenu();
         
+        // 显示“充值成功”提示，2秒后自动隐藏
+        var tip = document.getElementById('rechargeSuccess');
+        tip.style.display = 'block';
+        setTimeout(function(){
+            tip.style.display = 'none';
+        }, 2000);
+
         // 更新显示
         //draw();
     }
