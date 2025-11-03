@@ -33,6 +33,49 @@
             margin-top: 20px;
             font-size: 14px;
         }
+
+            /* 充值系统样式 */
+        #rechargeBtn {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            padding: 8px 16px;
+            background-color: #FF5722;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            display: none; /* 初始隐藏，游戏开始后显示 */
+        }
+        
+        #rechargeContainer {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(244, 248, 5, 0.952);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+        }
+
+            /* 充值成功提示样式 */
+        #rechargeSuccess {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0,0,0,0.8);
+            color: #fff;
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-size: 18px;
+            display: none;
+            z-index: 200;
+        }
     </style>
 </head>
 <body>
@@ -56,6 +99,32 @@
 <!-- 初始隐藏画布，等选完难度后再显示 -->
 <canvas id="myCanvas" width="1080" height="600" style="display:none;"></canvas>
 
+<!-- 充值按钮 -->
+<button id="rechargeBtn">充值</button>
+
+<!-- 充值界面 -->
+<div id="rechargeContainer">
+    <div id="rechargeMenu">
+        <h2>充值系统</h2>
+        <p>请选择充值类型</p>
+        <div id="rechargeOptions">
+            <button class="rechargeOption" id="rechargeLives">生命值充值</button>
+            <button class="rechargeOption" id="rechargePaddle">挡板长度充值</button>
+        </div>
+        
+        <div id="rechargeLevels">
+            <h3 id="rechargeTitle">充值档位</h3>
+            <button class="rechargeLevel" data-value="5">小充一笔 (生命值: 5 / 挡板长度: 140)</button>
+            <button class="rechargeLevel" data-value="10">充一笔 (生命值: 10 / 挡板长度: 180)</button>
+            <button class="rechargeLevel" data-value="20">充 (生命值: 20 / 挡板长度: 240)</button>
+            <button id="backBtn">返回</button>
+        </div>
+    </div>
+</div>
+
+    <!-- 充值成功提示 -->
+    <div id="rechargeSuccess">充值成功</div>
+
 <!-- 引入外部JS文件 -->
 <script src="draw.js"></script>
 <script src="specialbrick.js"></script>
@@ -68,6 +137,37 @@
     document.getElementById("easyBtn").addEventListener("click", function() {startGame("easy");});
     document.getElementById("mediumBtn").addEventListener("click", function() {startGame("medium");});
     document.getElementById("hardBtn").addEventListener("click", function() {startGame("hard");});
+
+    // 充值系统变量
+    var currentRechargeType = ""; // 当前选择的充值类型
+
+    // 充值按钮事件监听
+    document.getElementById("rechargeBtn").addEventListener("click", function() {
+        showRechargeMenu();
+    });
+
+    // 充值类型选择
+    document.getElementById("rechargeLives").addEventListener("click", function() {
+        currentRechargeType = "lives";
+        showRechargeLevels();
+    });
+
+    document.getElementById("rechargePaddle").addEventListener("click", function() {
+        currentRechargeType = "paddle";
+        showRechargeLevels();
+    });
+
+    // 充值档位按钮事件监听
+    document.querySelectorAll('.rechargeLevel').forEach(button => {
+    button.addEventListener('click', function() {
+        applyRecharge(parseInt(this.getAttribute('data-value')));
+    });
+    });
+
+    // 返回按钮事件监听
+    document.getElementById('backBtn').addEventListener('click', function() {
+    hideRechargeMenu();
+    });
     function startGame(level) 
     {
         difficulty = level;
@@ -86,6 +186,9 @@
         // 隐藏难度选择界面，显示游戏画布
         document.getElementById("difficultyContainer").style.display = "none";
         canvas.style.display = "block";
+
+        // === 添加：显示充值按钮 ===
+        document.getElementById("rechargeBtn").style.display = "block";
 
         // 初始化游戏状态
         ballLunched = false;
@@ -513,7 +616,69 @@
         y += dy;
         requestAnimationFrame(draw);
     }
-    draw();
+    //draw();
+
+    // 显示充值菜单
+    function showRechargeMenu() {
+        document.getElementById("rechargeContainer").style.display = "flex";
+        document.getElementById("rechargeOptions").style.display = "block";
+        document.getElementById("rechargeLevels").style.display = "none";
+    }
+
+    // 显示充值档位
+    function showRechargeLevels() {
+    document.getElementById("rechargeOptions").style.display = "none";
+    document.getElementById("rechargeLevels").style.display = "block";
+    
+    // 更新标题和按钮文本
+    var title = document.getElementById("rechargeTitle");
+    var buttons = document.querySelectorAll('.rechargeLevel');
+    
+    if (currentRechargeType === "lives") {
+        title.textContent = "生命值充值档位";
+        buttons[0].textContent = "小充一笔 (生命值: 5)";
+        buttons[1].textContent = "充一笔 (生命值: 10)";
+        buttons[2].textContent = "充 (生命值: 20)";
+    } else {
+        title.textContent = "挡板长度充值档位";
+        buttons[0].textContent = "小充一笔 (挡板长度: 140)";
+        buttons[1].textContent = "充一笔 (挡板长度: 180)";
+        buttons[2].textContent = "充 (挡板长度: 240)";
+        }
+    }
+    // 应用充值效果
+    function applyRecharge(value) {
+        if (currentRechargeType === "lives") {
+            // 增加生命值
+            gameState.lives += value;
+        } else if (currentRechargeType === "paddle") {
+            // 增加挡板长度
+            var newWidth = gameState.paddleWidth + value;
+            // 限制最大长度
+            if (newWidth > 300) newWidth = 300;
+            gameState.paddleWidth = newWidth;
+            paddleWidth = newWidth;
+        }
+        
+        // 隐藏充值界面
+        hideRechargeMenu();
+        
+        // 显示“充值成功”提示，2秒后自动隐藏
+        var tip = document.getElementById('rechargeSuccess');
+        tip.style.display = 'block';
+        setTimeout(function(){
+            tip.style.display = 'none';
+        }, 2000);
+
+        // 更新显示
+        //draw();
+    }
+
+    // 隐藏充值菜单
+    function hideRechargeMenu() {
+        document.getElementById("rechargeContainer").style.display = "none";
+    }
+
 </script>
 </body>
 </html>
