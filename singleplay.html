@@ -99,7 +99,7 @@
         
         <div id="rechargeLevels">
             <h3 id="rechargeTitle">充值档位</h3>
-            <button class="rechargeLevel" data-value="5">小冲一笔 (生命值: 5 / 挡板长度: 140)</button>
+            <button class="rechargeLevel" data-value="5">小充一笔 (生命值: 5 / 挡板长度: 140)</button>
             <button class="rechargeLevel" data-value="10">充一笔 (生命值: 10 / 挡板长度: 180)</button>
             <button class="rechargeLevel" data-value="20">充 (生命值: 20 / 挡板长度: 240)</button>
             <button id="backBtn">返回</button>
@@ -120,6 +120,37 @@
     document.getElementById("easyBtn").addEventListener("click", function() {startGame("easy");});
     document.getElementById("mediumBtn").addEventListener("click", function() {startGame("medium");});
     document.getElementById("hardBtn").addEventListener("click", function() {startGame("hard");});
+
+    // 充值系统变量
+    var currentRechargeType = ""; // 当前选择的充值类型
+
+    // 充值按钮事件监听
+    document.getElementById("rechargeBtn").addEventListener("click", function() {
+        showRechargeMenu();
+    });
+
+    // 充值类型选择
+    document.getElementById("rechargeLives").addEventListener("click", function() {
+        currentRechargeType = "lives";
+        showRechargeLevels();
+    });
+
+    document.getElementById("rechargePaddle").addEventListener("click", function() {
+        currentRechargeType = "paddle";
+        showRechargeLevels();
+    });
+
+    // 充值档位按钮事件监听
+    document.querySelectorAll('.rechargeLevel').forEach(button => {
+    button.addEventListener('click', function() {
+        applyRecharge(parseInt(this.getAttribute('data-value')));
+    });
+    });
+
+    // 返回按钮事件监听
+    document.getElementById('backBtn').addEventListener('click', function() {
+    hideRechargeMenu();
+    });
     function startGame(level) 
     {
         difficulty = level;
@@ -138,6 +169,9 @@
         // 隐藏难度选择界面，显示游戏画布
         document.getElementById("difficultyContainer").style.display = "none";
         canvas.style.display = "block";
+
+        // === 添加：显示充值按钮 ===
+        document.getElementById("rechargeBtn").style.display = "block";
 
         // 初始化游戏状态
         ballLunched = false;
@@ -461,6 +495,61 @@
         requestAnimationFrame(draw);
     }
     draw();
+
+    // 显示充值菜单
+    function showRechargeMenu() {
+        document.getElementById("rechargeContainer").style.display = "flex";
+        document.getElementById("rechargeOptions").style.display = "block";
+        document.getElementById("rechargeLevels").style.display = "none";
+    }
+
+    // 显示充值档位
+    function showRechargeLevels() {
+    document.getElementById("rechargeOptions").style.display = "none";
+    document.getElementById("rechargeLevels").style.display = "block";
+    
+    // 更新标题和按钮文本
+    var title = document.getElementById("rechargeTitle");
+    var buttons = document.querySelectorAll('.rechargeLevel');
+    
+    if (currentRechargeType === "lives") {
+        title.textContent = "生命值充值档位";
+        buttons[0].textContent = "小充一笔 (生命值: 5)";
+        buttons[1].textContent = "充一笔 (生命值: 10)";
+        buttons[2].textContent = "充 (生命值: 20)";
+    } else {
+        title.textContent = "挡板长度充值档位";
+        buttons[0].textContent = "小充一笔 (挡板长度: 140)";
+        buttons[1].textContent = "充一笔 (挡板长度: 180)";
+        buttons[2].textContent = "充 (挡板长度: 240)";
+        }
+    }
+    // 应用充值效果
+    function applyRecharge(value) {
+        if (currentRechargeType === "lives") {
+            // 增加生命值
+            gameState.lives += value;
+        } else if (currentRechargeType === "paddle") {
+            // 增加挡板长度
+            var newWidth = gameState.paddleWidth + value;
+            // 限制最大长度
+            if (newWidth > 300) newWidth = 300;
+            gameState.paddleWidth = newWidth;
+            paddleWidth = newWidth;
+        }
+        
+        // 隐藏充值界面
+        hideRechargeMenu();
+        
+        // 更新显示
+        draw();
+    }
+
+    // 隐藏充值菜单
+    function hideRechargeMenu() {
+        document.getElementById("rechargeContainer").style.display = "none";
+    }
+
 </script>
 </body>
 </html>
