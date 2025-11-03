@@ -1,10 +1,48 @@
-/* 
 const images =  //预加载图片资源
 {
-    brick: new Image(),
+    normalBrick: new Image(),
+    hardBrick: new Image(),
+    vectorBrickUp: new Image(),
+    vectorBrickDown: new Image(),
+    vectorBrickLeft: new Image(),
+    vectorBrickRight: new Image(),
+    boomBrick: new Image(),
+    chainBrick: new Image(),
+    motherBrick: new Image(),
+    longPaddle: new Image(),
+    lifeUp: new Image(),
+    //extraBall: new Image(),
+    speedDown: new Image(),
+    tankBall: new Image(),
+    //rotate: new Image(),
+    longPaddleEffect: new Image(),
+    lifeUpEffect: new Image(),
+    //extraBallEffect: new Image(),
+    speedDownEffect: new Image(),
+    tankBallEffect: new Image(),
+    //rotateEffect: new Image()
 };
-images.brick.src = 'images/brick.png'; //砖块图片
-*/
+images.normalBrick.src = 'img/normalBrick.png'; //砖块图片
+images.hardBrick.src = 'img/hardBrick.png';
+images.vectorBrickUp.src = 'img/vectorBrickUp.png';
+images.vectorBrickDown.src = 'img/vectorBrickDown.png';
+images.vectorBrickLeft.src = 'img/vectorBrickLeft.png';
+images.vectorBrickRight.src = 'img/vectorBrickRight.png';
+images.boomBrick.src = 'img/boomBrick.png';
+images.chainBrick.src = 'img/chainBrick.png';
+images.motherBrick.src = 'img/motherBrick.png';
+images.longPaddle.src = 'img/longPaddle.png';
+images.lifeUp.src = 'img/lifeUp.png';
+images.speedDown.src = 'img/speedDown.png';
+images.tankBall.src = 'img/tankBall.png';
+//images.extraBall.src = 'img/extraBall.png';
+//images.rotate.src = 'img/rotate.png';
+images.longPaddleEffect.src = 'img/longPaddleEffect.png';
+images.lifeUpEffect.src = 'img/lifeUpEffect.png';
+//images.extraBallEffect.src = 'img/extraBallEffect.png';
+images.speedDownEffect.src = 'img/speedDownEffect.png';
+images.tankBallEffect.src = 'img/tankBallEffect.png';
+//images.rotateEffect.src = 'img/rotateEffect.png';
 
 function drawBall(ctx,x,y,ballRadius) //绘制球
     {
@@ -36,68 +74,62 @@ function drawBricks(ctx, bricks, brickColumnCount, brickRowCount, brickWidth, br
                     var brickY = (c*(brickHeight+brickPadding))+brickOffsetTop;
                     bricks[c][r].x = brickX;
                     bricks[c][r].y = brickY;
-                    /*
-                    ctx.drawImage(images.brick, brickX, brickY, brickWidth, brickHeight); //使用图片绘制砖块
-                    */
-                    ctx.beginPath();
-                    ctx.rect(brickX, brickY, brickWidth, brickHeight);
 
                     var brick = bricks[c][r];
                     switch(brick.specialBrick) {
                         case 0: // normalBrick
-                            ctx.fillStyle = "#0095DD";
+                            ctx.drawImage(images.normalBrick, brickX, brickY, brickWidth, brickHeight);
                             break;
                         case 1: // hardBrick
                             // 硬砖块根据状态显示不同颜色
-                            if(brick.status === 2){ctx.fillStyle = "#8B4513";}
-                            else ctx.fillStyle = "#0095DD";
-                            //ctx.fillStyle = brick.status === 2 ? "#8B4513" : "#A0522D";
+                            if(brick.status === 2){ctx.drawImage(images.hardBrick, brickX, brickY, brickWidth, brickHeight);}
+                            else ctx.drawImage(images.normalBrick, brickX, brickY, brickWidth, brickHeight);
                             break;
                         case 2: // vectorBrickUp
-                            ctx.fillStyle = "#FF0000"; // 红色
+                            ctx.drawImage(images.vectorBrickUp, brickX, brickY, brickWidth, brickHeight);
                             break;
                         case 3: // vectorBrickDown
-                            ctx.fillStyle = "#00FF00"; // 绿色
+                            ctx.drawImage(images.vectorBrickDown, brickX, brickY, brickWidth, brickHeight);
                             break;
                         case 4: // vectorBrickLeft
-                            ctx.fillStyle = "#0000FF"; // 蓝色
+                            ctx.drawImage(images.vectorBrickLeft, brickX, brickY, brickWidth, brickHeight);
                             break;
                         case 5: // vectorBrickRight
-                            ctx.fillStyle = "#363611ff"; // 黄色
+                            ctx.drawImage(images.vectorBrickRight, brickX, brickY, brickWidth, brickHeight);
                             break;
                         case 6: // boomBrick
-                            ctx.fillStyle = "#FF4500"; // 橙红色
+                            ctx.drawImage(images.boomBrick, brickX, brickY, brickWidth, brickHeight);
                             break;
                         case 7: // chainBrick
-                            ctx.fillStyle = "#8A2BE2"; // 紫色
+                            ctx.drawImage(images.chainBrick, brickX, brickY, brickWidth, brickHeight);
                             break;
                         case 8: // motherBrick
-                            ctx.fillStyle = "#FF69B4"; // 粉色
+                            ctx.drawImage(images.motherBrick, brickX, brickY, brickWidth, brickHeight);
                             break;
                         case 9: // longPaddle
-                            ctx.fillStyle = "#00FFFF"; // 青色
+                            ctx.drawImage(images.longPaddle, brickX, brickY, brickWidth, brickHeight);
                             break;
                         case 10: // lifeUp
-                            ctx.fillStyle = "#32CD32"; // 酸橙绿
+                            ctx.drawImage(images.lifeUp, brickX, brickY, brickWidth, brickHeight);
                             break;
                         case 11: // extraBall
                             ctx.fillStyle = "#aa9d54ff"; // 金色
+                            ctx.fillRect(brickX, brickY, brickWidth, brickHeight);
                             break;
                         case 12: // speedDown
-                            ctx.fillStyle = "#1E90FF"; // 道奇蓝
+                            ctx.drawImage(images.speedDown, brickX, brickY, brickWidth, brickHeight);
                             break;
                         case 13: // tankBall
-                            ctx.fillStyle = "#696969"; // 暗灰色
+                            ctx.drawImage(images.tankBall, brickX, brickY, brickWidth, brickHeight);
                             break;
                         case 14: // rotate
                             ctx.fillStyle = "#DA70D6"; // 兰花紫
+                            ctx.fillRect(brickX, brickY, brickWidth, brickHeight);
                             break;
                         default:
                             ctx.fillStyle = "#0095DD";
+                            ctx.fillRect(brickX, brickY, brickWidth, brickHeight);
                     }
-
-                    ctx.fill();
-                    ctx.closePath();
 
                     // 为特殊砖块添加文字标识
                     if(brick.specialBrick !== 0) { // 不是普通砖块
@@ -107,20 +139,9 @@ function drawBricks(ctx, bricks, brickColumnCount, brickRowCount, brickWidth, br
                         ctx.textBaseline = "middle";
                         
                         var text = "";
-                        switch(brick.specialBrick) {
-                            case 1: text = "硬"; break;
-                            case 2: text = "↑"; break;
-                            case 3: text = "↓"; break;
-                            case 4: text = "←"; break;
-                            case 5: text = "→"; break;
-                            case 6: text = "爆"; break;
-                            case 7: text = "链"; break;
-                            case 8: text = "母"; break;
-                            case 9: text = "长"; break;
-                            case 10: text = "命"; break;
+                        switch(brick.specialBrick) 
+                        {
                             case 11: text = "球"; break;
-                            case 12: text = "慢"; break;
-                            case 13: text = "穿"; break;
                             case 14: text = "旋"; break;
                         }
                         
@@ -139,22 +160,53 @@ function drawEffectFactor(ctx, effectFactor) //绘制效果因子提示
         for(var i=0; i<effectFactor.length; i++)//遍历所有存在的效果因子
         {
             var factor = effectFactor[i];
+            var size = factor.width;
 
-            ctx.beginPath();
-            ctx.arc(factor.x, factor.y, factor.width/2, 0, Math.PI*2);
+            //ctx.beginPath();
+            //ctx.arc(factor.x, factor.y, factor.width/2, 0, Math.PI*2);
 
             switch(factor.effectType)
             {
-                case 9: ctx.fillStyle = "#00FFFF"; break; // longPaddle
-                case 10: ctx.fillStyle = "#32CD32"; break; // lifeUp
-                case 11: ctx.fillStyle = "#aa9d54ff"; break; // extraBall
-                case 12: ctx.fillStyle = "#1E90FF"; break; // speedDown
-                case 13: ctx.fillStyle = "#696969"; break; // tankBall
-                case 14: ctx.fillStyle = "#DA70D6"; break; // rotate
-                default: ctx.fillStyle = "#FFFFFF";
+                case 9: 
+                    //ctx.fillStyle = "#00FFFF"; break; // longPaddle
+                    ctx.drawImage(images.longPaddleEffect, factor.x - size/2, factor.y - size/2, size, size);
+                    break;
+                case 10: 
+                    //ctx.fillStyle = "#32CD32"; break; // lifeUp
+                    ctx.drawImage(images.lifeUpEffect, factor.x - size/2, factor.y - size/2, size, size);
+                    break;
+                case 11: 
+                    ctx.beginPath();
+                    ctx.arc(factor.x, factor.y, factor.width/2, 0, Math.PI*2);
+                    ctx.fillStyle = "#aa9d54ff"; // extraBall
+                    ctx.fill();
+                    ctx.closePath();
+                    break;
+                case 12: 
+                    //ctx.fillStyle = "#1E90FF"; break; // speedDown
+                    ctx.drawImage(images.speedDownEffect, factor.x - size/2, factor.y - size/2, size, size);
+                    break;
+                case 13: 
+                    //ctx.fillStyle = "#696969"; break; // tankBall
+                    ctx.drawImage(images.tankBallEffect, factor.x - size/2, factor.y - size/2, size, size);
+                    break;
+                case 14: 
+                    ctx.beginPath();
+                    ctx.fillStyle = "#DA70D6"; // rotate
+                    ctx.arc(factor.x, factor.y, factor.width/2, 0, Math.PI*2);
+                    ctx.fill();
+                    ctx.closePath();
+                    break;
+                default: 
+                    ctx.beginPath();
+                    ctx.fillStyle = "#FFFFFF";
+                    ctx.arc(factor.x, factor.y, factor.width/2, 0, Math.PI*2);
+                    ctx.fill();
+                    ctx.closePath();
+                    break;
             }
-            ctx.fill();
-            ctx.closePath();
+            //ctx.fill();
+            //ctx.closePath();
             
             ctx.fillStyle = "#FFFFFF";//添加文字标识
             ctx.font = "12px Arial";
@@ -163,11 +215,11 @@ function drawEffectFactor(ctx, effectFactor) //绘制效果因子提示
             var text = "";
             switch(factor.effectType) 
             {
-                case 9: text = "长"; break;
-                case 10: text = "命"; break;
+                //case 9: text = "长"; break;
+                //case 10: text = "命"; break;
                 case 11: text = "球"; break;
-                case 12: text = "慢"; break;
-                case 13: text = "穿"; break;
+                //case 12: text = "慢"; break;
+                //case 13: text = "穿"; break;
                 case 14: text = "旋"; break;
             }
             ctx.fillText(text, factor.x, factor.y);

@@ -429,8 +429,12 @@
         ctx.clearRect(0, 0, canvas.width, canvas.height);//清除画布
         if(!ballLunched) //球未发射时，球跟随挡板
         {
+            gameState.paddleWidth = paddleWidth;//重置增益
             x = paddleX + paddleWidth/2;
             y = paddleY - ballRadius;
+            gameState.isTankBall = false;
+            gameState.dx = dx;
+            gameState.dy = dy;
         }
         drawBricks(ctx, bricks, brickColumnCount, brickRowCount, brickWidth, brickHeight, brickPadding, brickOffsetTop, brickOffsetLeft);
         drawBall(ctx, x, y, ballRadius);
@@ -469,12 +473,20 @@
                     x = canvas.width/2;
                     y = canvas.height-30;
                     //根据难度重置球速
-                    if (difficulty === "easy") {
+                    if (difficulty === "easy") 
+                    {
                         dx = 2; dy = -2;
-                    } else if (difficulty === "hard") {
+                        paddleWidth = 120;
+                    } 
+                    else if (difficulty === "hard") 
+                    {
                         dx = 5; dy = -5;
-                    } else {
+                        paddleWidth = 80;
+                    } 
+                    else 
+                    {
                         dx = 3; dy = -3;
+                        paddleWidth = 100;
                     }
                     paddleX = (canvas.width-paddleWidth)/2;
                 }
