@@ -56,6 +56,31 @@
 <!-- 初始隐藏画布，等选完难度后再显示 -->
 <canvas id="myCanvas" width="1080" height="600" style="display:none;"></canvas>
 
+<!-- 充值按钮 -->
+<button id="rechargeBtn">充值</button>
+
+<!-- 充值界面 -->
+<div id="rechargeContainer">
+    <div id="rechargeMenu">
+        <h2>充值系统</h2>
+        <p>请选择充值类型</p>
+        <div id="rechargeOptions">
+            <button class="rechargeOption" id="rechargeLives">生命值充值</button>
+            <button class="rechargeOption" id="rechargePaddle">挡板长度充值</button>
+        </div>
+        
+        <div id="rechargeLevels">
+            <h3 id="rechargeTitle">充值档位</h3>
+            <button class="rechargeLevel" data-value="5">小冲一笔 (生命值: 5 / 挡板长度: 140)</button>
+            <button class="rechargeLevel" data-value="10">充一笔 (生命值: 10 / 挡板长度: 180)</button>
+            <button class="rechargeLevel" data-value="20">充 (生命值: 20 / 挡板长度: 240)</button>
+            <button id="backBtn">返回</button>
+        </div>
+    </div>
+</div>
+
+
+
 <!-- 引入外部JS文件 -->
 <script src="draw.js"></script>
 <script src="specialbrick.js"></script>
