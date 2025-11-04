@@ -123,8 +123,8 @@ function brickEffect(brick, c, r, brickArray, brickColumnCount, brickRowCount, g
             var angle = (Math.random() * 120 - 60) * Math.PI / 180; // 随机角度在-60到60度之间
             var speed = Math.sqrt(gameState.dx * gameState.dx + gameState.dy * gameState.dy);
             gameState.extraBalls.push({
-                x: gameState.x,
-                y: gameState.y,
+                x: brick.x + brickWidth/2,
+                y: brick.y + brickHeight/2,
                 dx: speed * Math.sin(angle),
                 dy: - speed * Math.abs(Math.cos(angle)),
                 radius: 10,

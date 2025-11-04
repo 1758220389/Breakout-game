@@ -162,12 +162,12 @@ function drawScore(ctx, score) //绘制分数
     {
         ctx.font = "16px Arial";
         ctx.fillStyle = "#0095DD";
-        ctx.fillText("Score: "+score, 80, 20);
+        ctx.fillText("Score: "+score, 0, 20);
     }
 
 function drawLives(ctx, lives) //绘制生命值
     {
         ctx.font = "16px Arial";
         ctx.fillStyle = "#0095DD";
-        ctx.fillText("Lives: "+lives, canvas.width-65, 20);
+        ctx.fillText("Lives: "+lives, canvas.width-92, 20);
     }
