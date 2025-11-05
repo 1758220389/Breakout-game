@@ -76,6 +76,28 @@
             display: none;
             z-index: 200;
         }
+        
+        /* 重置按钮 */
+        #resetBtn 
+        {
+            position: absolute;
+            top: 10px;
+            left: 100px; /* 放在充值按钮旁边 */
+            padding: 8px 16px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            display: none; /* 初始隐藏，游戏开始后显示 */
+        }
+
+        #resetBtn:disabled 
+        {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
     </style>
 </head>
 <body>
@@ -100,7 +122,8 @@
 
 <!-- 充值按钮 -->
 <button id="rechargeBtn">充值</button>
-
+<!-- 重置按钮 -->
+<button id="resetBtn">重置位置 (2s)</button>
 <!-- 充值界面 -->
 <div id="rechargeContainer">
     <div id="rechargeMenu">
@@ -139,6 +162,7 @@
 
     // 充值系统变量
     var currentRechargeType = ""; // 当前选择的充值类型
+    var isResetting = false; // 重置状态标志
 
     // 充值按钮事件监听
     document.getElementById("rechargeBtn").addEventListener("click", function() {
@@ -167,6 +191,12 @@
     document.getElementById('backBtn').addEventListener('click', function() {
     hideRechargeMenu();
     });
+
+    // 重置按钮事件监听
+    document.getElementById("resetBtn").addEventListener("click", function() {
+    if (!isResetting) {resetPositions();}
+    });
+
     function startGame(level) 
     {
         difficulty = level;
@@ -188,6 +218,7 @@
 
         // === 添加：显示充值按钮 ===
         document.getElementById("rechargeBtn").style.display = "block";
+        document.getElementById("resetBtn").style.display = "block";
 
         // 初始化游戏状态
         ballLunched = false;
@@ -612,7 +643,8 @@
         y += dy;
         requestAnimationFrame(draw);
     }
-    //draw();
+
+
 
     // 显示充值菜单
     function showRechargeMenu() {
@@ -622,7 +654,8 @@
     }
 
     // 显示充值档位
-    function showRechargeLevels() {
+    function showRechargeLevels() 
+    {
     document.getElementById("rechargeOptions").style.display = "none";
     document.getElementById("rechargeLevels").style.display = "block";
     
@@ -630,50 +663,90 @@
     var title = document.getElementById("rechargeTitle");
     var buttons = document.querySelectorAll('.rechargeLevel');
     
-    if (currentRechargeType === "lives") {
+    if (currentRechargeType === "lives") 
+    {
         title.textContent = "生命值充值档位";
         buttons[0].textContent = "小充一笔 (生命值+5)";
         buttons[1].textContent = "充一笔 (生命值+10)";
         buttons[2].textContent = "猛充 (生命值+20)";
-    } else {
+    } 
+    else 
+    {
         title.textContent = "挡板长度充值档位";
         buttons[0].textContent = "小充一笔 (挡板长度+5px)";
         buttons[1].textContent = "充一笔 (挡板长度+10px)";
         buttons[2].textContent = "猛充 (挡板长度+20px)";
-        }
+    }
     }
     // 应用充值效果
-    function applyRecharge(value) {
-        if (currentRechargeType === "lives") {
-            // 增加生命值
-            gameState.lives += value;
-        } else if (currentRechargeType === "paddle") {
-            // 增加挡板长度
-            defaultPaddleWidth = defaultPaddleWidth + value;
-            // 限制最大长度
-            //if (newWidth > 300) newWidth = 300;
+    function applyRecharge(value) 
+    {
+        if (currentRechargeType === "lives") {gameState.lives += value;}// 增加生命值
+        else if (currentRechargeType === "paddle") 
+        {
+            defaultPaddleWidth = defaultPaddleWidth + value;// 增加挡板长度
             gameState.paddleWidth = defaultPaddleWidth;
             paddleWidth = defaultPaddleWidth;
         }
         
-        // 隐藏充值界面
-        hideRechargeMenu();
+        hideRechargeMenu();// 隐藏充值界面
         
         // 显示“充值成功”提示，2秒后自动隐藏
         var tip = document.getElementById('rechargeSuccess');
         tip.style.display = 'block';
-        setTimeout(function(){
-            tip.style.display = 'none';
-        }, 2000);
-
-        // 更新显示
-        //draw();
+        setTimeout(function(){tip.style.display = 'none';}, 2000);
     }
-
     // 隐藏充值菜单
-    function hideRechargeMenu() {
-        document.getElementById("rechargeContainer").style.display = "none";
-    }
+    function hideRechargeMenu() {document.getElementById("rechargeContainer").style.display = "none";}
+
+
+    // 重置球和挡板位置的函数
+    function resetPositions() 
+    {
+        isResetting = true;
+        var resetBtn = document.getElementById("resetBtn");
+    
+        // 禁用按钮并显示倒计时
+        resetBtn.disabled = true;
+        var countdown = 2;
+        resetBtn.textContent = `重置中... (${countdown}s)`;
+    
+        var countdownInterval = setInterval(function() {
+        countdown--;
+        if (countdown > 0) {
+            resetBtn.textContent = `重置中... (${countdown}s)`;
+        }
+        }, 1000);
+    
+        // 2秒后执行重置
+        setTimeout(function() {clearInterval(countdownInterval);
+        
+        // 重置球的位置
+        ballLunched = false;
+        x = canvas.width / 2;
+        y = canvas.height - 30;
+        
+        // 根据难度重置球速
+        if (difficulty === "easy") {dx = 2; dy = -2;} 
+        else if (difficulty === "medium") {dx = 3; dy = -3;} 
+        else if (difficulty === "hard") {dx = 4; dy = -4;}
+        
+        // 重置挡板位置
+        paddleX = (canvas.width - paddleWidth) / 2;
+        
+        // 清除额外的球和效果因子
+        gameState.extraBalls = [];
+        gameState.effectFactor = [];
+        gameState.isTankBall = false;
+        gameState.dx = dx;
+        gameState.dy = dy;
+        
+        // 恢复按钮状态
+        isResetting = false;
+        resetBtn.disabled = false;
+        resetBtn.textContent = "重置位置 (2s)";
+    }, 2000);
+}
 
 </script>
 </body>
