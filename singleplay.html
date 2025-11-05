@@ -346,6 +346,7 @@ document.addEventListener('DOMContentLoaded', function()
     function startGame(level) 
     {
         difficulty = level;
+        gameEnded = false;
         if (level === "easy") {dx = 2; dy = -2; defaultPaddleWidth = 200; paddleWidth = defaultPaddleWidth;} 
         else if (level === "medium") {dx = 3; dy = -3; defaultPaddleWidth = 180; paddleWidth = defaultPaddleWidth;} 
         else if (level === "hard"){dx = 4; dy = -4; defaultPaddleWidth = 150; paddleWidth = defaultPaddleWidth;} 
@@ -426,6 +427,7 @@ document.addEventListener('DOMContentLoaded', function()
     
     var score = 0;
     var ballLunched = false;
+    var gameEnded = false;
 
     var bricks = [];
 
@@ -666,7 +668,7 @@ document.addEventListener('DOMContentLoaded', function()
 */
 
     function draw() 
-    {
+    {    
         ctx.clearRect(0, 0, canvas.width, canvas.height);//清除画布
         if(!ballLunched) //球未发射时，球跟随挡板
         {
@@ -683,6 +685,8 @@ document.addEventListener('DOMContentLoaded', function()
         drawPaddle(ctx, paddleX, paddleY,gameState.paddleWidth, paddleHeight);
         drawScore(ctx, score);
         drawLives(ctx, gameState.lives);
+        if(!gameEnded)
+        {
         collisionDetection();
         updateEffectFactor();
         drawEffectFactor(ctx, gameState.effectFactor);
@@ -784,18 +788,21 @@ document.addEventListener('DOMContentLoaded', function()
             paddleX -= 7;
         }
                     
-        if(countActiveBricks() === 0) // 检查胜利条件
-        {
-            //setTimeout(function(){
-            handleGameWin(score, difficulty, gameState.lives);
-            document.location.reload();
-            //}, 1000);
-            return;
-        }
+
 
         x += dx;
         y += dy;
+        if(countActiveBricks() === 0 ) // 检查胜利条件
+        {
+            gameEnded = true;
+            setTimeout(function(){
+            handleGameWin(score, difficulty, gameState.lives);
+            document.location.reload();
+            }, 100);
+            //return;
+        }
         requestAnimationFrame(draw);
+    }
     }
 
 
