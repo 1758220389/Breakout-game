@@ -292,6 +292,10 @@
     var canvas = document.getElementById("myCanvas");
     var ctx = canvas.getContext("2d");
 
+    // 充值系统变量
+    var currentRechargeType = ""; // 当前选择的充值类型
+    var isResetting = false; // 重置状态标志
+    
 // 等待DOM完全加载
 document.addEventListener('DOMContentLoaded', function() 
 {
@@ -300,9 +304,7 @@ document.addEventListener('DOMContentLoaded', function()
     document.getElementById("mediumBtn").addEventListener("click", function() {startGame("medium");});
     document.getElementById("hardBtn").addEventListener("click", function() {startGame("hard");});
 
-    // 充值系统变量
-    var currentRechargeType = ""; // 当前选择的充值类型
-    var isResetting = false; // 重置状态标志
+
 
     // 充值按钮事件监听
     document.getElementById("rechargeBtn").addEventListener("click", function() {
