@@ -98,6 +98,138 @@
             background-color: #cccccc;
             cursor: not-allowed;
         }
+
+        /* 分数记录系统按钮 */
+        #leaderboardBtn, #exportBtn, #clearBtn 
+        {
+            position: absolute;
+            padding: 8px 16px;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            display: none;
+        }
+
+        #leaderboardBtn 
+        {
+            top: 10px;
+            right: 250px;
+            background-color: #4CAF50;
+        }
+
+        #leaderboardBtn:hover 
+        {
+            background-color: #45a049;
+        }
+
+        #exportBtn 
+        {
+            top: 10px;
+            right: 130px;
+            background-color: #2196F3;
+        }
+
+        #exportBtn:hover 
+        {
+            background-color: #0b7dda;
+        }
+
+        #clearBtn 
+        {
+            top: 10px;
+            right: 10px;
+            background-color: #f44336;
+        }
+
+        #clearBtn:hover 
+        {
+            background-color: #da190b;
+        }
+        
+    /* 充值容器样式优化 */
+    #rechargeContainer {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.7);
+        display: none;
+        justify-content: center;
+        align-items: center;
+        z-index: 100;
+    }
+
+    #rechargeMenu {
+        background-color: white;
+        padding: 30px;
+        border-radius: 10px;
+        text-align: center;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+    }
+
+    #rechargeOptions {
+        margin-top: 20px;
+    }
+
+    .rechargeOption {
+        display: block;
+        width: 100%;
+        padding: 15px;
+        margin: 10px 0;
+        font-size: 16px;
+        cursor: pointer;
+        background-color: #0095DD;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        transition: background-color 0.3s;
+    }
+
+    .rechargeOption:hover {
+        background-color: #0077BB;
+    }
+
+    #rechargeLevels {
+        display: none;
+    }
+
+    .rechargeLevel {
+        display: block;
+        width: 100%;
+        padding: 15px;
+        margin: 10px 0;
+        font-size: 14px;
+        cursor: pointer;
+        background-color: #4CAF50;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        transition: background-color 0.3s;
+    }
+
+    .rechargeLevel:hover {
+        background-color: #45a049;
+    }
+
+    #backBtn {
+        display: block;
+        width: 100%;
+        padding: 12px;
+        margin-top: 15px;
+        font-size: 14px;
+        cursor: pointer;
+        background-color: #757575;
+        color: white;
+        border: none;
+        border-radius: 5px;
+    }
+
+    #backBtn:hover {
+        background-color: #616161;
+    }
     </style>
 </head>
 <body>
@@ -120,10 +252,10 @@
 <!-- 初始隐藏画布，等选完难度后再显示 -->
 <canvas id="myCanvas" width="1080" height="600" style="display:none;"></canvas>
 
-<!-- 充值按钮 -->
-<button id="rechargeBtn">充值</button>
 <!-- 重置按钮 -->
 <button id="resetBtn">重置位置 (2s)</button>
+<!-- 充值按钮 -->
+<button id="rechargeBtn">充值</button>
 <!-- 充值界面 -->
 <div id="rechargeContainer">
     <div id="rechargeMenu">
@@ -143,18 +275,26 @@
         </div>
     </div>
 </div>
+<!-- 充值成功提示 -->
+<div id="rechargeSuccess">充值成功</div>
 
-    <!-- 充值成功提示 -->
-    <div id="rechargeSuccess">充值成功</div>
+<!-- 分数记录系统按钮 -->
+<button id="leaderboardBtn">📊 排行榜</button>
+<button id="exportBtn">📥 导出CSV</button>
+<button id="clearBtn">🗑️ 清空记录</button>
 
 <!-- 引入外部JS文件 -->
 <script src="draw.js"></script>
 <script src="specialbrick.js"></script>
+<script src="rank.js"></script>
 
 <script>//以下为JS代码
     var canvas = document.getElementById("myCanvas");
     var ctx = canvas.getContext("2d");
 
+// 等待DOM完全加载
+document.addEventListener('DOMContentLoaded', function() 
+{
     //难度选择按钮事件监听
     document.getElementById("easyBtn").addEventListener("click", function() {startGame("easy");});
     document.getElementById("mediumBtn").addEventListener("click", function() {startGame("medium");});
@@ -197,6 +337,12 @@
     if (!isResetting) {resetPositions();}
     });
 
+    // 分数记录按钮事件监听
+    document.getElementById("leaderboardBtn").addEventListener("click", showLeaderboard);
+    document.getElementById("exportBtn").addEventListener("click", exportToCSV);
+    document.getElementById("clearBtn").addEventListener("click", clearAllRecords);
+});
+
     function startGame(level) 
     {
         difficulty = level;
@@ -216,9 +362,15 @@
         document.getElementById("difficultyContainer").style.display = "none";
         canvas.style.display = "block";
 
-        // === 添加：显示充值按钮 ===
+        // 显示充值按钮
         document.getElementById("rechargeBtn").style.display = "block";
         document.getElementById("resetBtn").style.display = "block";
+        
+        // 显示分数记录系统按钮
+        document.getElementById("leaderboardBtn").style.display = "block";
+        document.getElementById("exportBtn").style.display = "block";
+        document.getElementById("clearBtn").style.display = "block";
+
 
         // 初始化游戏状态
         ballLunched = false;
@@ -593,7 +745,7 @@
                 gameState.lives--;
                 if(!gameState.lives) 
                 {
-                    alert("GAME OVER");
+                    handleGameOver(score, difficulty);
                     document.location.reload();
                     return;
                 }
@@ -634,9 +786,11 @@
                     
         if(countActiveBricks() === 0) // 检查胜利条件
         {
-        alert("YOU WIN, CONGRATS!");
-        document.location.reload();
-        return;
+            //setTimeout(function(){
+            handleGameWin(score, difficulty, gameState.lives);
+            document.location.reload();
+            //}, 1000);
+            return;
         }
 
         x += dx;
@@ -647,7 +801,8 @@
 
 
     // 显示充值菜单
-    function showRechargeMenu() {
+    function showRechargeMenu() 
+    {
         document.getElementById("rechargeContainer").style.display = "flex";
         document.getElementById("rechargeOptions").style.display = "block";
         document.getElementById("rechargeLevels").style.display = "none";
