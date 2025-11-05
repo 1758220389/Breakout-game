@@ -113,9 +113,9 @@
         
         <div id="rechargeLevels">
             <h3 id="rechargeTitle">充值档位</h3>
-            <button class="rechargeLevel" data-value="5">小充一笔 (生命值: 5 / 挡板长度: 140)</button>
-            <button class="rechargeLevel" data-value="10">充一笔 (生命值: 10 / 挡板长度: 180)</button>
-            <button class="rechargeLevel" data-value="20">猛充 (生命值: 20 / 挡板长度: 240)</button>
+            <button class="rechargeLevel" data-value="5">小充一笔 (生命值+5 / 挡板长度+5px)</button>
+            <button class="rechargeLevel" data-value="10">充一笔 (生命值+10 / 挡板长度+10px)</button>
+            <button class="rechargeLevel" data-value="20">猛充 (生命值+20 / 挡板长度+20px)</button>
             <button id="backBtn">返回</button>
         </div>
     </div>
@@ -170,9 +170,9 @@
     function startGame(level) 
     {
         difficulty = level;
-        if (level === "easy") {dx = 2; dy = -2; paddleWidth = 200;} 
-        else if (level === "hard") {dx = 4; dy = -4; paddleWidth = 150;} 
-        else {dx = 3; dy = -3; paddleWidth = 180;} 
+        if (level === "easy") {dx = 2; dy = -2; defaultPaddleWidth = 200; paddleWidth = defaultPaddleWidth;} 
+        else if (level === "medium") {dx = 3; dy = -3; defaultPaddleWidth = 180; paddleWidth = defaultPaddleWidth;} 
+        else if (level === "hard"){dx = 4; dy = -4; defaultPaddleWidth = 150; paddleWidth = defaultPaddleWidth;} 
 
         //初始化游戏状态
         gameState.dx = dx;
@@ -202,6 +202,7 @@
     var dx ;//球的水平速度
     var dy ;//球的竖直速度
 
+    var defaultPaddleWidth = 200;
     var paddleHeight = 10;//挡板尺寸
     var paddleWidth = 120;
     var paddleX = (canvas.width-paddleWidth)/2;//挡板的初始位置
@@ -265,7 +266,7 @@
                     specialType = normalBrick;
                 }
 
-                bricks[c][r] = { x: 0, y: 0, specialBrick: normalBrick, status: 1 };
+                bricks[c][r] = { x: 0, y: 0, specialBrick: specialType, status: 1 };
 
                 if (bricks[c][r].specialBrick === hardBrick)
                 {
@@ -573,7 +574,8 @@
                     if (difficulty === "easy") 
                     {
                         dx = 2; dy = -2;
-                        paddleWidth = 200;
+                        paddleWidth = defaultPaddleWidth;
+                        //paddleWidth = 200;
                     } 
                     else if (difficulty === "hard") 
                     {
@@ -630,14 +632,14 @@
     
     if (currentRechargeType === "lives") {
         title.textContent = "生命值充值档位";
-        buttons[0].textContent = "小充一笔 (生命值: 5)";
-        buttons[1].textContent = "充一笔 (生命值: 10)";
-        buttons[2].textContent = "充 (生命值: 20)";
+        buttons[0].textContent = "小充一笔 (生命值+5)";
+        buttons[1].textContent = "充一笔 (生命值+10)";
+        buttons[2].textContent = "猛充 (生命值+20)";
     } else {
         title.textContent = "挡板长度充值档位";
-        buttons[0].textContent = "小充一笔 (挡板长度: 140)";
-        buttons[1].textContent = "充一笔 (挡板长度: 180)";
-        buttons[2].textContent = "充 (挡板长度: 240)";
+        buttons[0].textContent = "小充一笔 (挡板长度+5px)";
+        buttons[1].textContent = "充一笔 (挡板长度+10px)";
+        buttons[2].textContent = "猛充 (挡板长度+20px)";
         }
     }
     // 应用充值效果
@@ -647,11 +649,11 @@
             gameState.lives += value;
         } else if (currentRechargeType === "paddle") {
             // 增加挡板长度
-            var newWidth = gameState.paddleWidth + value;
+            defaultPaddleWidth = defaultPaddleWidth + value;
             // 限制最大长度
-            if (newWidth > 300) newWidth = 300;
-            gameState.paddleWidth = newWidth;
-            paddleWidth = newWidth;
+            //if (newWidth > 300) newWidth = 300;
+            gameState.paddleWidth = defaultPaddleWidth;
+            paddleWidth = defaultPaddleWidth;
         }
         
         // 隐藏充值界面
