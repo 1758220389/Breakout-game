@@ -1,0 +1,758 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Gamedev Canvas Workshop - lesson 10: finishing up</title>
+    <style>
+    * { padding: 0; margin: 0; } 
+    canvas { background: #eee; display: block; margin: 0 auto; }
+            /* 难度选择界面的样式 */
+        #difficultyContainer 
+        { 
+            text-align: center; 
+            margin-top: 150px; 
+        }
+        #difficultyContainer button 
+        {
+            padding: 10px 20px;
+            margin: 10px;
+            font-size: 16px;            
+            cursor: pointer;
+            background-color: #0095DD;
+            color: white;
+            border: none;
+            border-radius: 5px;
+        }
+        #difficultyContainer button:hover 
+        {
+            background-color: #0077BB;
+        }
+        #instructions 
+        {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+
+<!-- 难度选择界面 -->
+<div id="difficultyContainer">
+    <h1>欢迎来到打砖块游戏！</h1>
+    <h2>请选择游戏难度</h2>
+    <button id="easyBtn">简单</button>
+    <button id="mediumBtn">中等</button>
+    <button id="hardBtn">困难</button>
+</div>
+
+<div id="instructions">
+        <h3>游戏说明</h3>
+        <p>使用 <strong>左右方向键</strong> 控制挡板移动</p>
+        <p><strong>鼠标点击</strong> 确定球发射方向（鼠标位置决定方向）</p>
+        <p>打破所有砖块即可获胜！</p>
+</div>
+
+<!-- 初始隐藏画布，等选完难度后再显示 -->
+<canvas id="myCanvas" width="600" height="800" style="display:none;"></canvas>
+
+<!-- 引入外部JS文件 -->
+<script src="draw.js"></script>
+<script src="specialbrick.js"></script>
+
+<script>//以下为JS代码
+    var canvas = document.getElementById("myCanvas");
+    var ctx = canvas.getContext("2d");
+
+    // 游戏变量声明
+    var ballRadius = 10;//球的半径
+    var x = canvas.width/2;//球的初始位置
+    var y = canvas.height-30;
+    var dx ;//球的水平速度
+    var dy ;//球的竖直速度
+    var paddleHeight = 10;//挡板尺寸
+    var paddleWidth = 120;
+    var paddleX = (canvas.width-paddleWidth)/2;//挡板的初始位置
+    var paddleY = canvas.height - paddleHeight;
+    var prevPaddleX = paddleX; // 记录上一帧挡板位置
+    var paddleSpeed = 0; // 挡板当前速度
+    var rightPressed = false;//按键状态
+    var leftPressed = false;
+    var brickRowCount = 36;//砖块摆放
+    var brickColumnCount = 13;
+    var brickWidth = 25;//砖块尺寸
+    var brickHeight = 25;
+    var brickPadding = 3;//砖块间距
+    var brickOffsetTop = 30;//砖块起始位置
+    var brickOffsetLeft = 30;
+    var normalBrick = 0;//砖块类型，0普通砖块
+    var hardBrick = 1;
+    var vectorBrickUp = 2;//矢量砖块
+    var vectorBrickDown = 3;
+    var vectorBrickLeft = 4;
+    var vectorBrickRight = 5;
+    var boomBrick = 6;
+    var chainBrick = 7;//连锁砖块
+    var motherBrick = 8;//子母砖块
+    var longPaddle = 9;
+    var lifeUp = 10;
+    var extraBall = 11;
+    var speedDown = 12;//减速
+    var tankBall = 13;//穿透因子
+    var rotate = 14;//旋转因子
+    var gameState = {score: 0, lives: 1000, hitSide: "0", paddleWidth: 120, isTankBall: false, dx: 0, dy: 0, effectFactor: []};
+    var score = 0;
+    var ballLunched = false;
+    var bricks = [];
+    var gameStarted = false;
+    var difficulty;
+
+    // 双人模式变量
+    var multiplayerMode = false;
+    var topPaddleX = (canvas.width - paddleWidth) / 2;
+    var topPaddleY = 30;
+    var playerTopLives = 3;
+    var playerBottomLives = 3;
+    var playerTopScore = 0;
+    var playerBottomScore = 0;
+    var aPressed = false;
+    var dPressed = false;
+    var wPressed = false;
+    var serveToPlayer = "top";
+    var gameOver = false;
+    var winner = null;
+
+    //难度选择按钮事件监听
+    document.getElementById("easyBtn").addEventListener("click", function() {startGame("easy");});
+    document.getElementById("mediumBtn").addEventListener("click", function() {startGame("medium");});
+    document.getElementById("hardBtn").addEventListener("click", function() {startGame("hard");});
+    
+    // 添加测试双人模式的按钮
+    var testMultiplayerBtn = document.createElement("button");
+    testMultiplayerBtn.textContent = "测试双人模式";
+    testMultiplayerBtn.style.margin = "10px";
+    testMultiplayerBtn.style.padding = "10px 20px";
+    testMultiplayerBtn.style.fontSize = "16px";
+    testMultiplayerBtn.style.cursor = "pointer";
+    testMultiplayerBtn.style.backgroundColor = "#FF6B6B";
+    testMultiplayerBtn.style.color = "white";
+    testMultiplayerBtn.style.border = "none";
+    testMultiplayerBtn.style.borderRadius = "5px";
+    document.getElementById("difficultyContainer").appendChild(testMultiplayerBtn);
+    testMultiplayerBtn.addEventListener("click", function() {
+        startMultiplayerTest();
+    });
+
+    function startGame(level) {
+        difficulty = level;
+        if (level === "easy") {dx = 2; dy = -2; paddleWidth = 120;} 
+        else if (level === "hard") {dx = 5; dy = -5; paddleWidth = 80;} 
+        else {dx = 3; dy = -3; paddleWidth = 100;} 
+
+        //初始化游戏状态
+        gameState.dx = dx;
+        gameState.dy = dy;
+        gameState.paddleWidth = paddleWidth;
+        gameState.isTankBall = false;
+        gameState.score = score;
+        gameState.lives = 39999;
+
+        // 隐藏难度选择界面，显示游戏画布
+        document.getElementById("difficultyContainer").style.display = "none";
+        canvas.style.display = "block";
+
+        // 初始化游戏状态
+        ballLunched = false;
+        initBricks();
+        gameStarted = true;
+        draw();
+    }
+
+    function startMultiplayerTest() {
+        multiplayerMode = true;
+        difficulty = "medium";
+        
+        // 初始化游戏状态
+        dx = 3;
+        dy = -3;
+        paddleWidth = 100;
+        gameState.paddleWidth = paddleWidth;
+        
+        // 初始化玩家状态
+        playerTopLives = 3;
+        playerBottomLives = 3;
+        playerTopScore = 0;
+        playerBottomScore = 0;
+        gameOver = false;
+        
+        // 隐藏难度选择界面，显示游戏画布
+        document.getElementById("difficultyContainer").style.display = "none";
+        canvas.style.display = "block";
+        
+        // 初始化砖块和游戏状态
+        initMultiplayerBricks();
+        ballLunched = false;
+        gameStarted = true;
+        
+        // 重置球的位置
+        resetBall('top');
+        
+        draw();
+    }
+
+    function initBricks() //砖块数组初始化
+    {
+        bricks = [];
+        for(var c=0; c<brickColumnCount; c++) 
+        {
+            bricks[c] = [];
+            for(var r=0; r<brickRowCount; r++) 
+            {
+                var isSpecial = Math.random() < 0.2;//20%概率生成特殊砖块
+                if (isSpecial) 
+                {
+                    //随机数生成特殊砖块类型
+                    var specialType = Math.floor(Math.random() * 14) + 1; // 1-8的随机数对应不同的特殊砖块
+                } 
+                else 
+                {
+                    specialType = normalBrick;
+                }
+
+                bricks[c][r] = { x: 0, y: 0, specialBrick: specialType, status: 1 };
+
+                if (bricks[c][r].specialBrick === hardBrick)
+                {
+                    bricks[c][r].status = 2; // 硬砖需要两次击打
+                }
+            }
+        }
+    }
+
+    // 双人模式砖块初始化
+    function initMultiplayerBricks() {
+    bricks = [];
+    for(var c=0; c<brickColumnCount; c++) {
+        bricks[c] = [];
+        for(var r=0; r<brickRowCount; r++) {
+            // 创建中间的分隔区域，但有通道
+            var status = 0;
+            
+            // 在画布中间区域生成砖块
+            var centerStart = Math.floor(brickRowCount/2) - 4;
+            var centerEnd = Math.floor(brickRowCount/2) + 4;
+            
+            if(c >= 2 && c <= 5 && r >= centerStart && r <= centerEnd) {
+                if(Math.random() < 0.8) { // 增加生成概率
+                    status = 1;
+                }
+            }
+                
+                var isSpecial = Math.random() < 0.1;
+                var specialType = isSpecial ? Math.floor(Math.random() * 8) + 1 : normalBrick;
+                
+                bricks[c][r] = { 
+                    x: 0, 
+                    y: 0, 
+                    specialBrick: specialType, 
+                    status: status
+                };
+            }
+        }
+    }
+
+    function collisionDetection()//小球和砖块碰撞函数
+    {
+        for(var c=0; c<brickColumnCount; c++) 
+        {
+            for(var r=0; r<brickRowCount; r++) 
+            {
+                var b = bricks[c][r];
+                if(b.status >= 1) 
+                {
+                    if(x + ballRadius > b.x && x - ballRadius < b.x + brickWidth && y + ballRadius > b.y && y - ballRadius < b.y + brickHeight)
+                    {
+                        // 确定球和砖块碰撞的边
+                        var distToLeft = Math.abs((x + ballRadius) - b.x);
+                        var distToRight = Math.abs((x - ballRadius) - (b.x + brickWidth));
+                        var distToTop = Math.abs((y + ballRadius) - b.y);
+                        var distToBottom = Math.abs((y - ballRadius) - (b.y + brickHeight));
+                        
+                        var minDist = Math.min(distToLeft, distToRight, distToTop, distToBottom);
+                        if (minDist === distToLeft) {gameState.hitSide = "left";} 
+                        else if (minDist === distToRight) {gameState.hitSide = "right";} 
+                        else if (minDist === distToTop) {gameState.hitSide = "top";} 
+                        else {gameState.hitSide = "bottom";}             
+                        // 先处理反弹再处理方块特效
+                        // 只有砖块被摧毁时才反弹（除非是穿透球）
+                    if(!gameState.isTankBall) 
+                    {
+                        // 计算碰撞方向
+                        var ballCenterX = x;
+                        var ballCenterY = y;
+                        var brickCenterX = b.x + brickWidth/2;
+                        var brickCenterY = b.y + brickHeight/2;
+                        
+                        var dxCenter = ballCenterX - brickCenterX;
+                        var dyCenter = ballCenterY - brickCenterY;
+                        
+                        // 根据碰撞方向反弹
+                        if(Math.abs(dxCenter) > Math.abs(dyCenter)) 
+                        {
+                            // 水平碰撞
+                            dx = -dx;
+                            gameState.dx = dx;
+                        } 
+                        else 
+                        {
+                            // 垂直碰撞
+                            dy = -dy;
+                            gameState.dy = dy;
+                        }
+                    
+                        brickEffect(b, c, r, bricks, brickColumnCount, brickRowCount, gameState);
+                        // 更新游戏状态
+                        score = gameState.score;
+                        paddleWidth = gameState.paddleWidth;
+                        dx = gameState.dx;
+                        dy = gameState.dy;
+                        return;
+                    }
+                    else//穿透球模式
+                    {
+                        brickEffect(b, c, r, bricks, brickColumnCount, brickRowCount, gameState);
+                        score = gameState.score;
+                        paddleWidth = gameState.paddleWidth;
+                        //dx = gameState.dx;
+                        //dy = gameState.dy;
+                    }
+                    if(countActiveBricks() === 0) // 检查胜利条件
+                    {
+                        alert("YOU WIN, CONGRATS!");
+                        document.location.reload();
+                    }
+                    return;// 一次只处理一个碰撞
+                    }
+                }
+            }
+        }
+    }
+
+    // 双人模式碰撞检测
+    function multiplayerCollisionDetection() {
+        for(var c=0; c<brickColumnCount; c++) {
+            for(var r=0; r<brickRowCount; r++) {
+                var b = bricks[c][r];
+                if(b.status >= 1) {
+                    if(x + ballRadius > b.x && x - ballRadius < b.x + brickWidth && y + ballRadius > b.y && y - ballRadius < b.y + brickHeight) {
+                        // 确定碰撞方向
+                        var ballCenterX = x;
+                        var ballCenterY = y;
+                        var brickCenterX = b.x + brickWidth/2;
+                        var brickCenterY = b.y + brickHeight/2;
+                        
+                        var dxCenter = ballCenterX - brickCenterX;
+                        var dyCenter = ballCenterY - brickCenterY;
+                        
+                        // 根据碰撞方向反弹
+                        if(Math.abs(dxCenter) > Math.abs(dyCenter)) {
+                            dx = -dx;
+                        } else {
+                            dy = -dy;
+                        }
+                    
+                        // 砖块被击中后消失
+                        b.status = 0;
+                        
+                        // 随机决定哪个玩家得分
+                        if(Math.random() < 0.5) {
+                            playerTopScore += 10;
+                        } else {
+                            playerBottomScore += 10;
+                        }
+                        
+                        return;
+                    }
+                }
+            }
+        }
+        
+        // 上方挡板碰撞
+        if(y - ballRadius < topPaddleY + paddleHeight && 
+           y + ballRadius > topPaddleY && 
+           x + ballRadius > topPaddleX && 
+           x - ballRadius < topPaddleX + paddleWidth) {
+            
+            var hitPos = (x - (topPaddleX + paddleWidth/2)) / (paddleWidth/2);
+            dy = Math.abs(dy);
+            dx += hitPos * 2;
+            
+            var maxDx = 8;
+            if(dx > maxDx) dx = maxDx;
+            if(dx < -maxDx) dx = -maxDx;
+        }
+        
+        // 下方挡板碰撞
+        if(y + ballRadius > paddleY && 
+           y - ballRadius < paddleY + paddleHeight && 
+           x + ballRadius > paddleX && 
+           x - ballRadius < paddleX + paddleWidth) {
+            
+            var hitPos = (x - (paddleX + paddleWidth/2)) / (paddleWidth/2);
+            dy = -Math.abs(dy);
+            dx += hitPos * 2;
+            
+            var maxDx = 8;
+            if(dx > maxDx) dx = maxDx;
+            if(dx < -maxDx) dx = -maxDx;
+        }
+    }
+
+    function countActiveBricks() 
+    {
+        var count = 0;
+        for(var c=0; c<brickColumnCount; c++) 
+        {
+            for(var r=0; r<brickRowCount; r++) 
+            {
+                if(bricks[c][r].status > 0) 
+                {
+                    count++;
+                }
+            }
+        }
+        return count;
+    }
+
+    function updateEffectFactor()
+    {
+        if(!gameState.effectFactor) return;
+
+        for(var i = gameState.effectFactor.length - 1; i >= 0; i--) 
+        {
+            var factor = gameState.effectFactor[i];
+            factor.y += factor.speed;
+
+            // 检测是否被挡板接住
+            if(factor.y + factor.height >= paddleY && factor.y <= paddleY + paddleHeight &&
+               factor.x + factor.width >= paddleX && factor.x <= paddleX + paddleWidth) 
+            {
+                // 应用效果
+                applyEffectFactor(factor.effectType, gameState);
+                paddleWidth = gameState.paddleWidth;
+                dx = gameState.dx;
+                dy = gameState.dy;
+                lives = gameState.lives;
+                // 从数组中移除该效果因子
+                gameState.effectFactor.splice(i, 1);
+            }
+            // 如果掉落到画布底部，移除该效果因子
+            else if(factor.y > canvas.height) 
+            {
+                gameState.effectFactor.splice(i, 1);
+            }
+        }
+    }
+
+    // 按键处理
+    document.addEventListener("keydown", keyDownHandler, false);
+    document.addEventListener("keyup", keyUpHandler, false);
+
+    function keyDownHandler(e) {
+        if(e.code == "ArrowRight") {
+            rightPressed = true;
+        }
+        else if(e.code == "ArrowLeft") {
+            leftPressed = true;
+        }
+        else if(e.code == 'KeyA') {
+            aPressed = true;
+        }
+        else if(e.code == 'KeyD') {
+            dPressed = true;
+        }
+        else if(e.code == 'KeyW') {
+        wPressed = true;
+    // ★★★ 修复：添加W键发球的直接处理 ★★★
+        if(multiplayerMode && gameStarted && !ballLunched && serveToPlayer === "top") {
+        ballLunched = true;
+    }
+}
+        else if(e.code == 'ArrowUp' && gameStarted && !ballLunched && (!multiplayerMode || serveToPlayer === "bottom")) {
+            ballLunched = true;
+        }
+        else if(e.code == 'KeyW' && multiplayerMode && gameStarted && !ballLunched && serveToPlayer === "top") {
+            ballLunched = true;
+        }
+        else if(e.code == 'Space' && gameOver) {
+            document.location.reload();
+        }
+    }
+
+    function keyUpHandler(e) {
+        if(e.code == 'ArrowRight') {
+            rightPressed = false;
+        }
+        else if(e.code == 'ArrowLeft') {
+            leftPressed = false;
+        }
+        else if(e.code == 'KeyA') {
+            aPressed = false;
+        }
+        else if(e.code == 'KeyD') {
+            dPressed = false;
+        }
+        else if(e.code == 'KeyW') {
+            wPressed = false;
+        }
+    }
+
+    // 重置球函数
+    function resetBall(serveTo) {
+        ballLunched = false;
+        x = canvas.width / 2;
+        y = serveTo === 'top' ? topPaddleY + paddleHeight + ballRadius : paddleY - ballRadius;
+        
+        if (difficulty === "easy") {
+            dx = 2 * (Math.random() > 0.5 ? 1 : -1);
+            dy = serveTo === 'top' ? 2 : -2;
+        } else if (difficulty === "hard") {
+            dx = 5 * (Math.random() > 0.5 ? 1 : -1);
+            dy = serveTo === 'top' ? 5 : -5;
+        } else {
+            dx = 3 * (Math.random() > 0.5 ? 1 : -1);
+            dy = serveTo === 'top' ? 3 : -3;
+        }
+        
+        serveToPlayer = serveTo;
+    }
+
+    function draw() 
+    {
+        if(gameOver) {
+            // 游戏结束，只绘制结束画面
+            drawGameOverScreen();
+            return;
+        }
+        
+        ctx.clearRect(0, 0, canvas.width, canvas.height);//清除画布
+        
+        // 球未发射时的位置更新
+        if(!ballLunched) {
+            if(multiplayerMode) {
+                if(serveToPlayer === "top") {
+                    x = topPaddleX + paddleWidth/2;
+                    y = topPaddleY + paddleHeight + ballRadius;
+                } else {
+                    x = paddleX + paddleWidth/2;
+                    y = paddleY - ballRadius;
+                }
+            } else {
+                // 单人模式
+                gameState.paddleWidth = paddleWidth;//重置增益
+                x = paddleX + paddleWidth/2;
+                y = paddleY - ballRadius;
+                gameState.isTankBall = false;
+                gameState.dx = dx;
+                gameState.dy = dy;
+            }
+        }
+        
+        drawBricks(ctx, bricks, brickColumnCount, brickRowCount, brickWidth, brickHeight, brickPadding, brickOffsetTop, brickOffsetLeft);
+        drawBall(ctx, x, y, ballRadius);
+        drawPaddle(ctx, paddleX, paddleY, gameState.paddleWidth, paddleHeight);
+        
+        // 双人模式绘制
+        if(multiplayerMode) {
+            // 绘制上方挡板
+            ctx.fillStyle = "#FF4444";
+            ctx.fillRect(topPaddleX, topPaddleY, paddleWidth, paddleHeight);
+            
+            // 绘制玩家信息
+            ctx.font = "16px Arial";
+            ctx.fillStyle = "#FF4444";
+            ctx.fillText("上方: " + playerTopScore + " 生命: " + playerTopLives, 20, 40); // 向下移动
+    
+            ctx.fillStyle = "#0095DD";
+            ctx.fillText("下方: " + playerBottomScore + " 生命: " + playerBottomLives, canvas.width - 180, canvas.height - 40); // 向上移动
+    
+            // 绘制中间分隔线
+            ctx.strokeStyle = "rgba(255, 255, 255, 0.3)";
+            ctx.setLineDash([5, 5]);
+            ctx.beginPath();
+            ctx.moveTo(0, canvas.height/2);
+            ctx.lineTo(canvas.width, canvas.height/2);
+            ctx.stroke();
+            ctx.setLineDash([]);
+            
+            // 发球提示
+            if(!ballLunched) {
+                ctx.fillStyle = "#FFFFFF";
+                ctx.font = "14px Arial";
+                if(serveToPlayer === "top") {
+                    ctx.fillText("上方玩家按 W 发球", canvas.width/2 - 70, canvas.height/2 - 10);
+                } else {
+                    ctx.fillText("下方玩家按 ↑ 发球", canvas.width/2 - 70, canvas.height/2 + 20);
+                }
+            }
+        } else {
+            // 单人模式绘制分数和生命值
+            drawScore(ctx, score);
+            drawLives(ctx, gameState.lives);
+        }
+        
+        // 碰撞检测
+        if(multiplayerMode) {
+            multiplayerCollisionDetection();
+        } else {
+            collisionDetection();
+        }
+        
+        updateEffectFactor();
+        drawEffectFactor(ctx, gameState.effectFactor);
+        
+        // 计算挡板速度
+        paddleSpeed = (paddleX - prevPaddleX) / 1;
+        prevPaddleX = paddleX;
+        
+        // 边界检测
+        if(multiplayerMode) {
+            // 双人模式边界检测
+            if(x + dx > canvas.width - ballRadius || x + dx < ballRadius) {
+                dx = -dx;
+            }
+            
+            // 上下边界 - 球出界则对方得分
+            if(y + dy < 0) {
+                // 球从上方出界，下方玩家得分
+                playerBottomScore += 50;
+                playerTopLives--;
+                if(playerTopLives <= 0) {
+                    gameOver = true;
+                    winner = "bottom";
+                } else {
+                    resetBall("top");
+                }
+            } else if(y + dy > canvas.height) {
+                // 球从下方出界，上方玩家得分
+                playerTopScore += 50;
+                playerBottomLives--;
+                if(playerBottomLives <= 0) {
+                    gameOver = true;
+                    winner = "top";
+                } else {
+                    resetBall("bottom");
+                }
+            }
+        } else {
+            // 单人模式边界检测
+            if(x + dx > canvas.width-ballRadius || x + dx < ballRadius) {
+                dx = -dx;
+            }
+            if(y + dy < ballRadius) {
+                dy = -dy;
+            }
+            else if(y + dy > canvas.height-ballRadius) {
+                if(x > paddleX && x < paddleX + paddleWidth) {
+                    // 球与挡板碰撞
+                    var hitPos = (x - (paddleX + paddleWidth/2)) / (paddleWidth/2);
+                    dy = -Math.abs(dy);
+                    var speedTransferFactor = 0.5;
+                    dx += paddleSpeed * speedTransferFactor;
+                    var angleFactor = 2;
+                    dx += hitPos * angleFactor;
+                    var maxDx = 10;
+                    if(dx > maxDx) dx = maxDx;
+                    if(dx < -maxDx) dx = -maxDx;
+                    var minDy = 2;
+                    if(Math.abs(dy) < minDy) {
+                        dy = (dy > 0 ? minDy : -minDy);
+                    }
+                }
+                else {
+                    ballLunched = false;
+                    gameState.lives--;
+                    if(!gameState.lives) {
+                        alert("GAME OVER");
+                        document.location.reload();
+                    }
+                    else {
+                        x = canvas.width/2;
+                        y = canvas.height-30;
+                        if (difficulty === "easy") {
+                            dx = 2; dy = -2;
+                            paddleWidth = 120;
+                        } 
+                        else if (difficulty === "hard") {
+                            dx = 5; dy = -5;
+                            paddleWidth = 80;
+                        } 
+                        else {
+                            dx = 3; dy = -3;
+                            paddleWidth = 100;
+                        }
+                        paddleX = (canvas.width-paddleWidth)/2;
+                    }
+                }
+            }
+        }
+
+        // 挡板移动
+        if(multiplayerMode) {
+            // 上方挡板移动（A和D键）
+            if(aPressed && topPaddleX > 0) {
+                topPaddleX -= 7;
+            }
+            if(dPressed && topPaddleX < canvas.width - paddleWidth) {
+                topPaddleX += 7;
+            }
+            
+            // 下方挡板移动（左右箭头）
+            if(rightPressed && paddleX < canvas.width - paddleWidth) {
+                paddleX += 7;
+            }
+            if(leftPressed && paddleX > 0) {
+                paddleX -= 7;
+            }
+        } else {
+            // 单人模式挡板移动
+            if(rightPressed && paddleX < canvas.width-paddleWidth) {
+                paddleX += 7;
+            }
+            else if(leftPressed && paddleX > 0) {
+                paddleX -= 7;
+            }
+        }
+
+        // 更新球位置
+        x += dx;
+        y += dy;
+        
+        requestAnimationFrame(draw);
+    }
+
+    // 游戏结束画面绘制
+    function drawGameOverScreen() {
+        ctx.fillStyle = "rgba(0, 0, 0, 0.7)";
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        
+        ctx.fillStyle = "#FFFFFF";
+        ctx.font = "36px Arial";
+        ctx.textAlign = "center";
+        
+        if(winner === "top") {
+            ctx.fillText("上方玩家获胜!", canvas.width/2, canvas.height/2 - 50);
+        } else {
+            ctx.fillText("下方玩家获胜!", canvas.width/2, canvas.height/2 - 50);
+        }
+        
+        ctx.font = "20px Arial";
+        ctx.fillText("按空格键重新开始", canvas.width/2, canvas.height/2 + 20);
+        ctx.textAlign = "left";
+    }
+
+    // 初始绘制
+    draw();
+</script>
+</body>
+</html>
