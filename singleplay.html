@@ -789,8 +789,6 @@ document.addEventListener('DOMContentLoaded', function()
         {
             paddleX -= 7;
         }
-                    
-
 
         x += dx;
         y += dy;
@@ -801,7 +799,6 @@ document.addEventListener('DOMContentLoaded', function()
             handleGameWin(score, difficulty, gameState.lives);
             document.location.reload();
             }, 100);
-            //return;
         }
         requestAnimationFrame(draw);
     }

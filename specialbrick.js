@@ -75,7 +75,8 @@ function brickEffect(brick, c, r, brickArray, brickColumnCount, brickRowCount, g
                     {
                         brickEffect(brickArray[i][j], i, j, brickArray, brickColumnCount, brickRowCount, gameState);
                         if(brickArray[i][j].specialBrick === vectorBrickDown || brickArray[i][j].specialBrick === vectorBrickUp ||
-                           brickArray[i][j].specialBrick === vectorBrickLeft || brickArray[i][j].specialBrick === vectorBrickRight)
+                           brickArray[i][j].specialBrick === vectorBrickLeft || brickArray[i][j].specialBrick === vectorBrickRight||
+                           brickArray[i][j].specialBrick === hardBrick)
                         {
                             brickArray[i][j].status = 0;
                             gameState.score++;
@@ -95,7 +96,8 @@ function brickEffect(brick, c, r, brickArray, brickColumnCount, brickRowCount, g
                 {
                     brickEffect(brickArray[k][r], k, r, brickArray, brickColumnCount, brickRowCount, gameState);
                     if(brickArray[k][r].specialBrick === vectorBrickDown || brickArray[k][r].specialBrick === vectorBrickUp ||
-                       brickArray[k][r].specialBrick === vectorBrickLeft || brickArray[k][r].specialBrick === vectorBrickRight)
+                       brickArray[k][r].specialBrick === vectorBrickLeft || brickArray[k][r].specialBrick === vectorBrickRight||
+                       brickArray[k][r].specialBrick === hardBrick)
                     {
                         brickArray[k][r].status = 0;
                         gameState.score++;
@@ -165,7 +167,7 @@ function createEffectFactor(x, y, effectType, gameState)
 {
     if(!gameState.effectFactor){gameState.effectFactor = [];}
     gameState.effectFactor.push
-    ({x: x+12.5, y: y, effectType: effectType, speed: 2, width: 20, height: 20});
+    ({x: x+12.5, y: y, effectType: effectType, speed: 1, width: 20, height: 20});
 }
 
 function applyEffectFactor(effectType, gameState)
