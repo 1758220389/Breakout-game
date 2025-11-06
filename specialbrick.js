@@ -74,8 +74,12 @@ function brickEffect(brick, c, r, brickArray, brickColumnCount, brickRowCount, g
                     if(brickArray[i] && brickArray[i][j] && brickArray[i][j].status >= 1) 
                     {
                         brickEffect(brickArray[i][j], i, j, brickArray, brickColumnCount, brickRowCount, gameState);
-                        //brickArray[i][j].status = 0;
-                        //gameState.score++; // 为每个被摧毁的砖块加分
+                        if(brickArray[i][j].specialBrick === vectorBrickDown || brickArray[i][j].specialBrick === vectorBrickUp ||
+                           brickArray[i][j].specialBrick === vectorBrickLeft || brickArray[i][j].specialBrick === vectorBrickRight)
+                        {
+                            brickArray[i][j].status = 0;
+                            gameState.score++;
+                        }
                     }
                 }
             }
@@ -90,6 +94,12 @@ function brickEffect(brick, c, r, brickArray, brickColumnCount, brickRowCount, g
                 if(brickArray[k] && brickArray[k][r] && brickArray[k][r].status >= 1) 
                 {
                     brickEffect(brickArray[k][r], k, r, brickArray, brickColumnCount, brickRowCount, gameState);
+                    if(brickArray[k][r].specialBrick === vectorBrickDown || brickArray[k][r].specialBrick === vectorBrickUp ||
+                       brickArray[k][r].specialBrick === vectorBrickLeft || brickArray[k][r].specialBrick === vectorBrickRight)
+                    {
+                        brickArray[k][r].status = 0;
+                        gameState.score++;
+                    }
                     //brickArray[k][r].status = 0;
                     //gameState.score++; // 避免重复计分
                 }
