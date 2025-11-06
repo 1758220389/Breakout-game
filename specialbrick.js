@@ -102,8 +102,6 @@ function brickEffect(brick, c, r, brickArray, brickColumnCount, brickRowCount, g
                         brickArray[k][r].status = 0;
                         gameState.score++;
                     }
-                    //brickArray[k][r].status = 0;
-                    //gameState.score++; // 避免重复计分
                 }
             }
             break;

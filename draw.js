@@ -19,24 +19,24 @@ const images =  //预加载图片资源
     speedDownEffect: new Image(),
     tankBallEffect: new Image(),
 };
-images.normalBrick.src = 'img/normalBrick.png'; //砖块图片
-images.hardBrick.src = 'img/hardBrick.png';
-images.vectorBrickUp.src = 'img/vectorBrickUp.png';
-images.vectorBrickDown.src = 'img/vectorBrickDown.png';
-images.vectorBrickLeft.src = 'img/vectorBrickLeft.png';
-images.vectorBrickRight.src = 'img/vectorBrickRight.png';
-images.boomBrick.src = 'img/boomBrick.png';
-images.chainBrick.src = 'img/chainBrick.png';
-images.motherBrick.src = 'img/motherBrick.png';
-images.longPaddle.src = 'img/longPaddle.png';
-images.lifeUp.src = 'img/lifeUp.png';
-images.speedDown.src = 'img/speedDown.png';
-images.tankBall.src = 'img/tankBall.png';
-images.extraBall.src = 'img/extraBall.png';
-images.longPaddleEffect.src = 'img/longPaddleEffect.png';
-images.lifeUpEffect.src = 'img/lifeUpEffect.png';
-images.speedDownEffect.src = 'img/speedDownEffect.png';
-images.tankBallEffect.src = 'img/tankBallEffect.png';
+images.normalBrick.src = 'img/brick/normalBrick.png'; //砖块图片
+images.hardBrick.src = 'img/brick/hardBrick.png';
+images.vectorBrickUp.src = 'img/brick/vectorBrickUp.png';
+images.vectorBrickDown.src = 'img/brick/vectorBrickDown.png';
+images.vectorBrickLeft.src = 'img/brick/vectorBrickLeft.png';
+images.vectorBrickRight.src = 'img/brick/vectorBrickRight.png';
+images.boomBrick.src = 'img/brick/boomBrick.png';
+images.chainBrick.src = 'img/brick/chainBrick.png';
+images.motherBrick.src = 'img/brick/motherBrick.png';
+images.longPaddle.src = 'img/brick/longPaddle.png';
+images.lifeUp.src = 'img/brick/lifeUp.png';
+images.speedDown.src = 'img/brick/speedDown.png';
+images.tankBall.src = 'img/brick/tankBall.png';
+images.extraBall.src = 'img/brick/extraBall.png';
+images.longPaddleEffect.src = 'img/brick/longPaddleEffect.png';
+images.lifeUpEffect.src = 'img/brick/lifeUpEffect.png';
+images.speedDownEffect.src = 'img/brick/speedDownEffect.png';
+images.tankBallEffect.src = 'img/brick/tankBallEffect.png';
 
 function drawBall(ctx,x,y,ballRadius,ballColour) //绘制球
     {
