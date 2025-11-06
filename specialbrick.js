@@ -35,28 +35,28 @@ function brickEffect(brick, c, r, brickArray, brickColumnCount, brickRowCount, g
             }
             break;
         case vectorBrickUp:
-            if(gameState.hitSide === "bottom")//球向下运动表示球从下方击中
+            if(gameState.isTankBall || gameState.hitSide === "bottom")//球向下运动表示球从下方击中
             {
                 brick.status = 0;
                 gameState.score = gameState.score + 2;
             }
             break;
         case vectorBrickDown:
-            if(gameState.hitSide === "top")//球向上运动表示球从上方击中
+            if(gameState.isTankBall || gameState.hitSide === "top")//球向上运动表示球从上方击中
             {
                 brick.status = 0;
                 gameState.score = gameState.score + 2;
             }
             break;
         case vectorBrickLeft:
-            if(gameState.hitSide === "right")//球向左运动表示球从右方击中
+            if(gameState.isTankBall || gameState.hitSide === "right")//球向左运动表示球从右方击中
             {
                 brick.status = 0;
                 gameState.score = gameState.score + 2;
             }
             break;
         case vectorBrickRight:
-            if(gameState.hitSide === "left")//球向右运动表示球从左方击中
+            if(gameState.isTankBall || gameState.hitSide === "left")//球向右运动表示球从左方击中
             {
                 brick.status = 0;
                 gameState.score = gameState.score + 2;
