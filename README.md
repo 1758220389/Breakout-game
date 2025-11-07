@@ -20,8 +20,8 @@
 ## 2. 目标
 ### 2.1 更换原项目贴图
 - 更换成Emoji图标
-![普通砖块](img/brick/normalBrick.png =50x50)
-![硬砖块](img/brick/hardBrick.png =25x25)
+<img src="img/brick/normalBrick.png" width="50px">
+<img src="img/brick/hardBrick.png" width="25px">
 ![矢量砖块上](img/brick/vectorBrickUp.png)
 ![矢量砖块下](img/brick/vectorBrickDown.png)
 ![矢量砖块左](img/brick/vectorBrickLeft.png)
