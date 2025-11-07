@@ -11,7 +11,7 @@
 
 ### 1.2 系统架构
 本项目主要使用Html嵌入Javascript代码实现，Html提供UI绘制，按钮交互以及排行榜存储功能；Javascript实现核心玩法。本游戏的UML图如下：
-
+![UML图](img/uml/uml.png)
 其中由一个主要的html文件控制游戏运行，html文件调用其他的js文件的函数使游戏正常运行。
 
 ---
