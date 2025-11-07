@@ -19,8 +19,22 @@
 ### 2.1 更换原项目贴图
 - 更换成Emoji图标
 
-<img src="img/brick/normalBrick.png" width="25px"> <img src="img/brick/hardBrick.png" width="25px"> <img src="img/brick/vectorBrickUp.png" width="25px"> <img src="img/brick/vectorBrickDown.png" width="25px"> <img src="img/brick/vectorBrickLeft.png" width="25px"> <img src="img/brick/vectorBrickRight.png" width="25px"><img src="img/brick/boomBrick.png" width="25px"><img src="img/brick/chainBrick.png" width="25px"> <img src="img/brick/motherBrick.png" width="25px">
-<img src="img/brick/longPaddle.png" width="25px"> <img src="img/brick/lifeUp.png" width="25px"> <img src="img/brick/extraBall.png" width="25px"> <img src="img/brick/tankBall.png" width="25px"> <img src="img/brick/longPaddle.png" width="25px"> <img src="img/brick/speedDown.png" width="25px">
+<img src="img/brick/normalBrick.png" width="25px"> 
+<img src="img/brick/hardBrick.png" width="25px"> 
+<img src="img/brick/vectorBrickUp.png" width="25px"> 
+<img src="img/brick/vectorBrickDown.png" width="25px"> 
+<img src="img/brick/vectorBrickLeft.png" width="25px"> 
+<img src="img/brick/vectorBrickRight.png" width="25px"> 
+<img src="img/brick/boomBrick.png" width="25px"> 
+<img src="img/brick/chainBrick.png" width="25px"> 
+<img src="img/brick/motherBrick.png" width="25px"> 
+<img src="img/brick/longPaddle.png" width="25px"> 
+<img src="img/brick/lifeUp.png" width="25px"> 
+<img src="img/brick/extraBall.png" width="25px"> 
+<img src="img/brick/tankBall.png" width="25px"> 
+<img src="img/brick/longPaddle.png" width="25px"> 
+<img src="img/brick/speedDown.png" width="25px">
+
 ### 2.2 添加难度选择
 根据难度改变球速以及板长度
 
