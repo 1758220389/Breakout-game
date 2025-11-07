@@ -20,7 +20,14 @@
 ## 2. 目标
 ### 2.1 更换原项目贴图
 - 更换成Emoji图标
-
+![普通砖块](img/brick/normalBrick.png)![硬砖块](img/brick/hardBrick.png)
+![矢量砖块上](img/brick/vectorBrickUp.png)
+![矢量砖块下](img/brick/vectorBrickDown.png)
+![矢量砖块左](img/brick/vectorBrickLeft.png)
+![矢量砖块右](img/brick/vectorBrickRight.png)
+![炸弹砖块](img/brick/boomBrick.png)
+![连锁砖块](img/brick/chainBrick.png)
+![子母砖块](img/brick/motherBrick.png)
 ### 2.2 添加难度选择
 根据难度改变球速以及板长度
 
