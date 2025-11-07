@@ -4,7 +4,6 @@
 
 ---
 
-
 ## 1. 项目介绍
 ### 1.1 背景介绍
 打砖块游戏，作为电子游戏史上最具代表性的经典作品之一，诞生于1976年。它以其简单的规则、即上手的操作和充满挑战性的玩法，风靡了全球数个世代的玩家。 打砖块游戏的核心玩法（移动挡板、反弹球体、消除目标）是游戏设计中最纯粹、最经得起时间考验的机制之一。本项目旨在回归游戏设计的本源，探索在极简规则下如何构建丰富、耐玩的游戏体验。通过对这样一个经典游戏的复刻，并加入自己的新元素、玩法。可以让我们更深刻的理解到本课程中学习到的开源软件开发精神。
@@ -16,18 +15,12 @@
 
 ---
 
-
 ## 2. 目标
 ### 2.1 更换原项目贴图
 - 更换成Emoji图标
-<img src="img/brick/normalBrick.png" width="25px"> <img src="img/brick/hardBrick.png" width="25px">
-![矢量砖块上](img/brick/vectorBrickUp.png)
-![矢量砖块下](img/brick/vectorBrickDown.png)
-![矢量砖块左](img/brick/vectorBrickLeft.png)
-![矢量砖块右](img/brick/vectorBrickRight.png)
-![炸弹砖块](img/brick/boomBrick.png)
-![连锁砖块](img/brick/chainBrick.png)
-![子母砖块](img/brick/motherBrick.png)
+
+<img src="img/brick/normalBrick.png" width="25px"> <img src="img/brick/hardBrick.png" width="25px"> <img src="img/brick/vectorBrickUp.png" width="25px"> <img src="img/brick/vectorBrickDown.png" width="25px"> <img src="img/brick/vectorBrickLeft.png" width="25px"> <img src="img/brick/vectorBrickRight.png" width="25px"><img src="img/brick/boomBrick.png" width="25px"><img src="img/brick/chainBrick.png" width="25px"> <img src="img/brick/motherBrick.png" width="25px">
+<img src="img/brick/longPaddle.png" width="25px"> <img src="img/brick/lifeUp.png" width="25px"> <img src="img/brick/extraBall.png" width="25px"> <img src="img/brick/tankBall.png" width="25px"> <img src="img/brick/longPaddle.png" width="25px"> <img src="img/brick/speedDown.png" width="25px">
 ### 2.2 添加难度选择
 根据难度改变球速以及板长度
 
