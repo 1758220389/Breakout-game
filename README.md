@@ -37,35 +37,75 @@
 ### 2.4 添加特殊砖块
 #### 硬砖块：需要撞击两次才能破坏
 
+<img src="img/brick/hardBrick.png" width="50px"> 
+<p align="center">
+  <img src="img/markdownPic/brickEffect/hardBrick.gif" title="硬砖块效果" width="200px">
+</p>
 
 #### 矢量砖块：需要从特定角度破坏
 
+<img src="img/brick/vectorBrickUp.png" width="50px"> <img src="img/brick/vectorBrickDown.png" width="50px"> <img src="img/brick/vectorBrickLeft.png" width="50px"> <img src="img/brick/vectorBrickRight.png" width="50px">
+<p align="center">
+  <img src="img/markdownPic/brickEffect/hardBrick.gif" title="硬砖块效果" width="200px">
+</p>
 
 #### 炸弹砖块：击破后摧毁周围砖块
 
+<img src="img/brick/boomBrick.png" width="50px"> 
+<p align="center">
+  <img src="img/markdownPic/brickEffect/boomBrick.gif" title="炸弹砖块效果" width="200px">
+</p>
 
 #### 连锁砖块：击破后摧毁一整列的砖块
 
+<img src="img/brick/chainBrick.png" width="50px"> 
+<p align="center">
+  <img src="img/markdownPic/brickEffect/chainBrick.gif" title="连锁砖块效果" width="200px">
+</p>
 
 #### 子母砖块：击破后在周围生成砖块
 
+<img src="img/brick/motherBrick.png" width="50px"> 
+<p align="center">
+  <img src="img/markdownPic/brickEffect/motherBrick.gif" title="子母砖块效果" width="200px">
+</p>
 
 ### 2.5 添加增益因子
 添加特殊的增益减益因子：击打特定的砖块随机掉落增（减）益因子
 #### 加长因子：加长板子一段时间，让玩家更容易接住小球
 
+<img src="img/brick/longPaddle.png" width="50px"> 
+<p align="center">
+  <img src="img/markdownPic/brickEffect/longPaddle.gif" title="加长因子效果" width="200px">
+</p>
 
 #### 生命因子：增加一点生命值
 
+<img src="img/brick/lifeUp.png" width="50px"> 
+<p align="center">
+  <img src="img/markdownPic/brickEffect/lifeUp.gif" title="生命因子效果" width="200px">
+</p>
 
 #### 增长因子：新发射一个小球
 
+<img src="img/brick/extraBall.png" width="50px"> 
+<p align="center">
+  <img src="img/markdownPic/brickEffect/extraBall.gif" title="增长因子效果" width="200px">
+</p>
 
 #### 穿透因子：小球获得力量，摧毁路径上的所有砖块
 
+<img src="img/brick/tankBall.png" width="50px"> 
+<p align="center">
+  <img src="img/markdownPic/brickEffect/tankBall.gif" title="穿透因子效果" width="200px">
+</p>
 
 #### 减速因子：降低小球的移动速度一段时间
 
+<img src="img/brick/speedDown.png" width="50px"> 
+<p align="center">
+  <img src="img/markdownPic/brickEffect/speedDown.gif" title="减速因子效果" width="200px">
+</p>
 
 ### 2.6 排行榜系统
 - 游戏结束时可保存玩家名、剩余生命、游玩关卡、游戏时间
