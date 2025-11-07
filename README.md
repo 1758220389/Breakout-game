@@ -114,18 +114,18 @@
 
 <p align="center">
   <img src="img/markdownPic/rating/rating_getUserName.png" title="保存玩家名" width="400px">
-  <center>保存玩家名</center>
-<br>
 </p>
+<center>保存玩家名</center>
+<br>
 <p align="center">
   <img src="img/markdownPic/rating/rating_history.png" title="排行榜" width="400px">
-  <center>排行榜</center>
 </p>
+<center>排行榜</center>
 <br>
 <p align="center">
   <img src="img/markdownPic/rating/rating_csv.png" title="导出的csv文件" width="400px">
-  <center>导出的csv文件</center>
 </p>
+<center>导出的csv文件</center>
 
 ### 2.7 设计新关卡
 
@@ -166,7 +166,7 @@
 #### - ~~矢量方块有时会把小球吸走~~
 
 <p align="center">
-  <img src="img/markdownPic/bugfix/vectorBrick-old.gif" title="修复前" width="200px">
+  <img src="img/markdownPic/bugfix/vectorBrick-old.gif" title="修复前" width="300px">
 </p>
 
 #### - ~~计分系统错误判断胜利条件~~
@@ -177,14 +177,14 @@
 原：根据小球位置生成
 
 <p align="center">
-  <img src="img/markdownPic/bugfix/extraBall-old.gif" title="修复前" width="200px">
-  <img src="img/markdownPic/bugfix/extraBall-fixed.gif" title="修复后" width="200px">
+  <img src="img/markdownPic/bugfix/extraBall-old.gif" title="修复前" width="300px">
+  <img src="img/markdownPic/bugfix/extraBall-fixed.gif" title="修复后" width="300px">
 </p>
 
 #### - ~~炸弹砖块和连锁砖块破坏特殊方块时，特殊效果不生效~~
 
 <p align="center">
-  <img src="img/markdownPic/bugfix/chainBrick&boomBrick-old.gif" title="修复前" width="200px">
+  <img src="img/markdownPic/bugfix/chainBrick&boomBrick-old.png" title="修复前" width="100px">
 </p>
 
 #### - ~~充值系统板长度不保留~~
@@ -192,7 +192,7 @@
 添加重置按钮脱离卡死
 
 <p align="center">
-  <img src="img/markdownPic/bugfix/resetButton.gif" title="重置按钮" width="200px">
+  <img src="img/markdownPic/bugfix/resetButton.gif" title="重置按钮" width="600px">
 </p>
 
 #### - ~~最后一个方块被破坏时无法查看到被破坏的效果~~
