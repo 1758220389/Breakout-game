@@ -29,6 +29,7 @@
 - 选择关卡结束后球在板子上，按下↑键发射球，开始游戏
 - 板子没接住球时，球回到板子，按下↑键发射球
 
+<center><img src="img/markdownPic/press ↑ to start/origin" alt="未修改前" width="200px"> <center><img src="img/markdownPic/press ↑ to start/now" alt="修改后" width="200px"> 
 
 ### 2.4 添加特殊砖块
 #### 硬砖块：需要撞击两次才能破坏
