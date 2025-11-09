@@ -33,6 +33,203 @@
             margin-top: 20px;
             font-size: 14px;
         }
+
+            /* 充值系统样式 */
+        #rechargeBtn {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            padding: 8px 16px;
+            background-color: #FF5722;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            display: none; /* 初始隐藏，游戏开始后显示 */
+        }
+        
+        #rechargeContainer {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(244, 248, 5, 0.952);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+        }
+
+            /* 充值成功提示样式 */
+        #rechargeSuccess {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0,0,0,0.8);
+            color: #fff;
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-size: 18px;
+            display: none;
+            z-index: 200;
+        }
+        
+        /* 重置按钮 */
+        #resetBtn 
+        {
+            position: absolute;
+            top: 10px;
+            left: 100px; /* 放在充值按钮旁边 */
+            padding: 8px 16px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            display: none; /* 初始隐藏，游戏开始后显示 */
+        }
+
+        #resetBtn:disabled 
+        {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
+
+        /* 分数记录系统按钮 */
+        #leaderboardBtn, #exportBtn, #clearBtn 
+        {
+            position: absolute;
+            padding: 8px 16px;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            display: none;
+        }
+
+        #leaderboardBtn 
+        {
+            top: 10px;
+            right: 250px;
+            background-color: #4CAF50;
+        }
+
+        #leaderboardBtn:hover 
+        {
+            background-color: #45a049;
+        }
+
+        #exportBtn 
+        {
+            top: 10px;
+            right: 130px;
+            background-color: #2196F3;
+        }
+
+        #exportBtn:hover 
+        {
+            background-color: #0b7dda;
+        }
+
+        #clearBtn 
+        {
+            top: 10px;
+            right: 10px;
+            background-color: #f44336;
+        }
+
+        #clearBtn:hover 
+        {
+            background-color: #da190b;
+        }
+        
+    /* 充值容器样式优化 */
+    #rechargeContainer {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.7);
+        display: none;
+        justify-content: center;
+        align-items: center;
+        z-index: 100;
+    }
+
+    #rechargeMenu {
+        background-color: white;
+        padding: 30px;
+        border-radius: 10px;
+        text-align: center;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+    }
+
+    #rechargeOptions {
+        margin-top: 20px;
+    }
+
+    .rechargeOption {
+        display: block;
+        width: 100%;
+        padding: 15px;
+        margin: 10px 0;
+        font-size: 16px;
+        cursor: pointer;
+        background-color: #0095DD;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        transition: background-color 0.3s;
+    }
+
+    .rechargeOption:hover {
+        background-color: #0077BB;
+    }
+
+    #rechargeLevels {
+        display: none;
+    }
+
+    .rechargeLevel {
+        display: block;
+        width: 100%;
+        padding: 15px;
+        margin: 10px 0;
+        font-size: 14px;
+        cursor: pointer;
+        background-color: #4CAF50;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        transition: background-color 0.3s;
+    }
+
+    .rechargeLevel:hover {
+        background-color: #45a049;
+    }
+
+    #backBtn {
+        display: block;
+        width: 100%;
+        padding: 12px;
+        margin-top: 15px;
+        font-size: 14px;
+        cursor: pointer;
+        background-color: #757575;
+        color: white;
+        border: none;
+        border-radius: 5px;
+    }
+
+    #backBtn:hover {
+        background-color: #616161;
+    }
     </style>
 </head>
 <body>
@@ -49,31 +246,112 @@
 <div id="instructions">
         <h3>游戏说明</h3>
         <p>使用 <strong>左右方向键</strong> 控制挡板移动</p>
-        <p><strong>鼠标点击</strong> 确定球发射方向（鼠标位置决定方向）</p>
         <p>打破所有砖块即可获胜！</p>
 </div>
 
 <!-- 初始隐藏画布，等选完难度后再显示 -->
 <canvas id="myCanvas" width="1080" height="600" style="display:none;"></canvas>
 
+<!-- 重置按钮 -->
+<button id="resetBtn">重置位置 (2s)</button>
+<!-- 充值按钮 -->
+<button id="rechargeBtn">充值</button>
+<!-- 充值界面 -->
+<div id="rechargeContainer">
+    <div id="rechargeMenu">
+        <h2>充值系统</h2>
+        <p>请选择充值类型</p>
+        <div id="rechargeOptions">
+            <button class="rechargeOption" id="rechargeLives">生命值充值</button>
+            <button class="rechargeOption" id="rechargePaddle">挡板长度充值</button>
+        </div>
+        
+        <div id="rechargeLevels">
+            <h3 id="rechargeTitle">充值档位</h3>
+            <button class="rechargeLevel" data-value="5">小充一笔 (生命值+5 / 挡板长度+5px)</button>
+            <button class="rechargeLevel" data-value="10">充一笔 (生命值+10 / 挡板长度+10px)</button>
+            <button class="rechargeLevel" data-value="20">猛充 (生命值+20 / 挡板长度+20px)</button>
+            <button id="backBtn">返回</button>
+        </div>
+    </div>
+</div>
+<!-- 充值成功提示 -->
+<div id="rechargeSuccess">充值成功</div>
+
+<!-- 分数记录系统按钮 -->
+<button id="leaderboardBtn">📊 排行榜</button>
+<button id="exportBtn">📥 导出CSV</button>
+<button id="clearBtn">🗑️ 清空记录</button>
+
 <!-- 引入外部JS文件 -->
 <script src="draw.js"></script>
 <script src="specialbrick.js"></script>
+<script src="rank.js"></script>
 
 <script>//以下为JS代码
     var canvas = document.getElementById("myCanvas");
     var ctx = canvas.getContext("2d");
 
+    // 充值系统变量
+    var currentRechargeType = ""; // 当前选择的充值类型
+    var isResetting = false; // 重置状态标志
+    
+// 等待DOM完全加载
+document.addEventListener('DOMContentLoaded', function() 
+{
     //难度选择按钮事件监听
     document.getElementById("easyBtn").addEventListener("click", function() {startGame("easy");});
     document.getElementById("mediumBtn").addEventListener("click", function() {startGame("medium");});
     document.getElementById("hardBtn").addEventListener("click", function() {startGame("hard");});
+
+
+
+    // 充值按钮事件监听
+    document.getElementById("rechargeBtn").addEventListener("click", function() {
+        showRechargeMenu();
+    });
+
+    // 充值类型选择
+    document.getElementById("rechargeLives").addEventListener("click", function() {
+        currentRechargeType = "lives";
+        showRechargeLevels();
+    });
+
+    document.getElementById("rechargePaddle").addEventListener("click", function() {
+        currentRechargeType = "paddle";
+        showRechargeLevels();
+    });
+
+    // 充值档位按钮事件监听
+    document.querySelectorAll('.rechargeLevel').forEach(button => {
+    button.addEventListener('click', function() {
+        applyRecharge(parseInt(this.getAttribute('data-value')));
+    });
+    });
+
+    // 返回按钮事件监听
+    document.getElementById('backBtn').addEventListener('click', function() {
+    hideRechargeMenu();
+    });
+
+    // 重置按钮事件监听
+    document.getElementById("resetBtn").addEventListener("click", function() {
+    if (!isResetting) {resetPositions();}
+    });
+
+    // 分数记录按钮事件监听
+    document.getElementById("leaderboardBtn").addEventListener("click", showLeaderboard);
+    document.getElementById("exportBtn").addEventListener("click", exportToCSV);
+    document.getElementById("clearBtn").addEventListener("click", clearAllRecords);
+});
+
     function startGame(level) 
     {
         difficulty = level;
-        if (level === "easy") {dx = 2; dy = -2; paddleWidth = 120;} 
-        else if (level === "hard") {dx = 5; dy = -5; paddleWidth = 80;} 
-        else {dx = 3; dy = -3; paddleWidth = 100;} 
+        gameEnded = false;
+        if (level === "easy") {dx = 2; dy = -2; defaultPaddleWidth = 200; paddleWidth = defaultPaddleWidth;} 
+        else if (level === "medium") {dx = 3; dy = -3; defaultPaddleWidth = 180; paddleWidth = defaultPaddleWidth;} 
+        else if (level === "hard"){dx = 4; dy = -4; defaultPaddleWidth = 150; paddleWidth = defaultPaddleWidth;} 
 
         //初始化游戏状态
         gameState.dx = dx;
@@ -81,11 +359,21 @@
         gameState.paddleWidth = paddleWidth;
         gameState.isTankBall = false;
         gameState.score = score;
-        gameState.lives = 39999;
+        gameState.lives = 10000;
 
         // 隐藏难度选择界面，显示游戏画布
         document.getElementById("difficultyContainer").style.display = "none";
         canvas.style.display = "block";
+
+        // 显示充值按钮
+        document.getElementById("rechargeBtn").style.display = "block";
+        document.getElementById("resetBtn").style.display = "block";
+        
+        // 显示分数记录系统按钮
+        document.getElementById("leaderboardBtn").style.display = "block";
+        document.getElementById("exportBtn").style.display = "block";
+        document.getElementById("clearBtn").style.display = "block";
+
 
         // 初始化游戏状态
         ballLunched = false;
@@ -100,6 +388,7 @@
     var dx ;//球的水平速度
     var dy ;//球的竖直速度
 
+    var defaultPaddleWidth = 200;
     var paddleHeight = 10;//挡板尺寸
     var paddleWidth = 120;
     var paddleX = (canvas.width-paddleWidth)/2;//挡板的初始位置
@@ -133,14 +422,16 @@
     var extraBall = 11;
     var speedDown = 12;//减速
     var tankBall = 13;//穿透因子
-    var rotate = 14;//旋转因子
 
     var gameState = //这啥 传参的？
-    {score: 0, lives: 1000, hitSide: "0", paddleWidth: 120, isTankBall: false, dx: 0, dy: 0, effectFactor: []};
+    {score: 0, lives: 1000, hitSide: "0", paddleWidth: 120, isTankBall: false, dx: 0, dy: 0, effectFactor: [],
+        extraBalls: [], x: 0, y: 0
+    };
     
     
     var score = 0;
     var ballLunched = false;
+    var gameEnded = false;
 
     var bricks = [];
 
@@ -157,7 +448,7 @@
                 if (isSpecial) 
                 {
                     //随机数生成特殊砖块类型
-                    var specialType = Math.floor(Math.random() * 14) + 1; // 1-8的随机数对应不同的特殊砖块
+                    var specialType = Math.floor(Math.random() * 13) + 1; // 1-8的随机数对应不同的特殊砖块
                 } 
                 else 
                 {
@@ -236,14 +527,8 @@
                         brickEffect(b, c, r, bricks, brickColumnCount, brickRowCount, gameState);
                         score = gameState.score;
                         paddleWidth = gameState.paddleWidth;
-                        //dx = gameState.dx;
-                        //dy = gameState.dy;
                     }
-                    if(countActiveBricks() === 0) // 检查胜利条件
-                    {
-                        alert("YOU WIN, CONGRATS!");
-                        document.location.reload();
-                    }
+
                     return;// 一次只处理一个碰撞
                     }
                 }
@@ -267,6 +552,50 @@
         return count;
     }
 
+    function checkEffectFactorCollision(ball)
+    {
+        for(var c=0;c<brickColumnCount;c++)
+        {
+            for(var r=0;r<brickRowCount;r++)
+            {
+                var b = bricks[c][r];
+                if(b.status >= 1)
+                {
+                    if(ball.x + ballRadius > b.x && ball.x - ballRadius < b.x + brickWidth && ball.y + ballRadius > b.y && ball.y - ballRadius < b.y + brickHeight)
+                    {
+                        var distToLeft = Math.abs((ball.x + ballRadius) - b.x);
+                        var distToRight = Math.abs((ball.x - ballRadius) - (b.x + brickWidth));
+                        var distToTop = Math.abs((ball.y + ballRadius) - b.y);
+                        var distToBottom = Math.abs((ball.y - ballRadius) - (b.y + brickHeight));
+                        var minDist = Math.min(distToLeft, distToRight, distToTop, distToBottom);
+                        if (minDist === distToLeft) {gameState.hitSide = "left";} 
+                        else if (minDist === distToRight) {gameState.hitSide = "right";} 
+                        else if (minDist === distToTop) {gameState.hitSide = "top";} 
+                        else {gameState.hitSide = "bottom";}
+
+                        var ballCenterX = ball.x;
+                        var ballCenterY = ball.y;
+                        var brickCenterX = b.x + brickWidth/2;
+                        var brickCenterY = b.y + brickHeight/2;
+                        var dxCenter = ballCenterX - brickCenterX;
+                        var dyCenter = ballCenterY - brickCenterY;
+
+                        if(Math.abs(dxCenter) > Math.abs(dyCenter)) 
+                        {
+                            ball.dx = -ball.dx;
+                        } 
+                        else 
+                        {
+                            ball.dy = -ball.dy;
+                        }
+                        brickEffect(b, c, r, bricks, brickColumnCount, brickRowCount, gameState);
+                        score = gameState.score;
+                        paddleWidth = gameState.paddleWidth;
+                    }
+                }
+            }
+        }
+    }
 
     function updateEffectFactor()
     {
@@ -301,7 +630,7 @@
 
     document.addEventListener("keydown", keyDownHandler, false);//监听按键 按下
     document.addEventListener("keyup", keyUpHandler, false);//监听按键 松开
-    //document.addEventListener("mousemove", mouseMoveHandler, false); //监听鼠标移动
+    document.addEventListener("mousemove", mouseMoveHandler, false); //监听鼠标移动
 
     function keyDownHandler(e) //addEventListener监听到按键时返回e
     {
@@ -341,7 +670,7 @@
 */
 
     function draw() 
-    {
+    {    
         ctx.clearRect(0, 0, canvas.width, canvas.height);//清除画布
         if(!ballLunched) //球未发射时，球跟随挡板
         {
@@ -351,12 +680,15 @@
             gameState.isTankBall = false;
             gameState.dx = dx;
             gameState.dy = dy;
+            gameState.extraBalls = [];
         }
         drawBricks(ctx, bricks, brickColumnCount, brickRowCount, brickWidth, brickHeight, brickPadding, brickOffsetTop, brickOffsetLeft);
-        drawBall(ctx, x, y, ballRadius);
+        drawBall(ctx, x, y, ballRadius, "#0095DD");
         drawPaddle(ctx, paddleX, paddleY,gameState.paddleWidth, paddleHeight);
         drawScore(ctx, score);
         drawLives(ctx, gameState.lives);
+        if(!gameEnded)
+        {
         collisionDetection();
         updateEffectFactor();
         drawEffectFactor(ctx, gameState.effectFactor);
@@ -364,6 +696,45 @@
         // 计算挡板速度（基于上一帧和当前帧的位置差）
         paddleSpeed = (paddleX - prevPaddleX) / 1; // 除以时间（这里假设每帧时间相同）
         prevPaddleX = paddleX; // 更新上一帧位置
+
+        gameState.x = x;
+        gameState.y = y;
+
+        if(gameState.extraBalls && gameState.extraBalls.length > 0)//处理额外小球
+        {
+            for(var i = gameState.extraBalls.length - 1; i >= 0; i--)
+            {
+                var ball = gameState.extraBalls[i];
+                drawBall(ctx, ball.x, ball.y, ball.radius, "#ff0000ff");
+                checkEffectFactorCollision(ball);
+
+                if(ball.x + ball.dx > canvas.width - ball.radius || ball.x + ball.dx < ball.radius) 
+                {
+                    ball.dx = -ball.dx;
+                }
+                if(ball.y + ball.dy < ball.radius) 
+                {
+                    ball.dy = -ball.dy;
+                }
+                else if(ball.y + ball.dy > canvas.height - ball.radius) 
+                {
+                    if( ball.x > paddleX && ball.x < paddleX + gameState.paddleWidth && 
+                    ball.y + ball.radius >= paddleY && ball.dy > 0) 
+                    {
+                        ball.dy = -ball.dy;
+                    }
+                    else 
+                    {
+                        gameState.extraBalls.splice(i, 1);
+                        continue;
+                    }
+                }
+                checkEffectFactorCollision(ball);
+                ball.x += ball.dx;
+                ball.y += ball.dy;
+            }
+        }
+
         if(x + dx > canvas.width-ballRadius || x + dx < ballRadius) //碰到左右边反弹
         {
             dx = -dx;
@@ -409,8 +780,9 @@
                 gameState.lives--;
                 if(!gameState.lives) 
                 {
-                    alert("GAME OVER");
+                    handleGameOver(score, difficulty);
                     document.location.reload();
+                    return;
                 }
                 else //重置球和挡板位置
                 {
@@ -420,17 +792,18 @@
                     if (difficulty === "easy") 
                     {
                         dx = 2; dy = -2;
-                        paddleWidth = 120;
+                        paddleWidth = defaultPaddleWidth;
+                        //paddleWidth = 200;
                     } 
                     else if (difficulty === "hard") 
                     {
-                        dx = 5; dy = -5;
-                        paddleWidth = 80;
+                        dx = 4; dy = -4;
+                        paddleWidth = 180;
                     } 
                     else 
                     {
                         dx = 3; dy = -3;
-                        paddleWidth = 100;
+                        paddleWidth = 150;
                     }
                     paddleX = (canvas.width-paddleWidth)/2;
                 }
@@ -448,9 +821,123 @@
 
         x += dx;
         y += dy;
+        if(countActiveBricks() === 0 ) // 检查胜利条件
+        {
+            gameEnded = true;
+            setTimeout(function(){
+            handleGameWin(score, difficulty, gameState.lives);
+            document.location.reload();
+            }, 100);
+        }
         requestAnimationFrame(draw);
     }
-    draw();
+    }
+
+
+
+    // 显示充值菜单
+    function showRechargeMenu() 
+    {
+        document.getElementById("rechargeContainer").style.display = "flex";
+        document.getElementById("rechargeOptions").style.display = "block";
+        document.getElementById("rechargeLevels").style.display = "none";
+    }
+
+    // 显示充值档位
+    function showRechargeLevels() 
+    {
+    document.getElementById("rechargeOptions").style.display = "none";
+    document.getElementById("rechargeLevels").style.display = "block";
+    
+    // 更新标题和按钮文本
+    var title = document.getElementById("rechargeTitle");
+    var buttons = document.querySelectorAll('.rechargeLevel');
+    
+    if (currentRechargeType === "lives") 
+    {
+        title.textContent = "生命值充值档位";
+        buttons[0].textContent = "小充一笔 (生命值+5)";
+        buttons[1].textContent = "充一笔 (生命值+10)";
+        buttons[2].textContent = "猛充 (生命值+20)";
+    } 
+    else 
+    {
+        title.textContent = "挡板长度充值档位";
+        buttons[0].textContent = "小充一笔 (挡板长度+5px)";
+        buttons[1].textContent = "充一笔 (挡板长度+10px)";
+        buttons[2].textContent = "猛充 (挡板长度+20px)";
+    }
+    }
+    // 应用充值效果
+    function applyRecharge(value) 
+    {
+        if (currentRechargeType === "lives") {gameState.lives += value;}// 增加生命值
+        else if (currentRechargeType === "paddle") 
+        {
+            defaultPaddleWidth = defaultPaddleWidth + value;// 增加挡板长度
+            gameState.paddleWidth = defaultPaddleWidth;
+            paddleWidth = defaultPaddleWidth;
+        }
+        
+        hideRechargeMenu();// 隐藏充值界面
+        
+        // 显示“充值成功”提示，2秒后自动隐藏
+        var tip = document.getElementById('rechargeSuccess');
+        tip.style.display = 'block';
+        setTimeout(function(){tip.style.display = 'none';}, 2000);
+    }
+    // 隐藏充值菜单
+    function hideRechargeMenu() {document.getElementById("rechargeContainer").style.display = "none";}
+
+
+    // 重置球和挡板位置的函数
+    function resetPositions() 
+    {
+        isResetting = true;
+        var resetBtn = document.getElementById("resetBtn");
+    
+        // 禁用按钮并显示倒计时
+        resetBtn.disabled = true;
+        var countdown = 2;
+        resetBtn.textContent = `重置中... (${countdown}s)`;
+    
+        var countdownInterval = setInterval(function() {
+        countdown--;
+        if (countdown > 0) {
+            resetBtn.textContent = `重置中... (${countdown}s)`;
+        }
+        }, 1000);
+    
+        // 2秒后执行重置
+        setTimeout(function() {clearInterval(countdownInterval);
+        
+        // 重置球的位置
+        ballLunched = false;
+        x = canvas.width / 2;
+        y = canvas.height - 30;
+        
+        // 根据难度重置球速
+        if (difficulty === "easy") {dx = 2; dy = -2;} 
+        else if (difficulty === "medium") {dx = 3; dy = -3;} 
+        else if (difficulty === "hard") {dx = 4; dy = -4;}
+        
+        // 重置挡板位置
+        paddleX = (canvas.width - paddleWidth) / 2;
+        
+        // 清除额外的球和效果因子
+        gameState.extraBalls = [];
+        gameState.effectFactor = [];
+        gameState.isTankBall = false;
+        gameState.dx = dx;
+        gameState.dy = dy;
+        
+        // 恢复按钮状态
+        isResetting = false;
+        resetBtn.disabled = false;
+        resetBtn.textContent = "重置位置 (2s)";
+    }, 2000);
+}
+
 </script>
 </body>
 </html>

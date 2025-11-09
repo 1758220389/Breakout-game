@@ -13,7 +13,6 @@ var lifeUp = 10;
 var extraBall = 11;
 var speedDown = 12;//减速
 var tankBall = 13;//穿透因子
-var rotate = 14;//旋转因子
 
 function brickEffect(brick, c, r, brickArray, brickColumnCount, brickRowCount, gameState)
 {
@@ -36,56 +35,73 @@ function brickEffect(brick, c, r, brickArray, brickColumnCount, brickRowCount, g
             }
             break;
         case vectorBrickUp:
-            if(gameState.hitSide === "bottom")//球向下运动表示球从下方击中
+            if(gameState.isTankBall || gameState.hitSide === "bottom")//球向下运动表示球从下方击中
             {
                 brick.status = 0;
                 gameState.score = gameState.score + 2;
             }
             break;
         case vectorBrickDown:
-            if(gameState.hitSide === "top")//球向上运动表示球从上方击中
+            if(gameState.isTankBall || gameState.hitSide === "top")//球向上运动表示球从上方击中
             {
                 brick.status = 0;
                 gameState.score = gameState.score + 2;
             }
             break;
         case vectorBrickLeft:
-            if(gameState.hitSide === "right")//球向左运动表示球从右方击中
+            if(gameState.isTankBall || gameState.hitSide === "right")//球向左运动表示球从右方击中
             {
                 brick.status = 0;
                 gameState.score = gameState.score + 2;
             }
             break;
         case vectorBrickRight:
-            if(gameState.hitSide === "left")//球向右运动表示球从左方击中
+            if(gameState.isTankBall || gameState.hitSide === "left")//球向右运动表示球从左方击中
             {
                 brick.status = 0;
                 gameState.score = gameState.score + 2;
             }
             break;
         case boomBrick:
+            brick.status = 0;
+            gameState.score++;
             for(var i = Math.max(0, c-1); i <= Math.min(brickColumnCount-1, c+1); i++) 
             {
                 for(var j = Math.max(0, r-1); j <= Math.min(brickRowCount-1, r+1); j++) 
                 {
+                    if(i === c && j === r) continue;
                     // 确保砖块存在且状态>=1
                     if(brickArray[i] && brickArray[i][j] && brickArray[i][j].status >= 1) 
                     {
-                        brickArray[i][j].status = 0;
-                        gameState.score++; // 为每个被摧毁的砖块加分
+                        brickEffect(brickArray[i][j], i, j, brickArray, brickColumnCount, brickRowCount, gameState);
+                        if(brickArray[i][j].specialBrick === vectorBrickDown || brickArray[i][j].specialBrick === vectorBrickUp ||
+                           brickArray[i][j].specialBrick === vectorBrickLeft || brickArray[i][j].specialBrick === vectorBrickRight||
+                           brickArray[i][j].specialBrick === hardBrick)
+                        {
+                            brickArray[i][j].status = 0;
+                            gameState.score++;
+                        }
                     }
                 }
             }
             break;
         case chainBrick:
             brick.status = 0;
+            gameState.score++;
             // 摧毁整行砖块
-            for(var i = 0; i < brickColumnCount; i++) 
+            for(var k = 0; k < brickColumnCount; k++) 
             {
-                if(brickArray[i] && brickArray[i][r] && brickArray[i][r].status >= 1) 
+                if(k === c) continue; //跳过当前砖块所在列
+                if(brickArray[k] && brickArray[k][r] && brickArray[k][r].status >= 1) 
                 {
-                    brickArray[i][r].status = 0;
-                    gameState.score++; // 避免重复计分
+                    brickEffect(brickArray[k][r], k, r, brickArray, brickColumnCount, brickRowCount, gameState);
+                    if(brickArray[k][r].specialBrick === vectorBrickDown || brickArray[k][r].specialBrick === vectorBrickUp ||
+                       brickArray[k][r].specialBrick === vectorBrickLeft || brickArray[k][r].specialBrick === vectorBrickRight||
+                       brickArray[k][r].specialBrick === hardBrick)
+                    {
+                        brickArray[k][r].status = 0;
+                        gameState.score++;
+                    }
                 }
             }
             break;
@@ -111,19 +127,26 @@ function brickEffect(brick, c, r, brickArray, brickColumnCount, brickRowCount, g
             brick.status = 0;
             gameState.score++;
             createEffectFactor(brick.x, brick.y, longPaddle, gameState);
-            //gameState.effectFactor = 9;
-            //gameState.paddleWidth = Math.min(gameState.paddleWidth + 20, 200); // 增加挡板长度
             break;
         case lifeUp:
             brick.status = 0;
             gameState.score++;
             createEffectFactor(brick.x, brick.y, lifeUp, gameState);
-            //gameState.lives++;
             break;
         case extraBall:
             brick.status = 0;
             gameState.score++;
-            createEffectFactor(brick.x, brick.y, extraBall, gameState);
+            if(!gameState.extraBalls) {gameState.extraBalls = [];}
+            var angle = (Math.random() * 120 - 60) * Math.PI / 180; // 随机角度在-60到60度之间
+            var speed = Math.sqrt(gameState.dx * gameState.dx + gameState.dy * gameState.dy);
+            gameState.extraBalls.push({
+                x: brick.x + brickWidth/2,
+                y: brick.y + brickHeight/2,
+                dx: speed * Math.sin(angle),
+                dy: - speed * Math.abs(Math.cos(angle)),
+                radius: 10,
+                active: true
+            });
             break;
         case speedDown:
             brick.status = 0;
@@ -135,14 +158,6 @@ function brickEffect(brick, c, r, brickArray, brickColumnCount, brickRowCount, g
             gameState.score++;
             createEffectFactor(brick.x, brick.y, tankBall, gameState);
             break;
-        case rotate:
-            brick.status = 0;
-            gameState.score++;
-            createEffectFactor(brick.x, brick.y, rotate, gameState);
-            break;
-            // 旋转效果 - 反转运动方向
-            //gameState.dx = -gameState.dx;
-            //break;
     }
 }
 
@@ -150,7 +165,7 @@ function createEffectFactor(x, y, effectType, gameState)
 {
     if(!gameState.effectFactor){gameState.effectFactor = [];}
     gameState.effectFactor.push
-    ({x: x+12.5, y: y, effectType: effectType, speed: 2, width: 20, height: 20});
+    ({x: x+12.5, y: y, effectType: effectType, speed: 1, width: 20, height: 20});
 }
 
 function applyEffectFactor(effectType, gameState)
@@ -175,9 +190,6 @@ function applyEffectFactor(effectType, gameState)
         case lifeUp:
             gameState.lives++;
             break;
-        case extraBall:
-            // 生成额外的球
-            break;
         case speedDown:
             if(!gameState.originalSpeed) {gameState.originalSpeed = {dx: gameState.dx, dy: gameState.dy};}//保存原始速度
             if(gameState.speedDownTimer) //如果已经有减速效果重置计时器
@@ -198,9 +210,6 @@ function applyEffectFactor(effectType, gameState)
         case tankBall:
             gameState.isTankBall = true;
             setTimeout(() => { gameState.isTankBall = false; }, 3000);
-            break;
-        case rotate:
-            //gameState.dx = -gameState.dx;
             break;
     }
 }
