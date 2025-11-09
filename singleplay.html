@@ -393,6 +393,8 @@ document.addEventListener('DOMContentLoaded', function()
     var paddleWidth = 120;
     var paddleX = (canvas.width-paddleWidth)/2;//挡板的初始位置
     var paddleY = canvas.height - paddleHeight;
+    var prevPaddleX = paddleX; // 记录上一帧挡板位置
+    var paddleSpeed = 0; // 挡板当前速度
 
     var rightPressed = false;//按键状态
     var leftPressed = false;
@@ -690,6 +692,10 @@ document.addEventListener('DOMContentLoaded', function()
         collisionDetection();
         updateEffectFactor();
         drawEffectFactor(ctx, gameState.effectFactor);
+        
+        // 计算挡板速度（基于上一帧和当前帧的位置差）
+        paddleSpeed = (paddleX - prevPaddleX) / 1; // 除以时间（这里假设每帧时间相同）
+        prevPaddleX = paddleX; // 更新上一帧位置
 
         gameState.x = x;
         gameState.y = y;
@@ -741,8 +747,33 @@ document.addEventListener('DOMContentLoaded', function()
         {
             if(x > paddleX && x < paddleX + paddleWidth) //检测球是否碰到挡板
             {
-                dy = -dy;
+            // 球与挡板碰撞
+            
+            // 计算碰撞点在挡板上的相对位置 (-0.5 到 0.5)
+            var hitPos = (x - (paddleX + paddleWidth/2)) / (paddleWidth/2);
+            
+            // 基础反弹（垂直方向）
+            dy = -Math.abs(dy); // 确保向上弹
+            
+            // 根据挡板速度影响球的水平速度
+            var speedTransferFactor = 0.5; // 速度传递系数，可调整
+            dx += paddleSpeed * speedTransferFactor;
+            
+            // 根据碰撞点位置添加水平偏移
+            var angleFactor = 2; // 角度影响系数，可调整
+            dx += hitPos * angleFactor;
+            
+            // 限制最大水平速度，防止过快
+            var maxDx = 10;
+            if(dx > maxDx) dx = maxDx;
+            if(dx < -maxDx) dx = -maxDx;
+            
+            // 确保最小垂直速度
+            var minDy = 2;
+            if(Math.abs(dy) < minDy) {
+                dy = (dy > 0 ? minDy : -minDy);
             }
+        }
             else 
             {
                 ballLunched = false;//重置球发射状态
