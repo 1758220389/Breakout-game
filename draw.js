@@ -47,14 +47,15 @@ function drawBall(ctx,x,y,ballRadius,ballColour) //绘制球
         ctx.closePath();
     }
 
-function drawPaddle(ctx,paddleX,paddleY,paddleWidth,paddleHeight) //绘制挡板
+function drawPaddle(ctx, x, y, width, height, color)
     {
         ctx.beginPath();
-        ctx.rect(paddleX, paddleY, paddleWidth, paddleHeight);//(x，y，宽，高)
-        ctx.fillStyle = "#0095DD";
+        ctx.rect(x, y, width, height);
+        ctx.fillStyle = color || "#0095DD"; // 默认蓝色,便于对战修改板子颜色
         ctx.fill();
         ctx.closePath();
     }
+
 
 function drawBricks(ctx, bricks, brickColumnCount, brickRowCount, brickWidth, brickHeight, brickPadding, brickOffsetTop, brickOffsetLeft) //绘制砖块
     {

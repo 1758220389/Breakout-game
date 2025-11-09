@@ -14,6 +14,8 @@ var extraBall = 11;
 var speedDown = 12;//减速
 var tankBall = 13;//穿透因子
 
+var shrinkOpponent = 14; // 缩短对方挡板（双人模式独占）
+
 function brickEffect(brick, c, r, brickArray, brickColumnCount, brickRowCount, gameState)
 {
     switch(brick.specialBrick)
@@ -158,6 +160,12 @@ function brickEffect(brick, c, r, brickArray, brickColumnCount, brickRowCount, g
             gameState.score++;
             createEffectFactor(brick.x, brick.y, tankBall, gameState);
             break;
+        case shrinkOpponent:
+            brick.status = 0;
+            gameState.score++;
+            createEffectFactor(brick.x, brick.y, shrinkOpponent, gameState);
+            break;
+
     }
 }
 
@@ -211,5 +219,14 @@ function applyEffectFactor(effectType, gameState)
             gameState.isTankBall = true;
             setTimeout(() => { gameState.isTankBall = false; }, 3000);
             break;
+       case shrinkOpponent:
+    // 双人模式独占：吃到因子的玩家让对方挡板缩短 5 秒
+    gameState.pendingShrink = {
+        target: gameState.lastHitter === "top" ? "bottom" : "top",
+        duration: 5000
+    };
+    break;
+
+
     }
 }
