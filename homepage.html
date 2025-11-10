@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>打砖块游戏 - 主页面</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            overflow: hidden;
+        }
+        
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        
+        .container {
+            text-align: center;
+            max-width: 800px;
+            padding: 2rem;
+            background: rgba(0, 0, 0, 0.6);
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(10px);
+            position: relative;
+            z-index: 1;
+        }
+        
+        .title {
+            margin-bottom: 2rem;
+            position: relative;
+        }
+        
+        .title h1 {
+            font-size: 4rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            text-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            letter-spacing: 2px;
+        }
+        
+        .title h2 {
+            font-size: 2.5rem;
+            font-weight: 600;
+            text-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
+            letter-spacing: 1px;
+        }
+        
+        .subtitle {
+            font-size: 1.2rem;
+            margin-bottom: 3rem;
+            opacity: 0.9;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            line-height: 1.6;
+        }
+        
+        .mode-selection {
+            display: flex;
+            justify-content: center;
+            gap: 3rem;
+            margin-top: 2rem;
+            flex-wrap: wrap;
+        }
+        
+        .mode-card {
+            width: 250px;
+            height: 300px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .mode-card:hover {
+            transform: translateY(-10px);
+            background: rgba(255, 255, 255, 0.15);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+        }
+        
+        .mode-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(90deg, #ff8a00, #e52e71);
+        }
+        
+        .mode-icon {
+            font-size: 4rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .mode-title {
+            font-size: 1.8rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+        
+        .mode-description {
+            font-size: 1rem;
+            opacity: 0.8;
+            line-height: 1.5;
+        }
+        
+        .single-player {
+            border: 2px solid rgba(0, 149, 221, 0.5);
+        }
+        
+        .multi-player {
+            border: 2px solid rgba(255, 68, 68, 0.5);
+        }
+        
+        .single-player:hover {
+            border-color: rgba(0, 149, 221, 0.8);
+        }
+        
+        .multi-player:hover {
+            border-color: rgba(255, 68, 68, 0.8);
+        }
+        
+        .floating-bricks {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
+        
+        .brick {
+            position: absolute;
+            width: 40px;
+            height: 20px;
+            background: linear-gradient(45deg, #ff8a00, #e52e71);
+            opacity: 0.3;
+            border-radius: 4px;
+            animation: float 15s infinite linear;
+        }
+        
+        @keyframes float {
+            0% {
+                transform: translateY(100vh) rotate(0deg);
+            }
+            100% {
+                transform: translateY(-100px) rotate(360deg);
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .title h1 {
+                font-size: 3rem;
+            }
+            
+            .title h2 {
+                font-size: 2rem;
+            }
+            
+            .mode-selection {
+                flex-direction: column;
+                align-items: center;
+                gap: 1.5rem;
+            }
+            
+            .mode-card {
+                width: 100%;
+                max-width: 300px;
+                height: 250px;
+            }
+        }
+        
+        .footer {
+            margin-top: 3rem;
+            font-size: 0.9rem;
+            opacity: 0.7;
+        }
+        .github-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 15px;
+            padding: 8px 16px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            color: white;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .github-link:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .github-icon {
+            font-size: 1.2rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="floating-bricks" id="floatingBricks"></div>
+    
+    <div class="container">
+        <div class="title">
+            <h1>欢迎来到</h1>
+            <h2>打砖块</h2>
+        </div>
+        
+        <p class="subtitle">经典打砖块游戏，选择你喜欢的模式开始游戏</p>
+        
+        <div class="mode-selection">
+            <div class="mode-card single-player" onclick="goToSinglePlayer()">
+                <div class="mode-icon">🎮</div>
+                <div class="mode-title">独乐乐</div>
+                <p class="mode-description">单人模式</p>
+            </div>
+            
+            <div class="mode-card multi-player" onclick="goToMultiPlayer()">
+                <div class="mode-icon">👥</div>
+                <div class="mode-title">众乐乐</div>
+                <p class="mode-description">双人模式</p>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <p>出品人：周颖匡 高培根 黄煜堋</p>
+            <a href="https://github.com/1758220389/Breakout-game" class="github-link" target="_blank">
+                <span class="github-icon">🐙</span>
+                <span>查看GitHub仓库</span>
+            </a>
+        </div>
+    </div>
+
+    <script>
+        // 创建浮动砖块背景
+        function createFloatingBricks() {
+            const container = document.getElementById('floatingBricks');
+            const brickCount = 15;
+            
+            for (let i = 0; i < brickCount; i++) {
+                const brick = document.createElement('div');
+                brick.classList.add('brick');
+                
+                // 随机位置
+                const left = Math.random() * 100;
+                brick.style.left = `${left}%`;
+                
+                // 随机大小
+                const size = 20 + Math.random() * 30;
+                brick.style.width = `${size}px`;
+                brick.style.height = `${size/2}px`;
+                
+                // 随机颜色
+                const hue = Math.random() * 360;
+                brick.style.background = `linear-gradient(45deg, hsl(${hue}, 100%, 60%), hsl(${hue + 30}, 100%, 50%))`;
+                
+                // 随机延迟和持续时间
+                const delay = Math.random() * 15;
+                const duration = 15 + Math.random() * 15;
+                brick.style.animationDelay = `${delay}s`;
+                brick.style.animationDuration = `${duration}s`;
+                
+                container.appendChild(brick);
+            }
+        }
+        
+        // 跳转到单人模式
+        function goToSinglePlayer() {
+            window.location.href = 'singleplay.html';
+        }
+        
+        // 跳转到多人模式
+        function goToMultiPlayer() {
+            window.location.href = 'multiplay.html';
+        }
+        
+        // 初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            createFloatingBricks();
+        });
+    </script>
+</body>
+</html>
