@@ -1,6 +1,6 @@
 # “自制”打砖块游戏
 大学生的课程设计项目，基于[项目](http://breakout.enclavegames.com/)，原项目[GitHub仓库](https://github.com/end3r/Gamedev-Canvas-workshop)。
-小组成员：[NuLL](https://github.com/1758220389)、[岚渠](https://github.com/moonstairsovo-ux)、[那个绿绿](https://github.com/gok2023)
+小组成员：[NuLL](https://github.com/1758220389)、[moonstairsovo-ux](https://github.com/moonstairsovo-ux)、[lllllvlv](https://github.com/gok2023)
 
 ---
 
@@ -33,8 +33,8 @@
 </p>
 
 <p align="center">
-  <img src="img/markdownPic/ui/multiPlay1.png" title="单人游玩 选择难度" width="300px">
-  <img src="img/markdownPic/ui/MultiPlay2.png" title="单人游玩界面" width="300px">
+  <img src="img/markdownPic/ui/multiplay1.png" title="多人游玩 选择难度" width="300px">
+  <img src="img/markdownPic/ui/Multiplay2.png" title="多人游玩界面" width="300px">
 </p>
 
 ### 2.2 添加难度选择
@@ -148,7 +148,7 @@
 #### 基本玩法介绍
 二人对战，分别操作位于界面上下边界的板子，显示同一个界面的对立视角，在屏幕中间一定区域随机生成砖块，破坏方得分，拾取因子时使对方获得减益/自己获得增益使让对手无法将球击回，球从一方边界掉落时该方失去一点生命值，改为对方发球，生命值掉到0后输掉对战。
 
-<img src="img/Brick/shrinkOpponent.png"  width="50px">
+<img src="img/brick/shrinkOpponent.png"  width="50px">
 <p align="center">
   <img src="img/markdownPic/brickEffect/shrinkOpponent.gif" title="缩短因子效果" width="200px">
 </p>
