@@ -34,7 +34,7 @@
 
 <p align="center">
   <img src="img/markdownPic/ui/multiplay1.png" title="多人游玩 选择难度" width="300px">
-  <img src="img/markdownPic/ui/Multiplay2.png" title="多人游玩界面" width="300px">
+  <img src="img/markdownPic/ui/multiplay2.png" title="多人游玩界面" width="300px">
 </p>
 
 ### 2.2 添加难度选择
