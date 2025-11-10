@@ -14,10 +14,12 @@ const images =  //预加载图片资源
     extraBall: new Image(),
     speedDown: new Image(),
     tankBall: new Image(),
+    shrinkOpponent: new Image(),
     longPaddleEffect: new Image(),
     lifeUpEffect: new Image(),
     speedDownEffect: new Image(),
     tankBallEffect: new Image(),
+    shrinkOpponentEffect : new Image(),
 };
 images.normalBrick.src = 'img/brick/normalBrick.png'; //砖块图片
 images.hardBrick.src = 'img/brick/hardBrick.png';
@@ -33,10 +35,12 @@ images.lifeUp.src = 'img/brick/lifeUp.png';
 images.speedDown.src = 'img/brick/speedDown.png';
 images.tankBall.src = 'img/brick/tankBall.png';
 images.extraBall.src = 'img/brick/extraBall.png';
+images.shrinkOpponent.src = 'img/brick/shrinkOpponent.png';
 images.longPaddleEffect.src = 'img/brick/longPaddleEffect.png';
 images.lifeUpEffect.src = 'img/brick/lifeUpEffect.png';
 images.speedDownEffect.src = 'img/brick/speedDownEffect.png';
 images.tankBallEffect.src = 'img/brick/tankBallEffect.png';
+images.shrinkOpponentEffect.src = 'img/brick/shrinkOpponentEffect.png';
 
 function drawBall(ctx,x,y,ballRadius,ballColour) //绘制球
     {
@@ -116,6 +120,9 @@ function drawBricks(ctx, bricks, brickColumnCount, brickRowCount, brickWidth, br
                         case 13: // tankBall
                             ctx.drawImage(images.tankBall, brickX, brickY, brickWidth, brickHeight);
                             break;
+                        case 14: // shrinkOpponent
+                            ctx.drawImage(images.shrinkOpponent, brickX, brickY, brickWidth, brickHeight);
+                            break;
                         default:
                             ctx.fillStyle = "#0095DD";
                             ctx.fillRect(brickX, brickY, brickWidth, brickHeight);
@@ -148,6 +155,9 @@ function drawEffectFactor(ctx, effectFactor) //绘制效果因子提示
                 case 13: 
                     ctx.drawImage(images.tankBallEffect, factor.x - size/2, factor.y - size/2, size, size);
                     break;
+                case 14: 
+                    ctx.drawImage(images.shrinkOpponentEffect, factor.x - size/2, factor.y - size/2, size, size);
+                    break;
                 default: 
                     ctx.beginPath();
                     ctx.fillStyle = "#FFFFFF";
@@ -163,12 +173,12 @@ function drawScore(ctx, score) //绘制分数
     {
         ctx.font = "16px Arial";
         ctx.fillStyle = "#0095DD";
-        ctx.fillText("Score: "+score, 0, 20);
+        ctx.fillText("Score: "+score, 20, 20);
     }
 
 function drawLives(ctx, lives) //绘制生命值
     {
         ctx.font = "16px Arial";
         ctx.fillStyle = "#0095DD";
-        ctx.fillText("Lives: "+lives, canvas.width-92, 20);
+        ctx.fillText("Lives: "+lives, canvas.width-80, 20);
     }

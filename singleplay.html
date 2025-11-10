@@ -586,9 +586,9 @@ createFloatingBricks();
     {
         difficulty = level;
         gameEnded = false;
-        if (level === "easy") {dx = 2; dy = -2; defaultPaddleWidth = 200; paddleWidth = defaultPaddleWidth;} 
-        else if (level === "medium") {dx = 3; dy = -3; defaultPaddleWidth = 180; paddleWidth = defaultPaddleWidth;} 
-        else if (level === "hard"){dx = 4; dy = -4; defaultPaddleWidth = 150; paddleWidth = defaultPaddleWidth;} 
+        if (level === "easy") {dx = 2; dy = -2; defaultPaddleWidth = 200; paddleWidth = defaultPaddleWidth;gameState.lives = 50;} 
+        else if (level === "medium") {dx = 3; dy = -3; defaultPaddleWidth = 180; paddleWidth = defaultPaddleWidth;gameState.lives = 40;} 
+        else if (level === "hard"){dx = 4; dy = -4; defaultPaddleWidth = 150; paddleWidth = defaultPaddleWidth;gameState.lives = 30;} 
 
         //初始化游戏状态
         gameState.dx = dx;
@@ -596,7 +596,7 @@ createFloatingBricks();
         gameState.paddleWidth = paddleWidth;
         gameState.isTankBall = false;
         gameState.score = score;
-        gameState.lives = 10000;
+        //gameState.lives = 10000;
 
         // 隐藏难度选择界面，显示游戏画布
         document.getElementById("difficultyContainer").style.display = "none";

@@ -198,23 +198,45 @@ function applyEffectFactor(effectType, gameState)
         case lifeUp:
             gameState.lives++;
             break;
-        case speedDown:
-            if(!gameState.originalSpeed) {gameState.originalSpeed = {dx: gameState.dx, dy: gameState.dy};}//保存原始速度
-            if(gameState.speedDownTimer) //如果已经有减速效果重置计时器
-                {
-                    clearTimeout(gameState.speedDownTimer);
-                    gameState.dx = gameState.originalSpeed.dx;
-                    gameState.dy = gameState.originalSpeed.dy;
-                }
-            gameState.dx = gameState.originalSpeed.dx * 0.5;
-            gameState.dy = gameState.originalSpeed.dy * 0.5;
-            gameState.speedDownTimer = setTimeout(() => { 
-                gameState.dx = gameState.originalSpeed.dx; 
-                gameState.dy = gameState.originalSpeed.dy;
-                gameState.originalSpeed = null;
-                gameState.speedDownTimer = null;
-            }, 5000); // 5秒后恢复速度
-            break;
+        case speedDown: {
+    // 取“当前真实速度”：优先 gameState.dx/dy；没有就兜底到全局 window.dx/dy
+    const readSpeed = () => {
+        let curDx = (typeof gameState.dx === 'number') ? gameState.dx :
+                    (typeof window !== 'undefined' && typeof window.dx === 'number' ? window.dx : 0);
+        let curDy = (typeof gameState.dy === 'number') ? gameState.dy :
+                    (typeof window !== 'undefined' && typeof window.dy === 'number' ? window.dy : 0);
+        return { curDx, curDy };
+    };
+    const writeSpeed = (nx, ny) => {
+        // 写回 gameState
+        gameState.dx = nx; gameState.dy = ny;
+        // 如果主程序提供了回调（多人模式有），同步到全局 dx/dy；单人模式没有就不调用
+        if (typeof gameState.setBallSpeed === 'function') gameState.setBallSpeed(nx, ny);
+    };
+
+    const { curDx, curDy } = readSpeed();
+
+    // 首次触发时记住原速；若重复触发则先恢复再统一重新计时（避免越减越乱）
+    if (!gameState.originalSpeed) {
+        gameState.originalSpeed = { dx: curDx, dy: curDy };
+    } else {
+        writeSpeed(gameState.originalSpeed.dx, gameState.originalSpeed.dy);
+        if (gameState.speedDownTimer) clearTimeout(gameState.speedDownTimer);
+    }
+
+    // 设为减速（0.5 可自行调整）
+    writeSpeed(curDx * 0.5, curDy * 0.5);
+
+    // 定时恢复
+    gameState.speedDownTimer = setTimeout(() => {
+        if (gameState.originalSpeed) {
+            writeSpeed(gameState.originalSpeed.dx, gameState.originalSpeed.dy);
+        }
+        gameState.originalSpeed = null;
+        gameState.speedDownTimer = null;
+    }, 5000);
+    break;
+        }
         case tankBall:
             gameState.isTankBall = true;
             setTimeout(() => { gameState.isTankBall = false; }, 3000);
