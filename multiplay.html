@@ -298,10 +298,7 @@ canvas {
         <div class="brick-text">连锁砖块：击破后摧毁一整列的砖块</div>
     </div>
     
-    <div class="brick-item">
-        <img src="img/brick/motherBrick.png" class="brick-icon" alt="子母砖块">
-        <div class="brick-text">子母砖块：击破后在周围生成砖块</div>
-    </div>
+    
 </div>
 
 <!-- 右侧增益因子说明 -->
@@ -319,8 +316,8 @@ canvas {
     </div>
     
     <div class="effect-item">
-        <img src="img/brick/extraBall.png" class="effect-icon" alt="增长因子">
-        <div class="effect-text">增长因子：新发射一个小球</div>
+        <img src="img/brick/shrinkOpponent.png" class="effect-icon" alt="缩短因子">
+        <div class="effect-text">缩短因子：缩短对面玩家的板子一段时间</div>
     </div>
     
     <div class="effect-item">
@@ -507,8 +504,8 @@ function startGame() {
   playerTopScore = 0;
   playerBottomScore = 0;
 
-  bottomPaddleWidth = 100;
-  topPaddleWidth = 100;
+  bottomPaddleWidth = 200;
+  topPaddleWidth = 200;
   bottomPaddleX = (canvas.width - bottomPaddleWidth) / 2;
   topPaddleX = (canvas.width - topPaddleWidth) / 2;
   gameState.paddleWidth = bottomPaddleWidth; // 仅同步一个默认宽度给特效逻辑
@@ -570,7 +567,7 @@ function initMultiplayerBricks() {
         }
       }
 
-      bricks[c][r] = { x: 0, y: 0, status, specialBrick: special, hp };
+      bricks[c][r] = { x: 0, y: 0, status, specialBrick: special, hp };//演示用生成池
     }
   }
 }
@@ -968,7 +965,7 @@ function drawGameOverScreen() {
   ctx.font = "36px Arial";
   ctx.fillText(winner === "top" ? "上方玩家获胜!" : "下方玩家获胜!", canvas.width/2, canvas.height/2 - 20);
   ctx.font = "18px Arial";
-  ctx.fillText("按 空格键 重新开始", canvas.width/2, canvas.height/2 + 24);
+  ctx.fillText("按 空格键 再来一局", canvas.width/2, canvas.height/2 + 24);
   ctx.textAlign = "left";
 }
 }); // DOMContentLoaded 结束
