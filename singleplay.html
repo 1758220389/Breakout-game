@@ -240,57 +240,132 @@
     overflow: auto;
 }
 
-@keyframes gradientBG {
-    0% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
-    100% { background-position: 0% 50%; }
-}
-
-.floating-bricks {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    pointer-events: none;
-    z-index: -1;
-}
-
-.brick {
-    position: absolute;
-    width: 40px;
-    height: 20px;
-    background: linear-gradient(45deg, #ff8a00, #e52e71);
-    opacity: 0.3;
-    border-radius: 4px;
-    animation: float 15s infinite linear;
-}
-
-@keyframes float {
-    0% {
-        transform: translateY(100vh) rotate(0deg);
+    @keyframes gradientBG {
+        0% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+        100% { background-position: 0% 50%; }
     }
-    100% {
-        transform: translateY(-100px) rotate(360deg);
+
+    .floating-bricks {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        z-index: -1;
     }
-}
 
-/* ===== 调整现有元素样式以适配新背景 ===== */
-#difficultyContainer {
-    background: rgba(0, 0, 0, 0.6);
-    border-radius: 20px;
-    padding: 2rem;
-    margin: 2rem auto;
-    max-width: 600px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-    backdrop-filter: blur(10px);
-}
+    .brick {
+        position: absolute;
+        width: 40px;
+        height: 20px;
+        background: linear-gradient(45deg, #ff8a00, #e52e71);
+        opacity: 0.3;
+        border-radius: 4px;
+        animation: float 15s infinite linear;
+    }
 
-canvas {
-    background: rgba(238, 238, 238, 0.9);
-    border-radius: 10px;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-}
+    @keyframes float {
+        0% {
+            transform: translateY(100vh) rotate(0deg);
+        }
+        100% {
+            transform: translateY(-100px) rotate(360deg);
+        }
+    }
+
+    /* ===== 调整现有元素样式以适配新背景 ===== */
+    #difficultyContainer {
+        background: rgba(0, 0, 0, 0.6);
+        border-radius: 20px;
+        padding: 2rem;
+        margin: 2rem auto;
+        max-width: 600px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        backdrop-filter: blur(10px);
+    }
+
+    canvas {
+        background: rgba(238, 238, 238, 0.9);
+        border-radius: 10px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    }
+
+    /* ===== 游戏说明面板 ===== */
+    .game-instructions {
+        position: fixed;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 250px;
+        background: rgba(0, 0, 0, 0.85);
+        color: white;
+        padding: 20px;
+        border-radius: 15px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        backdrop-filter: blur(10px);
+        z-index: 100;
+        display: none; /* 初始隐藏，游戏开始后显示 */
+    }
+
+    #leftInstructions {
+        left: 20px;
+    }
+
+    #rightInstructions {
+        right: 20px;
+    }
+
+    .instructions-title {
+        font-size: 18px;
+        font-weight: bold;
+        margin-bottom: 15px;
+        text-align: center;
+        color: #00A6FF;
+        border-bottom: 2px solid #00A6FF;
+        padding-bottom: 5px;
+    }
+
+    .brick-item, .effect-item {
+        display: flex;
+        align-items: center;
+        margin-bottom: 12px;
+        padding: 8px;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 8px;
+        transition: all 0.3s ease;
+    }
+
+    .brick-item:hover, .effect-item:hover {
+        background: rgba(255, 255, 255, 0.2);
+        transform: translateX(5px);
+    }
+
+    .brick-icon, .effect-icon {
+        width: 30px;
+        height: 30px;
+        margin-right: 10px;
+        flex-shrink: 0;
+    }
+
+    .brick-text, .effect-text {
+        font-size: 12px;
+        line-height: 1.3;
+    }
+
+    /* 响应式调整 */
+    @media (max-width: 1400px) {
+        .game-instructions {
+            width: 220px;
+        }
+    }
+
+    @media (max-width: 1200px) {
+        .game-instructions {
+            display: none !important; /* 在小屏幕上隐藏说明面板 */
+        }
+    }
+
     </style>
 </head>
 <body>
@@ -314,6 +389,71 @@ canvas {
 
 <!-- 初始隐藏画布，等选完难度后再显示 -->
 <canvas id="myCanvas" width="1080" height="600" style="display:none;"></canvas>
+
+<!-- 左侧特殊砖块说明 -->
+<div id="leftInstructions" class="game-instructions">
+    <div class="instructions-title">特殊砖块说明</div>
+    
+    <div class="brick-item">
+        <img src="img/brick/normalBrick.png" class="brick-icon" alt="普通砖块">
+        <div class="brick-text">普通砖块：击打一次即可破坏</div>
+    </div>
+    
+    <div class="brick-item">
+        <img src="img/brick/hardBrick.png" class="brick-icon" alt="硬砖块">
+        <div class="brick-text">硬砖块：需要撞击两次才能破坏</div>
+    </div>
+    
+    <div class="brick-item">
+        <img src="img/brick/vectorBrickUp.png" class="brick-icon" alt="矢量砖块">
+        <div class="brick-text">矢量砖块：需要从特定角度击中才能破坏</div>
+    </div>
+    
+    <div class="brick-item">
+        <img src="img/brick/boomBrick.png" class="brick-icon" alt="炸弹砖块">
+        <div class="brick-text">炸弹砖块：击破后摧毁周围砖块</div>
+    </div>
+    
+    <div class="brick-item">
+        <img src="img/brick/chainBrick.png" class="brick-icon" alt="连锁砖块">
+        <div class="brick-text">连锁砖块：击破后摧毁一整列的砖块</div>
+    </div>
+    
+    <div class="brick-item">
+        <img src="img/brick/motherBrick.png" class="brick-icon" alt="子母砖块">
+        <div class="brick-text">子母砖块：击破后在周围生成砖块</div>
+    </div>
+</div>
+
+<!-- 右侧增益因子说明 -->
+<div id="rightInstructions" class="game-instructions">
+    <div class="instructions-title">增益因子说明</div>
+    
+    <div class="effect-item">
+        <img src="img/brick/longPaddle.png" class="effect-icon" alt="加长因子">
+        <div class="effect-text">加长因子：加长板子一段时间</div>
+    </div>
+    
+    <div class="effect-item">
+        <img src="img/brick/lifeUp.png" class="effect-icon" alt="生命因子">
+        <div class="effect-text">生命因子：增加一点生命值</div>
+    </div>
+    
+    <div class="effect-item">
+        <img src="img/brick/extraBall.png" class="effect-icon" alt="增长因子">
+        <div class="effect-text">增长因子：新发射一个小球</div>
+    </div>
+    
+    <div class="effect-item">
+        <img src="img/brick/tankBall.png" class="effect-icon" alt="穿透因子">
+        <div class="effect-text">穿透因子：小球穿透砖块</div>
+    </div>
+    
+    <div class="effect-item">
+        <img src="img/brick/speedDown.png" class="effect-icon" alt="减速因子">
+        <div class="effect-text">减速因子：降低小球速度</div>
+    </div>
+</div>
 
 <!-- 重置按钮 -->
 <button id="resetBtn">重置位置 (2s)</button>
@@ -471,6 +611,9 @@ createFloatingBricks();
         document.getElementById("exportBtn").style.display = "block";
         document.getElementById("clearBtn").style.display = "block";
 
+        // 显示说明面板
+        document.getElementById("leftInstructions").style.display = "block";
+        document.getElementById("rightInstructions").style.display = "block";
 
         // 初始化游戏状态
         ballLunched = false;
