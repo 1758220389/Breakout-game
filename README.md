@@ -112,9 +112,22 @@
 - 游玩结束时可查看排行榜，可以在游玩界面查看排行榜
 - 成绩保存在浏览器缓存中，可导出成csv文件
 
+<p align="center">
+  <img src="img/markdownPic/rating/rating_getUserName.png" title="保存玩家名" width="400px">
+</p>
+<center>保存玩家名</center>
+<br>
+<p align="center">
+  <img src="img/markdownPic/rating/rating_history.png" title="排行榜" width="400px">
+</p>
+<center>排行榜</center>
+<br>
+<p align="center">
+  <img src="img/markdownPic/rating/rating_csv.png" title="导出的csv文件" width="400px">
+</p>
+<center>导出的csv文件</center>
 
 ### 2.7 设计新关卡
-
 
 ### 2.8 联机多人玩法
 #### a.基本玩法
@@ -132,6 +145,11 @@
 ### 2.9 充值玩法
 付费增加挡板长度或生命值
 
+<p align="center">
+  <img src="img/markdownPic/recharge/recharge_menu1.png" title="保存玩家名" width="200px">
+  <img src="img/markdownPic/recharge/recharge_menu2.png" title="排行榜" width="153px">
+  <img src="img/markdownPic/recharge/recharge_menu3.png" title="导出的csv文件" width="167px">
+</p>
 
 ---
 
@@ -147,16 +165,35 @@
 #### - ~~硬砖块有时被击中一次就消失~~
 #### - ~~矢量方块有时会把小球吸走~~
 
+<p align="center">
+  <img src="img/markdownPic/bugfix/vectorBrick-old.gif" title="修复前" width="300px">
+</p>
+
 #### - ~~计分系统错误判断胜利条件~~
+原：根据砖块总数计算；改：根据所有方块状态判断
 #### - ~~分数、生命显示超范围~~
 #### - ~~没接住小球时应清空所有效果~~
 #### - ~~增长因子带来的额外小球应基于砖块生成~~
 原：根据小球位置生成
+
+<p align="center">
+  <img src="img/markdownPic/bugfix/extraBall-old.gif" title="修复前" width="300px">
+  <img src="img/markdownPic/bugfix/extraBall-fixed.gif" title="修复后" width="300px">
+</p>
+
 #### - ~~炸弹砖块和连锁砖块破坏特殊方块时，特殊效果不生效~~
+
+<p align="center">
+  <img src="img/markdownPic/bugfix/chainBrick&boomBrick-old.png" title="修复前" width="100px">
+</p>
 
 #### - ~~充值系统板长度不保留~~
 #### - ~~遇到矢量方块会卡死~~
-添加充值按钮脱离卡死
+添加重置按钮脱离卡死
+
+<p align="center">
+  <img src="img/markdownPic/bugfix/resetButton.gif" title="重置按钮" width="600px">
+</p>
 
 #### - ~~最后一个方块被破坏时无法查看到被破坏的效果~~
 添加延迟，更改胜利函数判断位置
