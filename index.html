@@ -202,6 +202,29 @@
             font-size: 0.9rem;
             opacity: 0.7;
         }
+        .github-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 15px;
+            padding: 8px 16px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            color: white;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .github-link:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .github-icon {
+            font-size: 1.2rem;
+        }
     </style>
 </head>
 <body>
@@ -213,24 +236,28 @@
             <h2>打砖块</h2>
         </div>
         
-        <p class="subtitle">经典打砖块游戏，挑战你的反应速度和策略！选择你喜欢的模式开始游戏。</p>
+        <p class="subtitle">经典打砖块游戏，选择你喜欢的模式开始游戏</p>
         
         <div class="mode-selection">
             <div class="mode-card single-player" onclick="goToSinglePlayer()">
                 <div class="mode-icon">🎮</div>
                 <div class="mode-title">独乐乐</div>
-                <p class="mode-description">单人挑战模式，独自享受打砖块的乐趣，挑战高分记录！</p>
+                <p class="mode-description">单人模式</p>
             </div>
             
             <div class="mode-card multi-player" onclick="goToMultiPlayer()">
                 <div class="mode-icon">👥</div>
                 <div class="mode-title">众乐乐</div>
-                <p class="mode-description">双人对战模式，与朋友一较高下，看看谁是真正的打砖块高手！</p>
+                <p class="mode-description">双人模式</p>
             </div>
         </div>
         
         <div class="footer">
-            <p>经典游戏 | 挑战无限 | 享受乐趣</p>
+            <p>出品人：周颖匡 高培根 黄煜堋</p>
+            <a href="https://github.com/1758220389/Breakout-game" class="github-link" target="_blank">
+                <span class="github-icon">🐙</span>
+                <span>查看GitHub仓库</span>
+            </a>
         </div>
     </div>
 
