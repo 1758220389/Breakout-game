@@ -7,7 +7,7 @@
     * { padding: 0; margin: 0; }
     canvas { background: #eee; display: block; margin: 0 auto;  outline: none; border: none; }
     canvas:focus { outline: none; }
-    /* 与单人模式统一的 UI */
+    /* 统一的 UI */
     #difficultyContainer { text-align: center; margin-top: 150px; }
     #difficultyContainer button {
       padding: 10px 20px; margin: 10px; font-size: 16px;
@@ -48,10 +48,132 @@
 .hud-bg { background:#eee; }
 
 /* —— 顶部挡板高亮（我们用绘制时设置 fillStyle，不在 CSS 控）—— */
+
+body {
+    background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
+    background-size: 400% 400%;
+    animation: gradientBG 15s ease infinite;
+    min-height: 100vh;
+    color: white;
+    overflow: auto;
+}
+
+@keyframes gradientBG {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+.floating-bricks {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: -1;
+}
+
+.brick {
+    position: absolute;
+    width: 40px;
+    height: 20px;
+    background: linear-gradient(45deg, #ff8a00, #e52e71);
+    opacity: 0.3;
+    border-radius: 4px;
+    animation: float 15s infinite linear;
+}
+
+@keyframes float {
+    0% {
+        transform: translateY(100vh) rotate(0deg);
+    }
+    100% {
+        transform: translateY(-100px) rotate(360deg);
+    }
+}
+
+/* ===== 调整现有元素样式以适配新背景 ===== */
+#difficultyContainer {
+    background: rgba(0, 0, 0, 0.6);
+    border-radius: 20px;
+    padding: 2rem;
+    margin: 2rem auto;
+    max-width: 600px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(10px);
+}
+
+#introOverlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.85); /* 更深的背景确保内容清晰 */
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+}
+
+#introCard {
+    width: min(620px, 92vw);
+    background: rgba(255, 255, 255, 0.95); /* 更不透明的背景 */
+    color: #222; /* 深色文字确保可读性 */
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 16px;
+    padding: 28px 24px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+    backdrop-filter: none; /* 移除模糊效果 */
+}
+
+#introCard h1 {
+    font: 600 28px/1.2 system-ui, Segoe UI, Arial;
+    margin: 0 0 10px;
+    color: #1a2a6c; /* 使用主题色 */
+}
+
+#introCard p {
+    margin: 6px 0;
+    opacity: 0.9;
+    color: #333; /* 深灰色确保可读性 */
+}
+
+.kbd {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 8px;
+    background: rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    font: 600 14px/1.4 ui-monospace, Consolas, monospace;
+    color: #333;
+}
+
+#coverStartBtn {
+    margin-top: 14px;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 8px;
+    background: #00A6FF;
+    color: #fff;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+#coverStartBtn:hover {
+    background: #008fe0;
+}
+
+canvas {
+    background: rgba(238, 238, 238, 0.9);
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
  
  </style>
 </head>
 <body>
+
+<div class="floating-bricks" id="floatingBricks"></div>
 
 <div id="difficultyContainer">
   <h1>欢迎来到打砖块（双人对战）！</h1>
@@ -115,6 +237,41 @@ function preventPageScrollKeys() {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
+// 创建浮动砖块背景
+function createFloatingBricks() {
+    const container = document.getElementById('floatingBricks');
+    const brickCount = 15;
+    
+    for (let i = 0; i < brickCount; i++) {
+        const brick = document.createElement('div');
+        brick.classList.add('brick');
+        
+        // 随机位置
+        const left = Math.random() * 100;
+        brick.style.left = `${left}%`;
+        
+        // 随机大小
+        const size = 20 + Math.random() * 30;
+        brick.style.width = `${size}px`;
+        brick.style.height = `${size/2}px`;
+        
+        // 随机颜色
+        const hue = Math.random() * 360;
+        brick.style.background = `linear-gradient(45deg, hsl(${hue}, 100%, 60%), hsl(${hue + 30}, 100%, 50%))`;
+        
+        // 随机延迟和持续时间
+        const delay = Math.random() * 15;
+        const duration = 15 + Math.random() * 15;
+        brick.style.animationDelay = `${delay}s`;
+        brick.style.animationDuration = `${duration}s`;
+        
+        container.appendChild(brick);
+    }
+}
+
+// 初始化浮动砖块
+createFloatingBricks();
+
   // —— 新增：封面与防滚动 —— //
   showIntro();
   preventPageScrollKeys();
