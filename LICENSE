@@ -1,3 +1,75 @@
-Gamedev-Canvas-workshop by Andrzej Mazur and Mozilla Contributors (https://developer.mozilla.org/en-US/docs/MDN/About#Copyrights_and_licenses) is licensed under CC-BY-SA 2.5 (http://creativecommons.org/licenses/by-sa/2.5/).
+# License
 
-Any copyright to code samples and snippets is dedicated to the Public Domain (http://creativecommons.org/publicdomain/zero/1.0/).
+## Original Project License
+
+This project is based on [Gamedev-Canvas-workshop](https://github.com/end3r/Gamedev-Canvas-workshop) by Andrzej Mazur and Mozilla Contributors.
+
+The original project is licensed under:
+- Tutorial content: [CC-BY-SA 2.5](http://creativecommons.org/licenses/by-sa/2.5/)
+- Code examples: [Public Domain (CC0 1.0)](http://creativecommons.org/publicdomain/zero/1.0/)
+
+Original License Text:
+```
+Gamedev-Canvas-workshop by Andrzej Mazur and Mozilla Contributors 
+(https://developer.mozilla.org/en-US/docs/MDN/About#Copyrights_and_licenses) 
+is licensed under CC-BY-SA 2.5 (http://creativecommons.org/licenses/by-sa/2.5/).
+
+Any copyright to code samples and snippets is dedicated to the Public Domain 
+(http://creativecommons.org/publicdomain/zero/1.0/).
+```
+
+---
+
+## Modified and Extended Work License
+
+Copyright (c) 2024 NuLL, moonstairsovo-ux, lllllvlv
+
+### Code License (MIT License)
+
+All code in this project, including modifications and new additions, is licensed under the MIT License:
+
+```
+MIT License
+
+Copyright (c) 2024 NuLL, moonstairsovo-ux, lllllvlv
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+```
+
+### Documentation and Resources License
+
+Documentation, tutorials, and non-code resources are licensed under [CC-BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/).
+
+---
+
+## Major Modifications and New Features
+
+- Multiplayer (2-player) battle mode
+- Special brick system (hard bricks, vector bricks, bomb bricks, chain bricks, mother bricks)
+- Power-up system (long paddle, extra life, speed down, tank ball, extra ball, shrink opponent)
+- Leaderboard and score export functionality
+- Recharge system
+- Enhanced game UI and animations
+- Score recording and CSV export
+
+---
+
+## Acknowledgments
+
+Special thanks to Andrzej Mazur and Mozilla Contributors for providing the excellent foundation project that made this enhanced version possible.

@@ -688,7 +688,7 @@ createFloatingBricks();
                 if (isSpecial) 
                 {
                     //随机数生成特殊砖块类型
-                    var specialType = Math.floor(Math.random() * 13) + 1; // 1-8的随机数对应不同的特殊砖块
+                    var specialType = Math.floor(Math.random() * 13) + 1; // 随机数对应不同的特殊砖块
                 } 
                 else 
                 {
@@ -1004,7 +1004,7 @@ createFloatingBricks();
             dx += hitPos * angleFactor;
             
             // 限制最大水平速度，防止过快
-            var maxDx = 10;
+            var maxDx = 5;
             if(dx > maxDx) dx = maxDx;
             if(dx < -maxDx) dx = -maxDx;
             

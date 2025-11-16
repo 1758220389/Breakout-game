@@ -61,7 +61,7 @@
 
 <img src="img/brick/vectorBrickUp.png" width="50px"> <img src="img/brick/vectorBrickDown.png" width="50px"> <img src="img/brick/vectorBrickLeft.png" width="50px"> <img src="img/brick/vectorBrickRight.png" width="50px">
 <p align="center">
-  <img src="img/markdownPic/brickEffect/hardBrick.gif" title="硬砖块效果" width="200px">
+  <img src="img/markdownPic/brickEffect/VectorBrick.gif" title="矢量砖块效果" width="200px">
 </p>
 
 #### 炸弹砖块：击破后摧毁周围砖块
